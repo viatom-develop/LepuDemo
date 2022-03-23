@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="EcgView">
+        <attr name="ecgExampleString" format="string"/>
+        <attr name="ecgExampleDimension" format="dimension"/>
+        <attr name="ecgExampleColor" format="color"/>
+        <attr name="ecgExampleDrawable" format="color|reference"/>
+    </declare-styleable>
+</resources>
