@@ -71,7 +71,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         get_info.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.getInfo(model)
+            BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
         }
         bleState.observe(this, {
             if (it) {
@@ -125,14 +125,16 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bRtData)
             .observe(this, {
                 val data = it.data as RtData
-                data.ecgData.let { data ->
-                    DataController.receive(data.ecgFloats)
-                    data_log.text = data.toString()
+                if (data.dataType == 1) {
+                    data.ecgData.let { data2 ->
+                        DataController.receive(data2.ecgFloats)
+                    }
+                } else if (data.dataType == 0) {
+                    data.ecgResult.let { data2 ->
+                        hr.text = data2.hr.toString()
+                    }
                 }
-                data.ecgResult.let { data ->
-                    hr.text = data.hr.toString()
-                    data_log.text = data.toString()
-                }
+                data_log.text = data.toString()
             })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileError)
             .observe(this, {

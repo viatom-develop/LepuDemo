@@ -86,11 +86,13 @@
             android:id="@+id/get_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="get info"/>
+            android:text="get info"
+            android:layout_margin="20dp"/>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="20dp">
             <TextView
                 android:id="@+id/data_log"
                 android:layout_width="wrap_content"
