@@ -96,13 +96,117 @@ SDK will send this event when BluetoothDevice connected :
 + #### 4.Battery
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel).post(InterfaceEvent(model, data))`  
-`data` : int (0-3)
+`data` : int (0-3, 0=25%, 1=50%, 2=75%, 3=100%)
 
 + #### 5.Working status
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc60fw.WorkingStatus  
-![image](https://user-images.githubusercontent.com/84955990/160091673-e2ba9edc-b2d7-48b6-8a13-535c1b53613c.png)
+<table>
+	<tr>
+	    <th>Mode</th>
+	    <th>Step</th>
+	    <th>Para1</th>  
+     <th>Para2</th>  
+	</tr>
+	<tr>
+	    <td rowspan="6">0x01 Spot Check</td>
+	    <td>0x00 idle</td>
+     <td>--</td>
+     <td>--</td>
+	</tr>
+	<tr>
+	    <td>0x01 Preparing</td>
+     <td>--</td>
+     <td>--</td>
+	</tr>
+	<tr>
+	    <td>0x02 Measuring</td>
+     <td>30s~0s</td>
+     <td>--</td>
+	</tr>
+	<tr>
+	    <td>0x03 Result</td>
+     <td>Spo2</td>
+     <td>Pr</td>
+	</tr>
+	<tr>
+     <td>0x04 Analysis Result</td>
+	    <td>Result Code</td>
+     <td>--</td>
+	</tr>
+	<tr>
+	    <td>0x05 Finish</td>
+     <td>--</td>
+     <td>--</td>
+	</tr>
+	<tr>
+	    <td>0x02 Continuous</td>
+	    <td>--</td>
+	    <td>--</td>
+     <td>--</td>
+	</tr>
+	<tr>
+	    <td>0x03 Meun</td>
+	    <td>--</td>
+	    <td>--</td>
+     <td>--</td>
+	</tr>
+</table>
+<table>
+	<tr>
+	    <th>Result Code</th>
+	    <th>Result</th>
+	</tr>
+	<tr>
+	    <td>0x00</td>
+	    <td>No irregularity found</td>
+	</tr>
+	<tr>
+	    <td>0x01</td>
+	    <td>Suspected a little fast pulse</td>
+	</tr>
+ <tr>
+	    <td>0x02</td>
+	    <td>Suspected fast pulse</td>
+	</tr>
+ <tr>
+	    <td>0x03</td>
+	    <td>Suspected short run of fast pulse</td>
+	</tr>
+ <tr>
+	    <td>0x04</td>
+	    <td>Suspected a little slow pulse</td>
+	</tr>
+ <tr>
+	    <td>0x05</td>
+	    <td>Suspected slow pulse</td>
+	</tr>
+ <tr>
+	    <td>0x06</td>
+	    <td>Suspected occasional short pulse interval</td>
+	</tr>
+ <tr>
+	    <td>0x07</td>
+	    <td>Suspected irregular pulse interval</td>
+	</tr>
+ <tr>
+	    <td>0x08</td>
+	    <td>Suspected fast pulse with short pulse interval</td>
+	</tr>
+ <tr>
+	    <td>0x09</td>
+	    <td>Suspected slow pulse with short pulse interval</td>
+	</tr>
+ <tr>
+	    <td>0x0A</td>
+	    <td>Suspected slow pulse with irregular pulse interval</td>
+	</tr>
+ <tr>
+	    <td>0xFF</td>
+	    <td>Poor signal. Measure again</td>
+	</tr>
+</table>
 
 ### AP-10 / AP-20 (Bluetooth.MODEL_AP20)
 
@@ -136,7 +240,7 @@ SDK will send this event when BluetoothDevice connected :
 + #### 4.ap20GetBattery(model)
  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20BatLevel).post(InterfaceEvent(model, data))`  
-`data` : int (0-3)
+`data` : int (0-3, 0=25%, 1=50%, 2=75%, 3=100%)
 
 + #### 5.Real-time Oxy param data (frequency 1HZ)
 
@@ -147,7 +251,7 @@ SDK will send this event when BluetoothDevice connected :
 > pi : 0%-25.5%  
 > isProbeOff  
 > isPulseSearching  
-> battery : 0-3
+> battery : 0-3 (0=25%, 1=50%, 2=75%, 3=100%)
 
 + #### 6.Real-time Oxy waveform data (frequency 50HZ)
 
@@ -236,7 +340,7 @@ error result :
 + #### 2.pc80bGetBattery(model)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel).post(InterfaceEvent(model, data))`  
-`data` : int (0-3)
+`data` : int (0-3, 0=25%, 1=50%, 2=75%, 3=100%)
 
 + #### 3.Real-time ECG data
 
