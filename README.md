@@ -1,145 +1,267 @@
-# Android SDK API文档
-## SDK支持平台
-Android5.0及以上版本
-## 导入SDK
-blepro-debug.aar
-## BleServiceObserver
-用于监听蓝牙服务生命周期  
-onServiceCreate()  
-onServiceDestroy()  
-## BleChangeObserver
-用于监听蓝牙状态
-onBleStateChanged(model, state)：  
-model：一种设备对应一个model  
-state：蓝牙状态Ble.State
-## BleServiceHelper
-+ ### initService(application, bleServiceObserver)
-SDK初始化方法，在application onCreate()进行初始化，`注：App运行期间，只需要初始化一次，无需重复初始化`  
-蓝牙服务初始化完成后发送消息：  
-LiveEventBus.get\<Boolean\>(EventMsgConst.Ble.EventServiceConnectedAndInterfaceInit).post(true)
-+ ### stopService(application)
-停止蓝牙服务
-+ ### startScan()
-扫描设备，扫到设备后发送消息：  
-LiveEventBus.get\<Bluetooth\>(EventMsgConst.Discovery.EventDeviceFound).post(bluetooth)
-+ ### stopScan()
-停止扫描，注：在连接设备前必须先停止扫描
-+ ### setInterfaces(model)
-设置interface，每种设备由对应interface管理蓝牙交互
-+ ### connect(context, model, bluetoothDevice)  
-连接设备，`注：在连接设备前必须先设置interface` 
-+ ### disconnect(autoReconnect)
-断开所有设备的连接  
-autoReconnect：断开连接后是否自动重连设备
-+ ### disconnect(model, autoReconnect)
-断开指定model设备的连接  
+# Android SDK API
 
-## (以下按设备分类进行接口说明)：  
+## SDK support platform
+
+Version at least Android 7.0
+
+## import SDK
+
+### permission
+
+Add the permissions in the `AndroidManifest.xml` file :
++ \<uses-permission android:name="android.permission.BLUETOOTH" />  
++ \<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
++ \<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
++ \<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+### dependencies
+
+Add the lepu-blepro-0.0.1.aar to libs directory.  
+Add the dependencies for the artifacts you need in the `build.gradle` file for your app or module :
++ implementation 'no.nordicsemi.android:ble:2.2.4'
++ implementation(name: 'lepu-blepro-0.0.1', ext: 'aar')
+
+## BleServiceObserver
+
+Used to monitor BleService lifecycle  
+`onServiceCreate()`   
+`onServiceDestroy()` 
+
+## BleChangeObserver
+
+Used to monitor BluetoothDevice connect status  
+`onBleStateChanged(model, state)` :  
+`model` : One device type corresponds to one model, such as PC-60FW is Bluetooth.MODEL_PC60FW  
+`state` : com.lepu.blepro.constants.Ble.State
+
+## BleServiceHelper
+
++ ### initService(application, bleServiceObserver)
+
+Init BleService in `application onCreate()` , `PS：Only need to initService once during app operation`  
+SDK will send this event after BleService init finish :  
+`LiveEventBus.get<Boolean>(EventMsgConst.Ble.EventServiceConnectedAndInterfaceInit).post(true)` 
+
++ ### stopService(application)
+
++ ### startScan()
+
+SDK will send this event when found BluetoothDevice :   
+`LiveEventBus.get<Bluetooth>(EventMsgConst.Discovery.EventDeviceFound).post(bluetooth)` 
+
++ ### stopScan()
+
+Stop scan before connect BluetoothDevice
+
++ ### setInterfaces(model)
+
+Set interface before connect BluetoothDevice
+
++ ### connect(context, model, bluetoothDevice)
+
++ ### disconnect(autoReconnect)
+
+Disconnect all BluetoothDevice  
+autoReconnect : Whether auto connect BluetoothDevice after disconnect
+
++ ### disconnect(model, autoReconnect)
+
+Disconnect model BluetoothDevice
+
 ### PC-60FW (Bluetooth.MODEL_PC60FW)
-连接设备成功后再进行接口的使用，连接成功会发送消息：  
-LiveEventBus.get\<Int\>(EventMsgConst.Ble.EventBleDeviceReady).post(model)
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
+
 + #### 1.pc60fwGetInfo(model)
-请求获取设备信息，sdk拿到设备信息数据会发送消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC60Fw.EventPC60FwDeviceInfo).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc60fw.DeviceInfo
-+ #### 2.实时血氧参数包（设备自动发送，频率1HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC60Fw.EventPC60FwRtParam).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc60fw.RtParam
-+ #### 3.实时血氧波形包（设备自动发送，频率50HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC60Fw.EventPC60FwRtWave).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc60fw.RtWave
-+ #### 4.设备电量信息（设备自动发送）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel).post(InterfaceEvent(model, data))  
-data数据类型：int
-+ #### 5.设备工作状态（设备自动发送）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc60fw.WorkingStatus  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` ：com.lepu.blepro.ext.pc60fw.DeviceInfo
+
++ #### 2.Real-time Oxy param data (BluetoothDevice auto send data, frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc60fw.RtParam
+> spo2 : 0%-100%  
+> pr : 0-511bpm  
+> pi : 0%-25.5%  
+> isProbeOff  
+> isPulseSearching
+
++ #### 3.Real-time Oxy waveform data (BluetoothDevice auto send data, frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtWave).post(InterfaceEvent(model, data))`   
+`data` : com.lepu.blepro.ext.pc60fw.RtWave
+
++ #### 4.Battery
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel).post(InterfaceEvent(model, data))`  
+`data` : int (0-3)
+
++ #### 5.Working status
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc60fw.WorkingStatus  
+![image](https://user-images.githubusercontent.com/84955990/160091673-e2ba9edc-b2d7-48b6-8a13-535c1b53613c.png)
 
 ### AP-10 / AP-20 (Bluetooth.MODEL_AP20)
-连接设备成功后再进行以下接口的使用，连接成功会发送消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20SetTime).post(InterfaceEvent(model, true))
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime).post(InterfaceEvent(model, true))` 
+
 + #### 1.ap20GetInfo(model)
-获取设备信息消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20DeviceInfo).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.DeviceInfo
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20DeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.DeviceInfo
+
 + #### 2.ap20SetConfig(model, type, config)
-配置参数消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20SetConfigResult).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.SetConfigResult
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetConfigResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.SetConfigResult
+> type : Constant.Ap20ConfigType  
+> success : true(set config success), false(set config failed)
+
 + #### 3.ap20GetConfig(model, type)
-获取参数消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20GetConfigResult).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.GetConfigResult
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20GetConfigResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.GetConfigResult
+> type : Constant.Ap20ConfigType  
+> data : value range  
+> BACK_LIGHT (0-5)  
+> ALARM_SWITCH (0 : off 1 : on)  
+> LOW_OXY_THRESHOLD (85-99)  
+> LOW_HR_THRESHOLD (30-99)  
+> HIGH_HR_THRESHOLD (100-250)
+
 + #### 4.ap20GetBattery(model)
-获取电量信息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20BatLevel).post(InterfaceEvent(model, data))  
-data数据类型：int
-+ #### 5.实时血氧参数包（设备自动发送，频率1HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20RtOxyParam).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.RtOxyParam
-+ #### 6.实时血氧波形包（设备自动发送，频率50HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20RtOxyWave).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.RtOxyWave
-+ #### 7.实时鼻息流参数包（设备自动发送，频率1HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20RtBreathParam).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.RtBreathParam
-+ #### 8.实时鼻息流波形包（设备自动发送，频率50HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.AP20.EventAp20RtBreathWave).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.ap20.RtBreathWave  
+ 
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20BatLevel).post(InterfaceEvent(model, data))`  
+`data` : int (0-3)
+
++ #### 5.Real-time Oxy param data (frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.RtOxyParam
+> spo2 : 0%-100%  
+> pr : 0-511bpm  
+> pi : 0%-25.5%  
+> isProbeOff  
+> isPulseSearching  
+> battery : 0-3
+
++ #### 6.Real-time Oxy waveform data (frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyWave).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.RtOxyWave
+
++ #### 7.Real-time nasal flow param (frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.RtBreathParam
+> rr : respiratory rate (6-60bpm, 0 invalid value)  
+> singleFlag : 0(respiratory normal), 1(no respiratory)
+
++ #### 8.Real-time nasal flow wave (frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathWave).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ap20.RtBreathWave
+> flowInt : 0-4095  
+> snoreInt : 0-4095
 
 ### PC-102 (Bluetooth.MODEL_PC100)
-连接设备成功后再进行以下接口的使用，连接成功会发送消息：  
-LiveEventBus.get\<Int\>(EventMsgConst.Ble.EventBleDeviceReady).post(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
+
 + #### 1.pc100GetInfo(model)
-获取设备信息消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100DeviceInfo).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc102.DeviceInfo
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100DeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc102.DeviceInfo
+
 + #### 2.pc100StartBp(model)
-开始血压测量消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100BpStart).post(InterfaceEvent(model, true))
+  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpStart).post(InterfaceEvent(model, true))` 
+
 + #### 3.pc100StopBp(model)
-停止血压测量消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100BpStop).post(InterfaceEvent(model, true))
-+ #### 4.血压测量结果（设备测量完成自动发送）
-正常结果消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100BpResult).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc102.BpResult  
-错误结果消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100BpErrorResult).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc102.BpResultError
-+ #### 5.实时血压测量数据（设备测量时自动发送）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100RtBpData).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc102.RtBpData
-+ #### 6.实时血氧参数包（设备自动发送，频率1HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100RtOxyParam).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc102.RtOxyParam
-+ #### 7.实时血氧波形包（设备自动发送，频率50HZ）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC100.EventPc100RtOxyWave).post(InterfaceEvent(model, data))  
-data数据类型：ByteArray  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpStop).post(InterfaceEvent(model, true))` 
+
++ #### 4.Real-time Bp measure result
+
+normal result :  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc102.BpResult
+> sys : systolic pressure  
+> pr : pulse rate  
+> dia : diastolic pressure  
+> map : average pressure  
+> result : 0(hr normal), 1(hr irregular)
+
+error result :  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpErrorResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc102.BpResultError
+
++ #### 5.Real-time Bp data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtBpData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc102.RtBpData
+> sign : 0(no hr), 1(has hr)  
+> ps : current pressure
+
++ #### 6.Real-time Oxy param data (frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc102.RtOxyParam  
+> spo2 : 0%-100%  
+> pr : 0-511bpm  
+> pi : 0%-25.5%  
+> isDetecting  
+> isScanning
+
++ #### 7.Real-time Oxy waveform data (frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyWave).post(InterfaceEvent(model, data))`  
+`data` : ByteArray
 
 ### PC-80B (Bluetooth.MODEL_PC80B)
-连接设备成功后再进行以下接口的使用，连接成功会发送消息：  
-LiveEventBus.get\<Int\>(EventMsgConst.Ble.EventBleDeviceReady).post(model)
+ 
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
+
 + #### 1.pc80bGetInfo(model)
-获取设备信息消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC80B.EventPc80bDeviceInfo).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc80b.DeviceInfo
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc80b.DeviceInfo
+
 + #### 2.pc80bGetBattery(model)
-电量查询消息：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC80B.EventPc80bBatLevel).post(InterfaceEvent(model, data))  
-data数据类型：int
-+ #### 3.实时心电数据（设备测量时自动发送）
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC80B.EventPc80bRtData).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc80b.RtData
-+ #### 4.心电记录传输（从设备端选择文件发送）
-传输进度：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC80B.EventPc80bReadingFileProgress).post(InterfaceEvent(model, data))  
-data数据类型：int  
-传输出错：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC80B.EventPc80bReadFileError).post(InterfaceEvent(model, true))  
-传输完成：  
-LiveEventBus.get\<InterfaceEvent\>(InterfaceEvent.PC80B.EventPc80bReadFileComplete).post(InterfaceEvent(model, data))  
-data数据类型：com.lepu.blepro.ext.pc80b.EcgFile  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel).post(InterfaceEvent(model, data))`  
+`data` : int (0-3)
+
++ #### 3.Real-time ECG data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc80b.RtData  
+> seqNo  
+> gain : device waveform amplitude coefficient  
+> channel : 0(detecting channel), 1(internal channel) 2(external channel)  
+> measureMode : 0(detecting model), 1(Fast mode, 30s), 2(Continuous mode)  
+> measureStage : 0(detecting stage), 1(preparing), 2(measuring), 3(analyzing), 4(result), 5(stop)  
+> leadOff  
+> dataType : (1：ECG data 2：ECG result)  
+> ecgData : ECG data  
+> ecgResult : ECG result
+
++ #### 4.Receive record data（From BluetoothDevice）
+
+read file progress ：  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int（0-100）  
+read file error ：  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileError).post(InterfaceEvent(model, true))`  
+read file complete ：  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc80b.EcgFile  
 
 + ### PC-68B (Bluetooth.MODEL_PC68B)
 
