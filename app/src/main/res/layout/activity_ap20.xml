@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- 血氧产品实时布局 -->
+        <!-- OXY -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/oxy_layout"
             android:layout_width="match_parent"

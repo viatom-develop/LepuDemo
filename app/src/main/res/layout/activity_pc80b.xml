@@ -12,7 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <!-- 心电产品实时布局 -->
+        <!-- ECG -->
         <androidx.cardview.widget.CardView
             android:id="@+id/ecg_layout"
             android:layout_width="match_parent"

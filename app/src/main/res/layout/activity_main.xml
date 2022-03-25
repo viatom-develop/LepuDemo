@@ -22,7 +22,7 @@
         android:layout_margin="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/demo_model"
-        android:text="扫描"/>
+        android:text="scan"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv"

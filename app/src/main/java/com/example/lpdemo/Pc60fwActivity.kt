@@ -56,6 +56,7 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
                 tv_oxy.text = data.spo2.toString()
                 tv_pr.text = data.pr.toString()
                 tv_pi.text = data.pi.toString()
+                data_log.text = data.toString()
             })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtWave)
             .observe(this, {
@@ -70,7 +71,7 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus)
             .observe(this, {
                 val data = it.data as WorkingStatus
-                data_log.text = data.toString()
+
             })
 
     }

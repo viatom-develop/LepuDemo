@@ -46,7 +46,6 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20DeviceInfo)
             .observe(this, {
-                // 设备信息
                 val data = it.data as DeviceInfo
                 data_log.text = data.toString()
             })
@@ -63,15 +62,35 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as RtOxyWave
 
             })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathParam)
+            .observe(this, {
+                val data = it.data as RtBreathParam
+
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathWave)
+            .observe(this, {
+                val data = it.data as RtBreathWave
+
+            })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20BatLevel)
             .observe(this, {
                 val data = it.data as Int
 
             })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20GetConfigResult)
+            .observe(this, {
+                val data = it.data as GetConfigResult
+
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetConfigResult)
+            .observe(this, {
+                val data = it.data as SetConfigResult
+
+            })
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
-        // 蓝牙状态 Ble.State
+        // Ble.State
         Log.d(TAG, "model $model, state: $state")
 
         _bleState.value = state == Ble.State.CONNECTED

@@ -122,14 +122,24 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as Int
                 data_log.text = "BatLevel $data"
             })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bRtData)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousData)
             .observe(this, {
-                val data = it.data as RtData
+                val data = it.data as RtContinuousData
+                DataController.receive(data.ecgData.ecgFloats)
+                data_log.text = data.toString()
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd)
+            .observe(this, {
+
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData)
+            .observe(this, {
+                val data = it.data as RtFastData
                 if (data.dataType == 1) {
                     data.ecgData.let { data2 ->
                         DataController.receive(data2.ecgFloats)
                     }
-                } else if (data.dataType == 0) {
+                } else if (data.dataType == 2) {
                     data.ecgResult.let { data2 ->
                         hr.text = data2.hr.toString()
                     }
