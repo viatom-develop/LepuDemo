@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 // stop scan before connect
                 BleServiceHelper.BleServiceHelper.stopScan()
                 // connect
-                BleServiceHelper.BleServiceHelper.connect(this, it.model, it.device)
+                BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
 
                 dialog.show()
             }
