@@ -25,6 +25,7 @@
         <activity android:name=".Pc102Activity" android:screenOrientation="portrait" />
         <activity android:name=".Pc80bActivity" android:screenOrientation="portrait" />
         <activity android:name=".Pc60fwActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Pod1wActivity" android:screenOrientation="portrait" />
         <activity android:name=".Ap20Activity" android:screenOrientation="portrait" />
     </application>
 

@@ -13,7 +13,7 @@
         android:layout_margin="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="pc102/pc80b/pc60fw/ap20"/>
+        android:text="pc102/pc80b/pc60fw/ap20/pod1w"/>
 
     <Button
         android:id="@+id/scan"

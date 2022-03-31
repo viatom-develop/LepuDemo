@@ -9,20 +9,20 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.event.InterfaceEvent
-import com.lepu.blepro.ext.pc60fw.*
+import com.lepu.blepro.ext.pod1w.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pc60fw.*
+import kotlinx.android.synthetic.main.activity_pod1w.*
 
-class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
+class Pod1wActivity : AppCompatActivity(), BleChangeObserver {
 
-    private val TAG = "Pc60fwActivity"
-    private val model = Bluetooth.MODEL_PC60FW
+    private val TAG = "Pod1wActivity"
+    private val model = Bluetooth.MODEL_POD_1W
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pc60fw)
+        setContentView(R.layout.activity_pod1w)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -38,19 +38,19 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         })
 
         get_info.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc60fwGetInfo(model)
+            BleServiceHelper.BleServiceHelper.pod1wGetInfo(model)
         }
 
     }
 
     private fun initEventBus() {
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwDeviceInfo)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wDeviceInfo)
             .observe(this, {
                 // 设备信息
                 val data = it.data as DeviceInfo
                 data_log.text = data.toString()
             })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtParam)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtParam)
             .observe(this, {
                 val data = it.data as RtParam
                 tv_oxy.text = data.spo2.toString()
@@ -58,19 +58,14 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
                 tv_pi.text = data.pi.toString()
 
             })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtWave)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtWave)
             .observe(this, {
                 val data = it.data as RtWave
 
             })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wBatLevel)
             .observe(this, {
                 val data = it.data as Int
-
-            })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus)
-            .observe(this, {
-                val data = it.data as WorkingStatus
                 data_log.text = data.toString()
             })
 

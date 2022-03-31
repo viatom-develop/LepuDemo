@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     private val models = intArrayOf(
         Bluetooth.MODEL_PC80B,
         Bluetooth.MODEL_PC60FW,
+        Bluetooth.MODEL_POD_1W,
         Bluetooth.MODEL_PC100,
         Bluetooth.MODEL_AP20,
     )
@@ -151,6 +152,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     Bluetooth.MODEL_PC60FW -> {
                         startActivity(Intent(this, Pc60fwActivity::class.java))
+                        finish()
+                    }
+                    Bluetooth.MODEL_POD_1W -> {
+                        startActivity(Intent(this, Pod1wActivity::class.java))
                         finish()
                     }
                     else -> {
