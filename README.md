@@ -4,6 +4,11 @@
 
 Version at least Android 7.0
 
+## aar version
+
+> lepu-blepro-0.0.1.aar : add PC-60FW, PC-102, PC-80B, AP-10/AP-20  
+> lepu-blepro-0.0.2.aar : add POD-1W
+
 ## import SDK
 
 ### permission
@@ -16,10 +21,10 @@ Add the permissions in the `AndroidManifest.xml` file :
 
 ### dependencies
 
-Add the lepu-blepro-0.0.1.aar to libs directory.  
+Add the lepu-blepro-x.x.x.aar to libs directory.  
 Add the dependencies for the artifacts you need in the `build.gradle` file for your app or module :
 + implementation 'no.nordicsemi.android:ble:2.2.4'
-+ implementation(name: 'lepu-blepro-0.0.1', ext: 'aar')
++ implementation(name: 'lepu-blepro-x.x.x', ext: 'aar')
 
 ## BleServiceObserver
 
@@ -366,6 +371,36 @@ read file error ：
 read file complete ：  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc80b.EcgFile  
+
+### POD-1W (Bluetooth.MODEL_POD_1W)
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
+
++ #### 1.pod1wGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` ：com.lepu.blepro.ext.pod1w.DeviceInfo
+
++ #### 2.Real-time Oxy param data (BluetoothDevice auto send data, frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pod1w.RtParam
+> spo2 : 0%-100%  
+> pr : 0-511bpm  
+> pi : 0%-25.5%  
+> isProbeOff  
+> isPulseSearching
+
++ #### 3.Real-time Oxy waveform data (BluetoothDevice auto send data, frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtWave).post(InterfaceEvent(model, data))`   
+`data` : com.lepu.blepro.ext.pod1w.RtWave
+
++ #### 4.Battery
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wBatLevel).post(InterfaceEvent(model, data))`  
+`data` : int (0-3, 0=25%, 1=50%, 2=75%, 3=100%)
 
 + ### PC-68B (Bluetooth.MODEL_PC68B)
 
