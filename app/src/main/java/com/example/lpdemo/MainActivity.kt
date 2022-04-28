@@ -38,9 +38,14 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_POD_1W,
         Bluetooth.MODEL_PC100,
         Bluetooth.MODEL_AP20,
+        Bluetooth.MODEL_PC_68B,
+        Bluetooth.MODEL_PULSEBITEX,
+        Bluetooth.MODEL_CHECKME_LE,
+        Bluetooth.MODEL_PC300,
     )
 
     private val permission = arrayOf(
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.BLUETOOTH,
@@ -134,7 +139,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 adapter.notifyDataSetChanged()
                 Log.d(TAG, "EventDeviceFound")
             })
-        //--------------------pc80b,pc102,pc60fw--------------------
+        //--------------------pc80b,pc102,pc60fw,pc68b,pod1w,pc300--------------------
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
             .observe(this, {
                 dialog.dismiss()
@@ -145,7 +150,6 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(Intent(this, Pc102Activity::class.java))
                         finish()
                     }
-
                     Bluetooth.MODEL_PC80B -> {
                         startActivity(Intent(this, Pc80bActivity::class.java))
                         finish()
@@ -156,6 +160,14 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     Bluetooth.MODEL_POD_1W -> {
                         startActivity(Intent(this, Pod1wActivity::class.java))
+                        finish()
+                    }
+                    Bluetooth.MODEL_PC_68B -> {
+                        startActivity(Intent(this, Pc68bActivity::class.java))
+                        finish()
+                    }
+                    Bluetooth.MODEL_PC300 -> {
+                        startActivity(Intent(this, Pc303Activity::class.java))
                         finish()
                     }
                     else -> {
@@ -170,6 +182,20 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this, {
                 dialog.dismiss()
                 startActivity(Intent(this, Ap20Activity::class.java))
+                finish()
+            })
+        //----------------------pulsebit ex---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime)
+            .observe(this, {
+                dialog.dismiss()
+                startActivity(Intent(this, PulsebitExActivity::class.java))
+                finish()
+            })
+        //----------------------checkme le---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeSetTime)
+            .observe(this, {
+                dialog.dismiss()
+                startActivity(Intent(this, CheckmeLeActivity::class.java))
                 finish()
             })
     }

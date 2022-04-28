@@ -8,6 +8,7 @@ import com.example.lpdemo.utils.bleState
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
+import com.lepu.blepro.constants.Constant
 import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.ap20.*
 import com.lepu.blepro.objs.Bluetooth
@@ -39,6 +40,21 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
 
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
+        }
+        get_config.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT)
+//            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH)
+//            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.LOW_OXY_THRESHOLD)
+//            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.LOW_HR_THRESHOLD)
+//            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.HIGH_HR_THRESHOLD)
+        }
+        set_config.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)
+//            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 1/*on*/)
+//            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT, 5/*(0-5)*/)
+//            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
+//            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.LOW_HR_THRESHOLD, 99/*(30-99)*/)
+//            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.HIGH_HR_THRESHOLD, 250/*(100-250)*/)
         }
 
     }
@@ -80,12 +96,37 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20GetConfigResult)
             .observe(this, {
                 val data = it.data as GetConfigResult
-
+                data_log.text = when (data.type) {
+                    Constant.Ap20ConfigType.BACK_LIGHT -> {
+                        "Backlight level (0-5) : ${data.data}"
+                    }
+                    Constant.Ap20ConfigType.ALARM_SWITCH -> {
+                        if (data.data == 1) {
+                            "Alarm : on"
+                        } else {
+                            "Alarm : off"
+                        }
+                    }
+                    Constant.Ap20ConfigType.LOW_OXY_THRESHOLD -> {
+                        "Spo2 Lo (85-99) : ${data.data}"
+                    }
+                    Constant.Ap20ConfigType.LOW_HR_THRESHOLD -> {
+                        "PR Lo (30-99) : ${data.data}"
+                    }
+                    Constant.Ap20ConfigType.HIGH_HR_THRESHOLD -> {
+                        "PR Hi (100-250) : ${data.data}"
+                    }
+                    else -> ""
+                }
             })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetConfigResult)
             .observe(this, {
                 val data = it.data as SetConfigResult
-
+                data_log.text = if (data.success) {
+                    "Set config success"
+                } else {
+                    "Set config fail"
+                }
             })
     }
 

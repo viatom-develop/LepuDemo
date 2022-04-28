@@ -126,25 +126,43 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this, {
                 val data = it.data as RtContinuousData
                 DataController.receive(data.ecgData.ecgFloats)
+                hr.text = data.hr.toString()
                 data_log.text = data.toString()
             })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd)
             .observe(this, {
-
+                data_log.text = "exit continuous measurement"
             })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData)
             .observe(this, {
                 val data = it.data as RtFastData
+                if (data.measureMode == 1) {  // 1:Fast mode
+                    data_log.text = when (data.measureStage) {
+                        1 -> "preparing"
+                        2 -> "measuring"
+                        3 -> "analyzing"
+                        4 -> "result"
+                        5 -> "stop"
+                        else -> ""
+                    }
+                } else if (data.measureMode == 2) {  // 2:Continuous mode
+                    data_log.text = when (data.measureStage) {
+                        1 -> "preparing"
+                        5 -> "stop"  // sdk stop sending EventPc80bFastData event, then start to send EventPc80bContinuousData event
+                        else -> ""
+                    }
+                }
                 if (data.dataType == 1) {
                     data.ecgData.let { data2 ->
                         DataController.receive(data2.ecgFloats)
                     }
-                } else if (data.dataType == 2) {
-                    data.ecgResult.let { data2 ->
-                        hr.text = data2.hr.toString()
+                } else {
+                    data.ecgResult.let {
+                        data_log.text = "result $it"
                     }
                 }
-                data_log.text = data.toString()
+                hr.text = data.hr.toString()
+//                data_log.text = data.toString()
             })
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileError)
             .observe(this, {
