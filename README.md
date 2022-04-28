@@ -7,7 +7,8 @@ Version at least Android 7.0
 ## aar version
 
 > lepu-blepro-0.0.1.aar : add PC-60FW, PC-102, PC-80B, AP-10/AP-20  
-> lepu-blepro-0.0.2.aar : add POD-1W
+> lepu-blepro-0.0.2.aar : add POD-1W  
+> lepu-blepro-0.0.3.aar : add PC-68B, PC-303, PulsebitEX, CheckmeLE
 
 ## import SDK
 
@@ -87,9 +88,9 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtParam).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc60fw.RtParam
-> spo2 : 0%-100%  
-> pr : 0-511bpm  
-> pi : 0%-25.5%  
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-511bpm (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
 > isProbeOff  
 > isPulseSearching
 
@@ -152,7 +153,7 @@ SDK will send this event when BluetoothDevice connected :
      <td>--</td>
 	</tr>
 	<tr>
-	    <td>0x03 Meun</td>
+	    <td>0x03 Menu</td>
 	    <td>--</td>
 	    <td>--</td>
      <td>--</td>
@@ -238,6 +239,7 @@ SDK will send this event when BluetoothDevice connected :
 > data : value range  
 > BACK_LIGHT (0-5)  
 > ALARM_SWITCH (0 : off 1 : on)  
+> PS : The alarm function is off / on, mainly including low blood oxygen alarm, high or low pulse rate alarm  
 > LOW_OXY_THRESHOLD (85-99)  
 > LOW_HR_THRESHOLD (30-99)  
 > HIGH_HR_THRESHOLD (100-250)
@@ -251,9 +253,9 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyParam).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.ap20.RtOxyParam
-> spo2 : 0%-100%  
-> pr : 0-511bpm  
-> pi : 0%-25.5%  
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-511bpm (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
 > isProbeOff  
 > isPulseSearching  
 > battery : 0-3 (0=25%, 1=50%, 2=75%, 3=100%)
@@ -267,8 +269,8 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathParam).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.ap20.RtBreathParam
-> rr : respiratory rate (6-60bpm, 0 invalid value)  
-> singleFlag : 0(respiratory normal), 1(no respiratory)
+> rr : respiratory rate (6-60bpm, 0 invalid)  
+> sign : 0(normal breathing), 1(no breathing)
 
 + #### 8.Real-time nasal flow wave (frequency 50HZ)
 
@@ -285,6 +287,8 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100DeviceInfo).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc102.DeviceInfo
+> batLevel : 0-3 (0=25%, 1=50%, 2=75%, 3=100%)  
+> batStatus : 0 (No charge)，1 (Charging)，2 (Charging complete)
 
 + #### 2.pc100StartBp(model)
   
@@ -296,18 +300,17 @@ SDK will send this event when BluetoothDevice connected :
 
 + #### 4.Real-time Bp measure result
 
-normal result :  
-
+Normal result :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpResult).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc102.BpResult
 > sys : systolic pressure  
 > pr : pulse rate  
 > dia : diastolic pressure  
 > map : average pressure  
-> result : 0(hr normal), 1(hr irregular)
+> result : 0(hr normal), 1(hr irregular)  
+> resultMess : result description
 
-error result :  
-
+Error result :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpErrorResult).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc102.BpResultError
 
@@ -322,16 +325,17 @@ error result :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyParam).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc102.RtOxyParam  
-> spo2 : 0%-100%  
-> pr : 0-511bpm  
-> pi : 0%-25.5%  
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-511bpm (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
 > isDetecting  
 > isScanning
 
 + #### 7.Real-time Oxy waveform data (frequency 50HZ)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyWave).post(InterfaceEvent(model, data))`  
-`data` : ByteArray
+`data` : ByteArray  
+One sampling point occupies one byte, sampling point range is 0-127
 
 ### PC-80B (Bluetooth.MODEL_PC80B)
  
@@ -347,14 +351,32 @@ error result :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel).post(InterfaceEvent(model, data))`  
 `data` : int (0-3, 0=25%, 1=50%, 2=75%, 3=100%)
 
-+ #### 3.Real-time ECG data
++ #### 3.Real-time ECG data (frequency 150HZ)
 
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bRtData).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.pc80b.RtData  
+Continuous mode :  
+(1) In the preparation stage, you will receive EventPc80bFastData event :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc80b.RtFastData  
+(2) In the formal measurement stage, you will receive EventPc80bContinuousData event :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc80b.RtContinuousData  
+> seqNo  
+> hr : 0-255 (0 invalid)  
+> gain : device waveform amplitude coefficient  
+> leadOff  
+> vol : unit (V)  
+> ecgData : ECG data
+
+(3) Exit continuous measurement :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd).post(InterfaceEvent(model, true))`  
+
+Fast mode (30 s) :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc80b.RtFastData  
 > seqNo  
 > gain : device waveform amplitude coefficient  
 > channel : 0(detecting channel), 1(internal channel) 2(external channel)  
-> measureMode : 0(detecting model), 1(Fast mode, 30s), 2(Continuous mode)  
+> measureMode : 0(detecting mode), 1(Fast mode, 30s), 2(Continuous mode)  
 > measureStage : 0(detecting stage), 1(preparing), 2(measuring), 3(analyzing), 4(result), 5(stop)  
 > leadOff  
 > dataType : (1：ECG data 2：ECG result)  
@@ -386,9 +408,9 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtParam).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pod1w.RtParam
-> spo2 : 0%-100%  
-> pr : 0-511bpm  
-> pi : 0%-25.5%  
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-511bpm (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
 > isProbeOff  
 > isPulseSearching
 
@@ -402,9 +424,210 @@ SDK will send this event when BluetoothDevice connected :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wBatLevel).post(InterfaceEvent(model, data))`  
 `data` : int (0-3, 0=25%, 1=50%, 2=75%, 3=100%)
 
-+ ### PC-68B (Bluetooth.MODEL_PC68B)
+### PC-68B (Bluetooth.MODEL_PC68B)
+
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.pc68bGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc68b.DeviceInfo
+
++ #### 2.pc68bEnableRtData(model, type, enable)
+
+if you can not receive real-time data, use this method to enable.  
+> type : Constant.Pc68bEnableType  
+> enable : true(receive real-time data), false(do not receive real-time data)
+
++ #### 3.Real-time Oxy param data (frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc68b.RtParam
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-511bpm (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
+> isProbeOff  
+> isPulseSearching  
+> isCheckProbe
+> vol : 0-3.2V  
+> batLevel : 0-3 (0=25%, 1=50%, 2=75%, 3=100%)
+
++ #### 4.Real-time Oxy waveform data (frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtWave).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc68b.RtWave
+
+### Pulsebit EX (Bluetooth.MODEL_PULSEBITEX)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.pulsebitExGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pulsebit.DeviceInfo
+
++ #### 2.pulsebitExGetFileList(model)
+
+Get filelist progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileListProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+Get filelist error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileListError).post(InterfaceEvent(model, true))`  
+Get filelist complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>` (filenames)
+
++ #### 3.pulsebitExReadFile(model, fileName)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadFileError).post(InterfaceEvent(model, true))`  
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pulsebit.EcgFile  
+> user : 0-2 (0：single mode user，1：dual mode userA，2：dual mode userB)  
+> recordingTime : unit (s)  
+> hr : 0 is invalid value
+
+### CheckmeLE (Bluetooth.MODEL_CHECKME_LE)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeSetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.checkmeLeGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkmele.DeviceInfo
+
++ #### 2.checkmeLeGetFileList(model, type)
+
+> type : Constant.CheckmeLeListType  
+
+Get filelist progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeGetFileListProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+Get filelist error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeGetFileListError).post(InterfaceEvent(model, true))`  
+Get filelist complete :  
+(1) Oximeter List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeOxyList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<OxyRecord>`  com.lepu.blepro.ext.checkmele.OxyRecord  
+> timestamp : unit (s)  
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-255 (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
+> normal : true (smile face)，false (sad face)  
+
+(2) ECG Recorder List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeEcgList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<EcgRecord>`  com.lepu.blepro.ext.checkmele.EcgRecord  
+
+(3) Daily Check List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeDlcList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<DlcRecord>`  com.lepu.blepro.ext.checkmele.DlcRecord  
+
++ #### 3.checkmeLeReadFile(model, fileName)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadFileError).post(InterfaceEvent(model, true))`  
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkmele.EcgFile
+> recordingTime : unit (s)
+> hr : 0 is invalid value
+
+### PC-303 (Bluetooth.MODEL_PC303)
+
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.pc300GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300DeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.DeviceInfo
+> batLevel : 0-3 (0=25%, 1=50%, 2=75%, 3=100%)
+
++ #### 2.pc300StartEcg(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStart).post(InterfaceEvent(model, true))`  
+
++ #### 3.pc300StopEcg(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStop).post(InterfaceEvent(model, true))` 
+
++ #### 4.Real-time Ecg waveform data (frequency 150HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtEcgWave).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.RtEcgWave
+> seqNo : 0-255 (0 is preparing, about 10 s, then 1,2,3... is measuring)  
+
++ #### 5.Real-time Ecg result
+
+You can receive ecg result after about 30s of measurement :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.EcgResult  
+> hr : 0-255  
+> result : 0-15，255 is poor signal  
+> resultMess : result description
+
++ #### 6.Real-time Bp pressure data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtBpData).post(InterfaceEvent(model, data))`  
+`data` : int
+
++ #### 7.Real-time Bp measure result
+
+Normal result :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.BpResult
+> sys : systolic pressure  
+> pr : pulse rate  
+> dia : diastolic pressure  
+> map : average pressure  
+> result : 0 (hr normal)，1 (hr irregular)  
+> resultMess : result description
+
+Error result :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpErrorResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.BpResultError
+
++ #### 8.Real-time Oxy param data (frequency 1HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.RtOxyParam  
+> spo2 : 0%-100% (0 invalid)  
+> pr : 0-511bpm (0 invalid)  
+> pi : 0%-25.5% (0 invalid)  
+> isProbeOff  
+> isPulseSearching
+
++ #### 9.Real-time Oxy waveform data (frequency 50HZ)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyWave).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.RtOxyWave
+
++ #### 10.GLU Result
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GluResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pc303.GluResult  
+> unit : 0 (mmol/L)，1 (mg/dL)  
+> data : blood glucose data  
+> result : 0 (normal)，1 (low)，2 (high)  
+> resultMess : result description
+
++ #### 11.Temp Result
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult).post(InterfaceEvent(model, data))`  
+`data` : 30.00-43.00 ℃，normal range is 32.00-43.00 ℃
 
 
 
-+ ### PC-303 (Bluetooth.MODEL_PC303)
+
+
+
+
+
 
