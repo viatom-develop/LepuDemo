@@ -550,21 +550,13 @@ Read file complete :
 `data` : com.lepu.blepro.ext.pc303.DeviceInfo
 > batLevel : 0-3 (0=25%, 1=50%, 2=75%, 3=100%)
 
-+ #### 2.pc300StartEcg(model)
-
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStart).post(InterfaceEvent(model, true))`  
-
-+ #### 3.pc300StopEcg(model)
-
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStop).post(InterfaceEvent(model, true))` 
-
-+ #### 4.Real-time Ecg waveform data (frequency 150HZ)
++ #### 2.Real-time Ecg waveform data (frequency 150HZ)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtEcgWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.RtEcgWave
 > seqNo : 0-255 (0 is preparing, about 10 s, then 1,2,3... is measuring)  
 
-+ #### 5.Real-time Ecg result
++ #### 3.Real-time Ecg result
 
 You can receive ecg result after about 30s of measurement :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult).post(InterfaceEvent(model, data))`  
@@ -573,12 +565,12 @@ You can receive ecg result after about 30s of measurement :
 > result : 0-15，255 is poor signal  
 > resultMess : result description
 
-+ #### 6.Real-time Bp pressure data
++ #### 4.Real-time Bp pressure data
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtBpData).post(InterfaceEvent(model, data))`  
 `data` : int
 
-+ #### 7.Real-time Bp measure result
++ #### 5.Real-time Bp measure result
 
 Normal result :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpResult).post(InterfaceEvent(model, data))`  
@@ -594,7 +586,7 @@ Error result :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpErrorResult).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.BpResultError
 
-+ #### 8.Real-time Oxy param data (frequency 1HZ)
++ #### 6.Real-time Oxy param data (frequency 1HZ)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyParam).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.RtOxyParam  
@@ -604,12 +596,12 @@ Error result :
 > isProbeOff  
 > isPulseSearching
 
-+ #### 9.Real-time Oxy waveform data (frequency 50HZ)
++ #### 7.Real-time Oxy waveform data (frequency 50HZ)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.RtOxyWave
 
-+ #### 10.GLU Result
++ #### 8.GLU Result
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GluResult).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.GluResult  
@@ -618,7 +610,7 @@ Error result :
 > result : 0 (normal)，1 (low)，2 (high)  
 > resultMess : result description
 
-+ #### 11.Temp Result
++ #### 9.Temp Result
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult).post(InterfaceEvent(model, data))`  
 `data` : 30.00-43.00 ℃，normal range is 32.00-43.00 ℃
