@@ -70,12 +70,6 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         ecg_bkg.post {
             initEcgView()
         }
-        start_ecg.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc300StartEcg(model)
-        }
-        stop_ecg.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc300StopEcg(model)
-        }
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
         }
@@ -171,7 +165,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         // ----------------------temp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult)
             .observe(this, {
-                // BluetoothDevice will send twice same result, just get one of them
+                // if receive twice same result, just get one of them
                 // normal temp：32 - 43
                 val data = it.data as Float
                 data_log.text = if (data < 32) {
