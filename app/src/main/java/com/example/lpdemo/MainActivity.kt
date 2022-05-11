@@ -42,6 +42,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_PULSEBITEX,
         Bluetooth.MODEL_CHECKME_LE,
         Bluetooth.MODEL_PC300,
+        Bluetooth.MODEL_CHECK_POD,
+        Bluetooth.MODEL_POD2B,
+        Bluetooth.MODEL_AOJ20A,
     )
 
     private val permission = arrayOf(
@@ -158,8 +161,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(Intent(this, Pc60fwActivity::class.java))
                         finish()
                     }
-                    Bluetooth.MODEL_POD_1W -> {
-                        startActivity(Intent(this, Pod1wActivity::class.java))
+                    Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_POD2B -> {
+                        val intent = Intent(this, Pod1wActivity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
                         finish()
                     }
                     Bluetooth.MODEL_PC_68B -> {
@@ -196,6 +201,20 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this, {
                 dialog.dismiss()
                 startActivity(Intent(this, CheckmeLeActivity::class.java))
+                finish()
+            })
+        //----------------------checkme pod---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodSetTime)
+            .observe(this, {
+                dialog.dismiss()
+                startActivity(Intent(this, CheckmePodActivity::class.java))
+                finish()
+            })
+        //----------------------aoj20a---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aSetTime)
+            .observe(this, {
+                dialog.dismiss()
+                startActivity(Intent(this, Aoj20aActivity::class.java))
                 finish()
             })
     }

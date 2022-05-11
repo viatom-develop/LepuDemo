@@ -13,7 +13,7 @@
         android:layout_margin="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="pc102/pc80b/pc60fw/ap20/pod1w/pc68b/pulsebit/checkme/pc303"/>
+        android:text="pc102/pc80b/pc60fw/ap20/pod1w/pod2w/pc68b/pulsebit/CheckmeLE/pc303/CheckmePod/aoj20a"/>
 
     <Button
         android:id="@+id/scan"

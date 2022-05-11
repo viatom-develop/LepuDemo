@@ -32,6 +32,8 @@
         <activity android:name=".PulsebitExActivity" android:screenOrientation="portrait" />
         <activity android:name=".CheckmeLeActivity" android:screenOrientation="portrait" />
         <activity android:name=".Pc303Activity" android:screenOrientation="portrait" />
+        <activity android:name=".CheckmePodActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Aoj20aActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

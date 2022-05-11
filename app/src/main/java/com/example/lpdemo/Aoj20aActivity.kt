@@ -9,65 +9,70 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.event.InterfaceEvent
-import com.lepu.blepro.ext.pod1w.*
+import com.lepu.blepro.ext.aoj20a.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pod1w.*
+import kotlinx.android.synthetic.main.activity_aoj20a.*
 
-class Pod1wActivity : AppCompatActivity(), BleChangeObserver {
+class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
 
-    private val TAG = "Pod1wActivity"
-    private var model = Bluetooth.MODEL_POD_1W
+    private val TAG = "Aoj20aActivity"
+    private val model = Bluetooth.MODEL_AOJ20A
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pod1w)
-        model = intent.getIntExtra("model", model)
+        setContentView(R.layout.activity_aoj20a)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
+        get_info.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.aoj20aGetInfo(model)
+        }
+        get_list.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.aoj20aGetFileList(model)
+        }
+        delete_data.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.aoj20aDeleteData(model)
+        }
         bleState.observe(this, {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
         })
-
-        get_info.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pod1wGetInfo(model)
-        }
-
     }
 
     private fun initEventBus() {
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wDeviceInfo)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeviceData)
             .observe(this, {
                 // 设备信息
                 val data = it.data as DeviceInfo
                 data_log.text = data.toString()
             })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtParam)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempErrorMsg)
             .observe(this, {
-                val data = it.data as RtParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-
-            })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtWave)
-            .observe(this, {
-                val data = it.data as RtWave
-
-            })
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wBatLevel)
-            .observe(this, {
-                val data = it.data as Int
+                val data = it.data as ErrorResult
                 data_log.text = data.toString()
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempRtData)
+            .observe(this, {
+                val data = it.data as TempResult
+                data_log.text = data.toString()
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempList)
+            .observe(this, {
+                val data = it.data as ArrayList<Record>
+                data_log.text = data.toString()
+            })
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeleteData)
+            .observe(this, {
+                val data = it.data as Boolean
+                data_log.text = "DeleteData $data"
             })
 
     }
