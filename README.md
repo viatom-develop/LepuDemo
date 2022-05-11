@@ -8,7 +8,8 @@ Version at least Android 7.0
 
 > lepu-blepro-0.0.1.aar : add PC-60FW, PC-102, PC-80B, AP-10/AP-20  
 > lepu-blepro-0.0.2.aar : add POD-1W  
-> lepu-blepro-0.0.3.aar : add PC-68B, PC-303, PulsebitEX, CheckmeLE
+> lepu-blepro-0.0.3.aar : add PC-68B, PC-303, PulsebitEX, CheckmeLE  
+> lepu-blepro-0.0.4.aar : add Checkme Pod, POD-2W, AOJ-20A
 
 ## import SDK
 
@@ -394,7 +395,7 @@ read file complete ：
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc80b.EcgFile  
 
-### POD-1W (Bluetooth.MODEL_POD_1W)
+### POD-1W (Bluetooth.MODEL_POD_1W) & POD-2W (Bluetooth.MODEL_POD2B)
 
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
@@ -615,8 +616,87 @@ Error result :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult).post(InterfaceEvent(model, data))`  
 `data` : 30.00-43.00 ℃，normal range is 32.00-43.00 ℃
 
+### Checkme Pod (Bluetooth.MODEL_CHECK_POD)
 
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodSetTime).post(InterfaceEvent(model, true))`  
 
++ #### 1.checkmePodGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkmepod.DeviceInfo
+
++ #### 2.checkmePodGetFileList(model)
+
+Get filelist progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodGetFileListProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Get filelist error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodGetFileListError).post(InterfaceEvent(model, true))`  
+
+Get filelist complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<Record>`  com.lepu.blepro.ext.checkmepod.Record  
+> timestamp : unit (s)  
+> spo2 : 0-255 (0 invalid value)  
+> pr : 0-255 (0 invalid value)  
+> pi : 0%-25.5% (0 invalid value)  
+> temp : unit (℃)  
+
++ #### 3.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 4.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 5.Real-time Data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkmepod.RtData  
+RtWave  
+RtParam :  
+> pr : 0-255  
+> spo2 : 0-255  
+> pi : 0%-25.5%  
+> temp : unit (℃)  
+> oxyState : 0 (no cable)，1 (insert cable)，2 (measuring)  
+> tempState : 0 (no cable)，1 (insert cable)  
+> batteryState : 0 (no charge)，1 (charging)，2 (charging complete)，3 (low battery)  
+> battery : 0-100%  
+> runStatus : 0 (idle)，1 (prepare)，2 (measuring)  
+
+### AOJ-20A (Bluetooth.MODEL_AOJ20A)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aSetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.aoj20aGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeviceData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.aoj20a.DeviceInfo  
+> battery : 1-10 (10=100%)  
+
++ #### 2.aoj20aGetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<Record>`  com.lepu.blepro.ext.aoj20a.Record  
+> temp : unit (℃)  
+
++ #### 3.aoj20aDeleteData(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeleteData).post(InterfaceEvent(model, true))`  
+
++ #### 4.Temp Result
+
+Error result :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempErrorMsg).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.aoj20a.ErrorResult  
+
+Normal result :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.aoj20a.TempResult  
+> temp : unit (℃)  
 
 
 
