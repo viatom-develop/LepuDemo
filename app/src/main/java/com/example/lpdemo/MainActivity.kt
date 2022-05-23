@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     private val models = intArrayOf(
         Bluetooth.MODEL_PC80B,
         Bluetooth.MODEL_PC60FW,
+        Bluetooth.MODEL_PC_60NW,
+        Bluetooth.MODEL_PC_60NW_1,
         Bluetooth.MODEL_POD_1W,
         Bluetooth.MODEL_PC100,
         Bluetooth.MODEL_AP20,
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_CHECK_POD,
         Bluetooth.MODEL_POD2B,
         Bluetooth.MODEL_AOJ20A,
+        Bluetooth.MODEL_SP20,
     )
 
     private val permission = arrayOf(
@@ -157,8 +160,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(Intent(this, Pc80bActivity::class.java))
                         finish()
                     }
-                    Bluetooth.MODEL_PC60FW -> {
-                        startActivity(Intent(this, Pc60fwActivity::class.java))
+                    Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1 -> {
+                        val intent = Intent(this, Pc60fwActivity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
                         finish()
                     }
                     Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_POD2B -> {
@@ -215,6 +220,13 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this, {
                 dialog.dismiss()
                 startActivity(Intent(this, Aoj20aActivity::class.java))
+                finish()
+            })
+        //----------------------sp20---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime)
+            .observe(this, {
+                dialog.dismiss()
+                startActivity(Intent(this, Sp20Activity::class.java))
                 finish()
             })
     }

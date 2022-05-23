@@ -18,11 +18,12 @@ import kotlinx.android.synthetic.main.activity_pc60fw.*
 class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc60fwActivity"
-    private val model = Bluetooth.MODEL_PC60FW
+    private var model = Bluetooth.MODEL_PC60FW
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pc60fw)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
