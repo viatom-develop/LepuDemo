@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_POD2B,
         Bluetooth.MODEL_AOJ20A,
         Bluetooth.MODEL_SP20,
+        Bluetooth.MODEL_VETCORDER,
+        Bluetooth.MODEL_CHECK_ADV
     )
 
     private val permission = arrayOf(
@@ -147,7 +149,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             })
         //--------------------pc80b,pc102,pc60fw,pc68b,pod1w,pc300--------------------
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 // connect success
                 Log.d(TAG, "EventBleDeviceReady")
@@ -180,13 +182,19 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(Intent(this, Pc303Activity::class.java))
                         finish()
                     }
+                    Bluetooth.MODEL_VETCORDER, Bluetooth.MODEL_CHECK_ADV -> {
+                        val intent = Intent(this, CheckmeMonitorActivity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
+                        finish()
+                    }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()
                         adapter.setList(null)
                         adapter.notifyDataSetChanged()
                     }
                 }
-            })
+            }
         //----------------------ap10/ap20---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime)
             .observe(this, {
