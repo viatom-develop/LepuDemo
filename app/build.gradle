@@ -55,5 +55,5 @@ dependencies {
     implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-
+    implementation 'no.nordicsemi.android:dfu:1.9.0'
 }
