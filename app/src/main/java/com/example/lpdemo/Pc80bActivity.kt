@@ -73,20 +73,20 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
         }
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
-        dataEcgSrc.observe(this, {
+        }
+        dataEcgSrc.observe(this) {
             if (this::ecgView.isInitialized) {
                 ecgView.setDataSrc(it)
                 ecgView.invalidate()
 
             }
-        })
+        }
     }
 
     private fun initEcgView() {
@@ -112,29 +112,29 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bDeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel)
-            .observe(this, {
+            .observe(this) {
+                // 0:0-25%,1:25-50%,2:50-75%,3:75-100%
                 val data = it.data as Int
-                data_log.text = "BatLevel $data"
-            })
+
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtContinuousData
                 DataController.receive(data.ecgData.ecgFloats)
-                hr.text = data.hr.toString()
-                data_log.text = data.toString()
-            })
+                hr.text = "${data.hr}"
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd)
-            .observe(this, {
+            .observe(this) {
                 data_log.text = "exit continuous measurement"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtFastData
                 if (data.measureMode == 1) {  // 1:Fast mode
                     data_log.text = when (data.measureStage) {
@@ -161,24 +161,24 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                         data_log.text = "result $it"
                     }
                 }
-                hr.text = data.hr.toString()
+                hr.text = "${data.hr}"
 //                data_log.text = data.toString()
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "ReadFileError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadingFileProgress)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = "ReadingFileProgress $data"
-            })
+                data_log.text = "ReadingFileProgress $data%"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as EcgFile
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
 
     }
 

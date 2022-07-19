@@ -45,61 +45,60 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         stop_rt_task.setOnClickListener {
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
     }
 
     private fun initEventBus() {
         LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart)
-            .observe(this, {
+            .observe(this) {
                 // start real time task
-            })
+            }
         LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop)
-            .observe(this, {
+            .observe(this) {
                 // stop real time task
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodDeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodGetFileListError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "GetFileListError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodGetFileListProgress)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = "GetFileListProgress $data"
-            })
+                data_log.text = "GetFileListProgress $data%"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodFileList)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ArrayList<Record>
                 data_log.text = data.toString()
                 Toast.makeText(this, "${data.size}", Toast.LENGTH_SHORT).show()
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodRtDataError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "RtDataError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodRtData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtData
-                tv_oxy.text = data.param.spo2.toString()
-                tv_pr.text = data.param.pr.toString()
-                tv_pi.text = data.param.pi.toString()
-                tv_temp.text = data.param.temp.toString()
-                data_log.text = data.toString()
-            })
+                tv_oxy.text = "${data.param.spo2}"
+                tv_pr.text = "${data.param.pr}"
+                tv_pi.text = "${data.param.pi}"
+                tv_temp.text = "${data.param.temp}"
+                data_log.text = "$data"
+            }
 
     }
 

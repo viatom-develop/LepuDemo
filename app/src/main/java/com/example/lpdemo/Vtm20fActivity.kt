@@ -9,20 +9,20 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.event.InterfaceEvent
-import com.lepu.blepro.ext.pc60fw.*
+import com.lepu.blepro.ext.vtm20f.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pc60fw.*
+import kotlinx.android.synthetic.main.activity_vtm20f.*
 
-class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
+class Vtm20fActivity : AppCompatActivity(), BleChangeObserver {
 
-    private val TAG = "Pc60fwActivity"
-    private var model = Bluetooth.MODEL_PC60FW
+    private val TAG = "Vtm20fActivity"
+    private var model = Bluetooth.MODEL_TV221U
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pc60fw)
+        setContentView(R.layout.activity_vtm20f)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -37,44 +37,22 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
         }
-
-        get_info.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc60fwGetInfo(model)
-        }
-
     }
 
     private fun initEventBus() {
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwDeviceInfo)
-            .observe(this) {
-                val data = it.data as DeviceInfo
-                data_log.text = "$data"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtParam)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.VTM20f.EventVTM20fRtParam)
             .observe(this) {
                 val data = it.data as RtParam
-                tv_oxy.text = "${data.spo2}"
-                tv_pr.text = "${data.pr}"
-                tv_pi.text = "${data.pi}"
-
+                tv_oxy.text = data.spo2.toString()
+                tv_pr.text = data.pr.toString()
+                tv_pi.text = data.pi.toString()
+                data_log.text = "$data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtWave)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.VTM20f.EventVTM20fRtWave)
             .observe(this) {
                 val data = it.data as RtWave
 
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel)
-            .observe(this) {
-                // 0:0-25%,1:25-50%,2:50-75%,3:75-100%
-                val data = it.data as Int
-
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus)
-            .observe(this) {
-                val data = it.data as WorkingStatus
-                data_log.text = "$data"
-            }
-
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

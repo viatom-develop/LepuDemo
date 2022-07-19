@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LepuDemo">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,6 +36,9 @@
         <activity android:name=".Aoj20aActivity" android:screenOrientation="portrait" />
         <activity android:name=".Sp20Activity" android:screenOrientation="portrait" />
         <activity android:name=".CheckmeMonitorActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Vtm20fActivity" android:screenOrientation="portrait" />
+        <activity android:name=".OxyActivity" android:screenOrientation="portrait" />
+        <activity android:name=".BpmActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

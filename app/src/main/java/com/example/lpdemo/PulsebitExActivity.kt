@@ -43,61 +43,60 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
             // 2. then read file
             readFile()
         }
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitDeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileListError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "GetFileListError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileListProgress)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = "GetFileListProgress $data"
-            })
+                data_log.text = "GetFileListProgress $data%"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileList)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ArrayList<String>
                 for (i in data) {
                     fileNames.add(i)
                 }
                 data_log.text = data.toString()
-            })
+            }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadFileError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "ReadFileError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadingFileProgress)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = "ReadingFileProgress $data"
-            })
+                data_log.text = "ReadingFileProgress $data%"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadFileComplete)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as EcgFile
                 Log.d(TAG, "data: $data")
-                data_log.text = data.toString()
+                data_log.text = "$data"
                 DataController.receive(data.wFs)
                 fileNames.removeAt(0)
                 readFile()
-            })
+            }
 
     }
 

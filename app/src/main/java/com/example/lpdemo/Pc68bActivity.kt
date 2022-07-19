@@ -30,13 +30,13 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
 
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc68bGetInfo(model)
@@ -54,24 +54,23 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bDeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtParam)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
+                tv_oxy.text = "${data.spo2}"
+                tv_pr.text = "${data.pr}"
+                tv_pi.text = "${data.pi}"
 
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtWave
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
 
     }
 

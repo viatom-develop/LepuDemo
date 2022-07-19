@@ -51,73 +51,72 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
             // 1. get list first 2. then read file
             readFile()
         }
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeDeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeGetFileListError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "GetFileListError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeGetFileListProgress)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = "GetFileListProgress $data"
-            })
+                data_log.text = "GetFileListProgress $data%"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeOxyList)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ArrayList<OxyRecord>
                 data_log.text = data.toString()
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeEcgList)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ArrayList<EcgRecord>
                 for (i in data) {
                     fileNames.add(i.recordName)
                 }
                 data_log.text = data.toString()
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeDlcList)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ArrayList<DlcRecord>
                 for (i in data) {
                     fileNames.add(i.recordName)
                 }
                 data_log.text = data.toString()
-            })
+            }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadFileError)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "ReadFileError $data"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadingFileProgress)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = "ReadingFileProgress $data"
-            })
+                data_log.text = "ReadingFileProgress $data%"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadFileComplete)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as EcgFile
                 Log.d(TAG, "data: $data")
-                data_log.text = data.toString()
+                data_log.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
-            })
+            }
 
     }
 

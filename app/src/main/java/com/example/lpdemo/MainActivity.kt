@@ -24,6 +24,7 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.objs.BluetoothController
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
+import com.permissionx.guolindev.PermissionX
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), BleChangeObserver {
@@ -37,7 +38,12 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_PC60FW,
         Bluetooth.MODEL_PC_60NW,
         Bluetooth.MODEL_PC_60NW_1,
+        Bluetooth.MODEL_PC66B,
+        Bluetooth.MODEL_PF_10,
+        Bluetooth.MODEL_PF_20,
+        Bluetooth.MODEL_OXYSMART,
         Bluetooth.MODEL_POD_1W,
+        Bluetooth.MODEL_S5W,
         Bluetooth.MODEL_PC100,
         Bluetooth.MODEL_AP20,
         Bluetooth.MODEL_PC_68B,
@@ -49,15 +55,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_AOJ20A,
         Bluetooth.MODEL_SP20,
         Bluetooth.MODEL_VETCORDER,
-        Bluetooth.MODEL_CHECK_ADV
-    )
-
-    private val permission = arrayOf(
-        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.BLUETOOTH,
-        Manifest.permission.BLUETOOTH_ADMIN
+        Bluetooth.MODEL_CHECK_ADV,
+        Bluetooth.MODEL_TV221U,
+        Bluetooth.MODEL_O2RING,
+        Bluetooth.MODEL_BPM
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -72,14 +73,32 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         initEventBus()
     }
 
-    private fun needPermission(){
-        for (p in permission) {
-            if (ActivityCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(this, permission, 0)
-                break
+    private fun needPermission() {
+        PermissionX.init(this)
+            .permissions(
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN
+            )
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(
+                    deniedList, "location permission", "ok", "ignore"
+                )
             }
-        }
-        checkBt()
+            .onForwardToSettings { scope, deniedList ->
+                scope.showForwardToSettingsDialog(
+                    deniedList, "location setting", "ok", "ignore"
+                )
+            }
+            .request { allGranted, grantedList, deniedList ->
+                Log.d(TAG, "permission : $allGranted, $grantedList, $deniedList")
+
+                //permission OK, check Bluetooth status
+                if (allGranted)
+                    checkBt()
+            }
     }
 
     private fun checkBt() {
@@ -136,17 +155,17 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<Boolean>(EventMsgConst.Ble.EventServiceConnectedAndInterfaceInit)
-            .observe(this, {
+            .observe(this) {
                 // BleService init success
                 Log.d(TAG, "EventServiceConnectedAndInterfaceInit")
-            })
+            }
         LiveEventBus.get<Bluetooth>(EventMsgConst.Discovery.EventDeviceFound)
-            .observe(this, {
+            .observe(this) {
                 // scan result
                 adapter.setList(BluetoothController.getDevices())
                 adapter.notifyDataSetChanged()
                 Log.d(TAG, "EventDeviceFound")
-            })
+            }
         //--------------------pc80b,pc102,pc60fw,pc68b,pod1w,pc300--------------------
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
             .observe(this) {
@@ -162,13 +181,15 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(Intent(this, Pc80bActivity::class.java))
                         finish()
                     }
-                    Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1 -> {
+                    Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1,
+                    Bluetooth.MODEL_PC66B, Bluetooth.MODEL_PF_10, Bluetooth.MODEL_PF_20,
+                    Bluetooth.MODEL_OXYSMART -> {
                         val intent = Intent(this, Pc60fwActivity::class.java)
                         intent.putExtra("model", it)
                         startActivity(intent)
                         finish()
                     }
-                    Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_POD2B -> {
+                    Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_S5W, Bluetooth.MODEL_POD2B -> {
                         val intent = Intent(this, Pod1wActivity::class.java)
                         intent.putExtra("model", it)
                         startActivity(intent)
@@ -188,6 +209,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(intent)
                         finish()
                     }
+                    Bluetooth.MODEL_TV221U -> {
+                        startActivity(Intent(this, Vtm20fActivity::class.java))
+                        finish()
+                    }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()
                         adapter.setList(null)
@@ -197,46 +222,62 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             }
         //----------------------ap10/ap20---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 startActivity(Intent(this, Ap20Activity::class.java))
                 finish()
-            })
+            }
         //----------------------pulsebit ex---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 startActivity(Intent(this, PulsebitExActivity::class.java))
                 finish()
-            })
+            }
         //----------------------checkme le---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeSetTime)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 startActivity(Intent(this, CheckmeLeActivity::class.java))
                 finish()
-            })
+            }
         //----------------------checkme pod---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodSetTime)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 startActivity(Intent(this, CheckmePodActivity::class.java))
                 finish()
-            })
+            }
         //----------------------aoj20a---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aSetTime)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 startActivity(Intent(this, Aoj20aActivity::class.java))
                 finish()
-            })
+            }
         //----------------------sp20---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime)
-            .observe(this, {
+            .observe(this) {
                 dialog.dismiss()
                 startActivity(Intent(this, Sp20Activity::class.java))
                 finish()
-            })
+            }
+        //----------------------oxy---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo)
+            .observe(this) {
+                dialog.dismiss()
+                val intent = Intent(this, OxyActivity::class.java)
+                intent.putExtra("model", it)
+                startActivity(intent)
+                finish()
+            }
+        //----------------------bpm---------------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmSyncTime)
+            .observe(this) {
+                dialog.dismiss()
+                startActivity(Intent(this, BpmActivity::class.java))
+                finish()
+            }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

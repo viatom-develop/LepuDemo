@@ -30,13 +30,13 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
 
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
@@ -61,40 +61,40 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20DeviceInfo)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyParam)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtOxyParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-                data_log.text = data.toString()
-            })
+                tv_oxy.text = "${data.spo2}"
+                tv_pr.text = "${data.pr}"
+                tv_pi.text = "${data.pi}"
+
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtOxyWave
 
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathParam)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtBreathParam
 
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtBreathWave
 
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20BatLevel)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-
-            })
+                data_log.text = "battery level : $data (0:0-25%,1:25-50%,2:50-75%,3:75-100%)"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20GetConfigResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as GetConfigResult
                 data_log.text = when (data.type) {
                     Constant.Ap20ConfigType.BACK_LIGHT -> {
@@ -118,16 +118,16 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
                     }
                     else -> ""
                 }
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetConfigResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as SetConfigResult
                 data_log.text = if (data.success) {
                     "Set config success"
                 } else {
                     "Set config fail"
                 }
-            })
+            }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

@@ -73,7 +73,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
         }
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
@@ -83,13 +83,13 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
-        dataEcgSrc.observe(this, {
+        }
+        dataEcgSrc.observe(this) {
             if (this::ecgView.isInitialized) {
                 ecgView.setDataSrc(it)
                 ecgView.invalidate()
             }
-        })
+        }
     }
 
     private fun initEcgView() {
@@ -115,86 +115,85 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300DeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         // ----------------------bp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpStart)
-            .observe(this, {
+            .observe(this) {
                 data_log.text = "bp start"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpStop)
-            .observe(this, {
+            .observe(this) {
                 data_log.text = "bp stop"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtBpData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                tv_ps.text = "$data"
-            })
+                tv_ps.text = "real-time pressure : $data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as BpResult
-                tv_sys.text = data.sys.toString()
-                tv_dia.text = data.dia.toString()
-                tv_mean.text = data.map.toString()
-                tv_pr_bp.text = data.pr.toString()
-                data_log.text = data.toString()
-            })
+                tv_sys.text = "${data.sys}"
+                tv_dia.text = "${data.dia}"
+                tv_mean.text = "${data.map}"
+                tv_pr_bp.text = "${data.pr}"
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpErrorResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as BpResultError
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         // ----------------------oxy----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyParam)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtOxyParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-                data_log.text = data.toString()
-            })
+                tv_oxy.text = "${data.spo2}"
+                tv_pr.text = "${data.pr}"
+                tv_pi.text = "${data.pi}"
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtOxyWave
 
-            })
+            }
         // ----------------------temp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult)
-            .observe(this, {
+            .observe(this) {
                 // if receive twice same result, just get one of them
                 // normal temp：32 - 43
                 val data = it.data as Float
-                data_log.text = if (data < 32) {
+                data_log.text = if (data < 32 || data > 43) {
                     "abnormal temp $data ℃"
                 } else {
                     "normal temp $data ℃"
                 }
-            })
+            }
         // ----------------------glu----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GluResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as GluResult
                 data_log.text = if (data.unit == 0) {
                     "${data.data} mmol/L, result : ${data.resultMess}"
                 } else {
                     "${data.data} mg/dL, result : ${data.resultMess}"
                 }
-            })
+            }
         // ----------------------ecg----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStart)
-            .observe(this, {
+            .observe(this) {
                 data_log.text = "ecg start"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStop)
-            .observe(this, {
+            .observe(this) {
                 data_log.text = "ecg stop"
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtEcgWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtEcgWave
                 DataController.receive(data.ecgFloats)
                 // 0 is preparing, about 10 s, then 1,2,3... is measuring
@@ -203,13 +202,13 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 } else {
                     "measuring ${data.seqNo}"
                 }
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as EcgResult
                 hr.text = "${data.hr}"
                 data_log.text = "$data"
-            })
+            }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

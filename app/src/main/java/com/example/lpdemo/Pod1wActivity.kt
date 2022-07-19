@@ -30,13 +30,13 @@ class Pod1wActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
 
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pod1wGetInfo(model)
@@ -46,29 +46,28 @@ class Pod1wActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wDeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtParam)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtParam
                 tv_oxy.text = data.spo2.toString()
                 tv_pr.text = data.pr.toString()
                 tv_pi.text = data.pi.toString()
 
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtWave
 
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wBatLevel)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Int
-                data_log.text = data.toString()
-            })
+                data_log.text = "battery level : $data (0:0-25%,1:25-50%,2:50-75%,3:75-100%)"
+            }
 
     }
 

@@ -38,42 +38,41 @@ class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
         delete_data.setOnClickListener {
             BleServiceHelper.BleServiceHelper.aoj20aDeleteData(model)
         }
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeviceData)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempErrorMsg)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ErrorResult
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempRtData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as TempResult
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempList)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ArrayList<Record>
                 data_log.text = data.toString()
-            })
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeleteData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "DeleteData $data"
-            })
+            }
 
     }
 

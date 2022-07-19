@@ -29,7 +29,7 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        bleState.observe(this, {
+        bleState.observe(this) {
             if (it) {
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
@@ -37,7 +37,7 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
-        })
+        }
 
         start_bp.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc100StartBp(model)
@@ -53,44 +53,43 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100DeviceInfo)
-            .observe(this, {
-                // 设备信息
+            .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtBpData)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtBpData
-                tv_ps.text = data.ps.toString()
-                data_log.text = data.toString()
-            })
+                tv_ps.text = "${data.ps}"
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as BpResult
-                tv_sys.text = data.sys.toString()
-                tv_dia.text = data.dia.toString()
-                tv_mean.text = data.map.toString()
-                tv_pr_bp.text = data.pr.toString()
-                data_log.text = data.toString()
-            })
+                tv_sys.text = "${data.sys}"
+                tv_dia.text = "${data.dia}"
+                tv_mean.text = "${data.map}"
+                tv_pr_bp.text = "${data.pr}"
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpErrorResult)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as BpResultError
-                data_log.text = data.toString()
-            })
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyParam)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as RtOxyParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-                data_log.text = data.toString()
-            })
+                tv_oxy.text = "${data.spo2}"
+                tv_pr.text = "${data.pr}"
+                tv_pi.text = "${data.pi}"
+                data_log.text = "$data"
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyWave)
-            .observe(this, {
+            .observe(this) {
                 val data = it.data as ByteArray
 
-            })
+            }
 
     }
 
