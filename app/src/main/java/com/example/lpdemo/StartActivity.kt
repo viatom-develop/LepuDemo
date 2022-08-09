@@ -21,8 +21,8 @@ class StartActivity: Activity() {
         //https://cloud.viatomtech.com/80d/#/page2
         //https://cloud.viatomtech.com/80d/#/page3
         //https://cloud.viatomtech.com/80d/#/page4
-        val uriPath = "https://cloud.viatomtech.com/80d/#/page3"
-        val updatePath = R.raw.v1310sp_en
+        val uriPath = "https://cloud.viatomtech.com/80d/#/page5"
+        val updatePath = R.raw.v1310tr_en
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

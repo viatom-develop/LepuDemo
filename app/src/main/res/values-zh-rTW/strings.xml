@@ -19,17 +19,17 @@
 
  <!--   <string name="app_name">PC66B ES</string>-->
     <string name="app_name">PC66B CN</string>
-        <string name="start_update">Start upgrade</string>
-    <string name="use_str">How to use</string>
-    <string name="open_boot_str">Please press the [ⓛ] to start</string>
-    <string name="search">Searching...</string>
-    <string name="upgrade">update</string>
-    <string name="during_upgrade">Upgrading...</string>
-    <string name="update_successed">Upgrade completed</string>
-       <string name="update_successful">Failed upgrade</string>
-    <string name="version">version</string>
-    <string name="ok">ok</string>
-    <string name="upgrade_unsuccessful">Upgrade failed, please power off and restart</string>
+    <string name="start_update">開始升級</string>
+    <string name="use_str">如何使用</string>
+    <string name="open_boot_str">請按【開機鍵】開機</string>
+    <string name="search">正在搜索中</string>
+    <string name="upgrade">升級</string>
+    <string name="during_upgrade">升級中...</string>
+    <string name="update_successed">升級成功</string>
+    <string name="update_successful">升級失敗</string>
+    <string name="version">版本</string>
+    <string name="ok">確認</string>
+    <string name="upgrade_unsuccessful">升級失敗，請斷電重啟</string>
 
 
 
