@@ -2,21 +2,27 @@ package com.example.lpdemo
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.provider.Settings
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main_update.*
 
-class StartActivity: Activity() {
+class StartActivity : Activity() {
     companion object {
         //语言翻译，包名，也要修改
-       val version ="v1.3.1.0"
+        val version = "v1.3.1.0"
+
         //https://cloud.viatomtech.com/80d/#/page1
         //https://cloud.viatomtech.com/80d/#/page2
         //https://cloud.viatomtech.com/80d/#/page3
@@ -24,13 +30,49 @@ class StartActivity: Activity() {
         val uriPath = "https://cloud.viatomtech.com/80d/#/page5"
         val updatePath = R.raw.v1310tr_en
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_update)
 
         checkPermissions()
         initView()
+        checkServer()
     }
+
+    private fun checkServer() {
+        var gpsEnabled = false
+        var networkEnabled = false
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        try {
+            gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        } catch (ex: Exception) {
+        }
+        try {
+            networkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        } catch (ex: Exception) {
+        }
+        if (!gpsEnabled && !networkEnabled) {
+            val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
+            dialog.setMessage(
+                getString(
+                    R.string.turn_on_server
+                )
+            )
+            dialog.setPositiveButton(
+                getString(R.string.turn)
+            ) { _, _ ->
+                val myIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(myIntent)
+            }
+            dialog.setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                finish()
+            }
+            dialog.setCancelable(false)
+            dialog.show()
+        }
+    }
+
 
     private fun initView() {
         update_btn.setOnClickListener {

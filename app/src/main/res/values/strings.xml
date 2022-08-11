@@ -30,8 +30,9 @@
     <string name="version">version</string>
     <string name="ok">ok</string>
     <string name="upgrade_unsuccessful">Upgrade failed, please power off and restart</string>
-
-
+    <string name="turn_on_server">Please turn on location services</string>
+    <string name="turn">open</string>
+    <string name="cancel">cancel</string>
 
 
 </resources>
