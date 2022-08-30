@@ -21,14 +21,14 @@ import kotlinx.android.synthetic.main.activity_main_update.*
 class StartActivity : Activity() {
     companion object {
         //语言翻译，包名，也要修改
-        val version = "v1.3.1.0"
+        val version = "v1.3.1.1"
 
         //https://cloud.viatomtech.com/80d/#/page1
         //https://cloud.viatomtech.com/80d/#/page2
         //https://cloud.viatomtech.com/80d/#/page3
         //https://cloud.viatomtech.com/80d/#/page4
         val uriPath = "https://cloud.viatomtech.com/80d/#/page5"
-        val updatePath = R.raw.v1310tr_en
+        val updatePath = R.raw.v1311tr_en
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
