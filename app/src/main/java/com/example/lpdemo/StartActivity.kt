@@ -6,9 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.Window
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main_update.*
@@ -16,13 +13,13 @@ import kotlinx.android.synthetic.main.activity_main_update.*
 class StartActivity: Activity() {
     companion object {
         //语言翻译，包名，也要修改
-       val version ="v1.3.1.0"
+       val version ="v1.3.1.1"
         //https://cloud.viatomtech.com/80d/#/page1
         //https://cloud.viatomtech.com/80d/#/page2
         //https://cloud.viatomtech.com/80d/#/page3
         //https://cloud.viatomtech.com/80d/#/page4
         val uriPath = "https://cloud.viatomtech.com/80d/#/page1"
-        val updatePath = R.raw.v1310_ch
+        val updatePath = R.raw.v1311_ch
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
