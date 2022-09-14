@@ -9,66 +9,62 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.event.InterfaceEvent
-import com.lepu.blepro.ext.pod1w.*
+import com.lepu.blepro.ext.bioland.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pod1w.*
+import kotlinx.android.synthetic.main.activity_bioland_bgm.*
 
-class Pod1wActivity : AppCompatActivity(), BleChangeObserver {
+class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
 
-    private val TAG = "Pod1wActivity"
-    private var model = Bluetooth.MODEL_POD_1W
+    private val TAG = "BiolandBgmActivity"
+    private val model = Bluetooth.MODEL_BIOLAND_BGM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pod1w)
-        model = intent.getIntExtra("model", model)
+        setContentView(R.layout.activity_bioland_bgm)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
+        get_info.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.biolandBgmGetInfo(model)
+        }
+        get_data.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.biolandBgmGetGluData(model)
+        }
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
         }
-
-        get_info.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pod1wGetInfo(model)
-        }
-
     }
 
     private fun initEventBus() {
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wDeviceInfo)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmDeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtParam)
-            .observe(this) {
-                val data = it.data as RtParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wRtWave)
-            .observe(this) {
-                val data = it.data as RtWave
-
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.POD1w.EventPOD1wBatLevel)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmCountDown)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "battery level : $data (0:0-25%,1:25-50%,2:50-75%,3:75-100%)"
+                data_log.text = "CountDown：$data"
             }
-
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmNoGluData)
+            .observe(this) {
+                val data = it.data as Boolean
+                data_log.text = "EventBiolandBgmNoGluData $data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmGluData)
+            .observe(this) {
+                val data = it.data as GluData
+                data_log.text = "$data"
+            }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

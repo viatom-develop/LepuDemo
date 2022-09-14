@@ -87,7 +87,7 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyWave)
             .observe(this) {
-                val data = it.data as ByteArray
+                val data = it.data as RtOxyWave
 
             }
 

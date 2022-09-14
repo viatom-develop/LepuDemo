@@ -73,6 +73,9 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
         }
+        get_battery.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.pc80bGetBattery(model)
+        }
         bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)

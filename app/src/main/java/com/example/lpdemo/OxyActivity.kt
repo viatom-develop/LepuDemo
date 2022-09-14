@@ -48,14 +48,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         read_file.setOnClickListener {
             readFile()
         }
-        get_rt_wave.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyGetRtWave(model)
-        }
         get_rt_param.setOnClickListener {
             BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
         }
         factory_reset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.factoryReset(model)
+            BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
         }
     }
 
@@ -88,15 +85,6 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 fileNames.removeAt(0)
                 readFile()
             }
-
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtData)
-            .observe(this) {
-                val data = it.data as RtWave
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-                data_log.text = "$data"
-            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamData)
             .observe(this) {
                 val data = it.data as RtParam
@@ -104,6 +92,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 tv_pr.text = data.pr.toString()
                 tv_pi.text = data.pi.toString()
                 data_log.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset)
+            .observe(this) {
+                val data = it.data as Boolean
+                data_log.text = "EventOxyFactoryReset $data"
             }
     }
 

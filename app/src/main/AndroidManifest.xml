@@ -26,7 +26,6 @@
         <activity android:name=".Pc102Activity" android:screenOrientation="portrait" />
         <activity android:name=".Pc80bActivity" android:screenOrientation="portrait" />
         <activity android:name=".Pc60fwActivity" android:screenOrientation="portrait" />
-        <activity android:name=".Pod1wActivity" android:screenOrientation="portrait" />
         <activity android:name=".Ap20Activity" android:screenOrientation="portrait" />
         <activity android:name=".Pc68bActivity" android:screenOrientation="portrait" />
         <activity android:name=".PulsebitExActivity" android:screenOrientation="portrait" />
@@ -39,6 +38,9 @@
         <activity android:name=".Vtm20fActivity" android:screenOrientation="portrait" />
         <activity android:name=".OxyActivity" android:screenOrientation="portrait" />
         <activity android:name=".BpmActivity" android:screenOrientation="portrait" />
+        <activity android:name=".BiolandBgmActivity" android:screenOrientation="portrait" />
+        <activity android:name=".PoctorM3102Activity" android:screenOrientation="portrait" />
+        <activity android:name=".Lpm311Activity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

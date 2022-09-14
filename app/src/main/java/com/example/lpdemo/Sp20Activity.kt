@@ -41,6 +41,9 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.sp20GetInfo(model)
         }
+        get_battery.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.sp20GetBattery(model)
+        }
         get_config.setOnClickListener {
             BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.ALARM_SWITCH)
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)

@@ -3,7 +3,6 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.example.lpdemo.utils.DataController
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -93,7 +92,6 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as EcgFile
                 Log.d(TAG, "data: $data")
                 data_log.text = "$data"
-                DataController.receive(data.wFs)
                 fileNames.removeAt(0)
                 readFile()
             }

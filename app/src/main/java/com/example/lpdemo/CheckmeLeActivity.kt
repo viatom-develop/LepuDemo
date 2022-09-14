@@ -122,7 +122,7 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.pulsebitExReadFile(model, fileNames[0])
+        BleServiceHelper.BleServiceHelper.checkmeLeReadFile(model, fileNames[0])
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

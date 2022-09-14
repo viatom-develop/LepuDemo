@@ -172,12 +172,6 @@
             android:text="read file"
             android:layout_marginStart="20dp"/>
         <Button
-            android:id="@+id/get_rt_wave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="get real-time wave"
-            android:layout_margin="20dp"/>
-        <Button
             android:id="@+id/get_rt_param"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

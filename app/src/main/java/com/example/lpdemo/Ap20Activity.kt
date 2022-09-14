@@ -41,6 +41,9 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
         }
+        get_battery.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.ap20GetBattery(model)
+        }
         get_config.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH)
