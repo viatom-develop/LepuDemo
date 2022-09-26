@@ -43,6 +43,9 @@ class PoctorM3102Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as PoctorM3102Data
                 data_log.text = "$data"
+                // data.type：0：Glucose，1：Uric Acid，3：Ketone
+                // data.result：data.normal=true，Glucose and Ketone（result/10，unit：mmol/L），Uric Acid（unit：umol/L）
+                // data.result：data.normal=false，0（Lo），1（Hi）
             }
     }
 

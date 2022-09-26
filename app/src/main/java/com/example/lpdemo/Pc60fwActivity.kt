@@ -18,6 +18,15 @@ import kotlinx.android.synthetic.main.activity_pc60fw.*
 class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc60fwActivity"
+    // Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1,
+    // Bluetooth.MODEL_PC66B, Bluetooth.MODEL_PF_10, Bluetooth.MODEL_PF_20,
+    // Bluetooth.MODEL_OXYSMART, Bluetooth.MODEL_POD2B,
+    // Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_S5W,
+    // Bluetooth.MODEL_PF_10AW, Bluetooth.MODEL_PF_10AW1,
+    // Bluetooth.MODEL_PF_10BW, Bluetooth.MODEL_PF_10BW1,
+    // Bluetooth.MODEL_PF_20AW, Bluetooth.MODEL_PF_20B,
+    // Bluetooth.MODEL_S7W, Bluetooth.MODEL_S7BW,
+    // Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1
     private var model = Bluetooth.MODEL_PC60FW
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +65,9 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
                 tv_oxy.text = "${data.spo2}"
                 tv_pr.text = "${data.pr}"
                 tv_pi.text = "${data.pi}"
-
+                // data.spo2：0%-100%（0：invalid）
+                // data.pr：0-511bpm（0：invalid）
+                // data.pi：0%-25.5%（0：invalid）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtWave)
             .observe(this) {
@@ -65,9 +76,8 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel)
             .observe(this) {
-                // 0:0-25%,1:25-50%,2:50-75%,3:75-100%
                 val data = it.data as Int
-
+                // 0：0-25%，1：25-50%，2：50-75%，3：75-100%
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus)
             .observe(this) {

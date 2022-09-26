@@ -24,7 +24,8 @@ import kotlin.math.floor
 class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc80bActivity"
-    private val model = Bluetooth.MODEL_PC80B
+    // Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE
+    private var model = Bluetooth.MODEL_PC80B
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
@@ -61,6 +62,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pc80b)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -121,9 +123,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel)
             .observe(this) {
-                // 0:0-25%,1:25-50%,2:50-75%,3:75-100%
                 val data = it.data as Int
-
+                // 0：0-25%，1：25-50%，2：50-75%，3：75-100%
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousData)
             .observe(this) {
@@ -131,6 +132,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                 DataController.receive(data.ecgData.ecgFloats)
                 hr.text = "${data.hr}"
                 data_log.text = "$data"
+                // sampling rate：150HZ
+                // 1mV = (n - 2048) * (1 / 330))（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd)
             .observe(this) {
@@ -159,6 +162,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                     data.ecgData.let { data2 ->
                         DataController.receive(data2.ecgFloats)
                     }
+                    // sampling rate：150HZ
+                    // 1mV = (n - 2048) * (1 / 330)（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
                 } else {
                     data.ecgResult.let {
                         data_log.text = "result $it"
@@ -181,6 +186,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as EcgFile
                 data_log.text = "$data"
+                // sampling rate：150HZ
+                // 1mV = (n - 2048) * (1 / 330)（data.ecgFloats = (data.ecgInts - 2048) * (1 / 330)）
             }
 
     }

@@ -41,6 +41,7 @@
         <activity android:name=".BiolandBgmActivity" android:screenOrientation="portrait" />
         <activity android:name=".PoctorM3102Activity" android:screenOrientation="portrait" />
         <activity android:name=".Lpm311Activity" android:screenOrientation="portrait" />
+        <activity android:name=".LemActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

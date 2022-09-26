@@ -46,6 +46,7 @@ class Lpm311Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as Lpm311Data
                 data_log.text = "$data"
+                // data.unit：0（mmol/L），1（mg/dL）
             }
     }
 

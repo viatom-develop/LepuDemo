@@ -52,6 +52,7 @@ class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
+                // data.battery：1-10（1：10%，2：20%...8：80%，9：90%，10：100%）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempErrorMsg)
             .observe(this) {

@@ -74,7 +74,10 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
                 tv_oxy.text = "${data.spo2}"
                 tv_pr.text = "${data.pr}"
                 tv_pi.text = "${data.pi}"
-
+                // data.spo2：0%-100%（0：invalid）
+                // data.pr：0-511bpm（0：invalid）
+                // data.pi：0%-25.5%（0：invalid）
+                // data.battery：0-3（0：0%-25%，1：25%-50%，2：50%-75%，3：75%-100%）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyWave)
             .observe(this) {
@@ -84,7 +87,8 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathParam)
             .observe(this) {
                 val data = it.data as RtBreathParam
-
+                // data.rr：respiratory rate（6-60bpm, 0：invalid）
+                // data.sign：0(normal breathing), 1(no breathing)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathWave)
             .observe(this) {
@@ -121,6 +125,12 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
                     }
                     else -> ""
                 }
+                // data.type：
+                // 0：Constant.Ap20ConfigType.BACK_LIGHT
+                // 1：Constant.Ap20ConfigType.ALARM_SWITCH
+                // 2：Constant.Ap20ConfigType.LOW_OXY_THRESHOLD
+                // 3：Constant.Ap20ConfigType.LOW_HR_THRESHOLD
+                // 4：Constant.Ap20ConfigType.HIGH_HR_THRESHOLD
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetConfigResult)
             .observe(this) {
@@ -130,6 +140,12 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
                 } else {
                     "Set config fail"
                 }
+                // data.type：
+                // 0：Constant.Ap20ConfigType.BACK_LIGHT
+                // 1：Constant.Ap20ConfigType.ALARM_SWITCH
+                // 2：Constant.Ap20ConfigType.LOW_OXY_THRESHOLD
+                // 3：Constant.Ap20ConfigType.LOW_HR_THRESHOLD
+                // 4：Constant.Ap20ConfigType.HIGH_HR_THRESHOLD
             }
     }
 

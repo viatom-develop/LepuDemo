@@ -64,7 +64,11 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
                 tv_oxy.text = "${data.spo2}"
                 tv_pr.text = "${data.pr}"
                 tv_pi.text = "${data.pi}"
-
+                // data.spo2：0%-100%（0：invalid）
+                // data.pr：0-511bpm（0：invalid）
+                // data.pi：0%-25.5%（0：invalid）
+                // data.vol：0-3.2V
+                // data.batLevel：0-3 (0：0-25%，1：25-50%，2：50-75%，3：75-100%)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtWave)
             .observe(this) {

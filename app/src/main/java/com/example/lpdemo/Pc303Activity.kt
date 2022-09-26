@@ -24,7 +24,8 @@ import kotlin.math.floor
 class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc303Activity"
-    private val model = Bluetooth.MODEL_PC300
+    // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE
+    private var model = Bluetooth.MODEL_PC300
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
@@ -61,6 +62,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pc303)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -118,6 +120,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
+                // data.batLevel：0-3（0：0-25%，1：25-50%，2：50-75%，3：75-100%）
             }
         // ----------------------bp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpStart)
@@ -155,6 +158,9 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 tv_pr.text = "${data.pr}"
                 tv_pi.text = "${data.pi}"
                 data_log.text = "$data"
+                // data.spo2：0%-100%（0：invalid）
+                // data.pr：0-511bpm（0：invalid）
+                // data.pi：0%-25.5%（0：invalid）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyWave)
             .observe(this) {
@@ -202,6 +208,9 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 } else {
                     "measuring ${data.seqNo}"
                 }
+                // sampling rate：150HZ
+                // data.digit：0，1mV = n * (1 / 28.5)（data.ecgFloats = data.ecgInts * (1 / 28.5)）
+                // data.digit：1，1mV = n * (1 / 394)（data.ecgFloats = data.ecgInts * (1 / 394)）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult)
             .observe(this) {

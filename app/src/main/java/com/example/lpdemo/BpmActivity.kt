@@ -55,13 +55,6 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmState)
             .observe(this) {
-                // 0 -> "Time setting state"
-                // 1 -> "Historical interface status"
-                // 2 -> "Measurement status "
-                // 3 -> "Measuring the pressurized state"
-                // 4 -> "The flickering indication of the heart rate in deflating mode"
-                // 5 -> "Measurement end state"
-                // 6 -> "Standby interface/time interface"
                 val data = it.data as Int
                 data_log.text = "device state : ${getRtState(data)}"
             }
@@ -78,17 +71,11 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
                 tv_dia.text = "${data.dia}"
                 tv_pr_bp.text = "${data.pr}"
                 data_log.text = "$data"
+                // data.irregularHrFlag：Whether the heart rate is irregular
+                // data.storeId：Record number
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmMeasureErrorResult)
             .observe(this) {
-                // 1 -> "Sensor vibration anomaly"
-                // 2 -> "Not enough heart rate to be detected or blood pressure value to be calculated"
-                // 3 -> "Measurement results are abnormal"
-                // 4 -> "Cuff is too loose or air leakage(Pressure value less than 30mmHg in 10 seconds)"
-                // 5 -> "The tube is blocked"
-                // 6 -> "Large pressure fluctuations during measurement"
-                // 7 -> "Pressure exceeds upper limit"
-                // 8 -> "Calibration data is abnormal or uncalibrated"
                 val data = it.data as Int
                 data_log.text = "error result : ${getErrorResult(data)}"
             }

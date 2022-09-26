@@ -56,12 +56,15 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
+                // data.batLevel：0-3（0：0-25%，1：25-50%，2：50-75%，3：75-100%）
+                // data.batStatus：0（No charge），1（Charging），2（Charging complete）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtBpData)
             .observe(this) {
                 val data = it.data as RtBpData
                 tv_ps.text = "${data.ps}"
                 data_log.text = "$data"
+                // data.sign：heart rate signal，0（no hr），1（has hr）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100BpResult)
             .observe(this) {
@@ -84,6 +87,9 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
                 tv_pr.text = "${data.pr}"
                 tv_pi.text = "${data.pi}"
                 data_log.text = "$data"
+                // data.spo2：0%-100%（0：invalid）
+                // data.pr：0-511bpm（0：invalid）
+                // data.pi：0%-25.5%（0：invalid）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyWave)
             .observe(this) {

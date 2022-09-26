@@ -24,6 +24,7 @@ import kotlin.math.floor
 class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "CheckmeMonitorActivity"
+    // Bluetooth.MODEL_VETCORDER, Bluetooth.MODEL_CHECK_ADV
     private var model = Bluetooth.MODEL_CHECK_ADV
 
     private lateinit var ecgBkg: EcgBkg
@@ -119,6 +120,9 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
                 DataController.receive(data.ecgFloatData)
                 hr.text = "${data.hr}"
                 data_log.text = "$data"
+                // sampling rate：25HZ
+                // 1mV = n * 0.0097683451362458（data.ecgFloatData = data.ecgShortData * 0.0097683451362458）
+                // data.battery：0-100
             }
     }
 

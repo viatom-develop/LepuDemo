@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_BIOLAND_BGM,  // BiolandBgmActivity
         Bluetooth.MODEL_POCTOR_M3102,  // PoctorM3102Activity
         Bluetooth.MODEL_LPM311,  // Lpm311Activity
+        Bluetooth.MODEL_LEM,  // LemActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -264,6 +265,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     Bluetooth.MODEL_LPM311 -> {
                         startActivity(Intent(this, Lpm311Activity::class.java))
+                        finish()
+                    }
+                    Bluetooth.MODEL_LEM -> {
+                        startActivity(Intent(this, LemActivity::class.java))
                         finish()
                     }
                     else -> {

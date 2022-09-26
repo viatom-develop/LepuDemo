@@ -84,6 +84,7 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as ArrayList<Record>
                 data_log.text = data.toString()
                 Toast.makeText(this, "${data.size}", Toast.LENGTH_SHORT).show()
+                // data.temp：unit ℃
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodRtDataError)
             .observe(this) {
@@ -98,6 +99,12 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
                 tv_pi.text = "${data.param.pi}"
                 tv_temp.text = "${data.param.temp}"
                 data_log.text = "$data"
+                // data.param.temp：unit ℃
+                // data.param.oxyState：0（Blood oxygen cable is not inserted），1（Insert the blood oxygen cable but not the finger），2（Finger inserted）
+                // data.param.tempState：0（Temperature cable is not inserted），1（Temperature cable is inserted）
+                // data.param.batteryState：0（no charge），1（charging），2（charging complete），3（low battery）
+                // data.param.battery：0-100
+                // data.param.runStatus：0（idle），1（preparing），2（measuring）
             }
 
     }

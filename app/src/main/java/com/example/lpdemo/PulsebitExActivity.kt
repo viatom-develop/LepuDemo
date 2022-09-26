@@ -18,13 +18,15 @@ import kotlinx.android.synthetic.main.activity_pulsebit_ex.*
 class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "PulsebitExActivity"
-    private val model = Bluetooth.MODEL_PULSEBITEX
+    // Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4, Bluetooth.MODEL_CHECKME
+    private var model = Bluetooth.MODEL_PULSEBITEX
 
     private var fileNames = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pulsebit_ex)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -94,6 +96,22 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
                 data_log.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
+                // sampling rate：500HZ
+                // 1mV = n * 0.0012820952991323（data.wFs = data.waveShortData * 0.0012820952991323）
+                // data.result：ExEcgDiagnosis
+                // data.result.isRegular：Whether Regular ECG Rhythm
+                // data.result.isPoorSignal：Whether Unable to analyze
+                // data.result.isFastHr：Whether Fast Heart Rate
+                // data.result.isSlowHr：Whether Slow Heart Rate
+                // data.result.isIrregular：Whether Irregular ECG Rhythm
+                // data.result.isPvcs：Whether Possible ventricular premature beats
+                // data.result.isHeartPause：Whether Possible heart pause
+                // data.result.isFibrillation：Whether Possible Atrial fibrillation
+                // data.result.isWideQrs：Whether Wide QRS duration
+                // data.result.isProlongedQtc：Whether QTc is prolonged
+                // data.result.isShortQtc：Whether QTc is short
+                // data.result.isStElevation：Whether ST segment elevation
+                // data.result.isStDepression：Whether ST segment depression
             }
 
     }

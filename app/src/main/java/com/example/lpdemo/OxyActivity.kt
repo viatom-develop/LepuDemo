@@ -19,6 +19,15 @@ import kotlinx.android.synthetic.main.activity_oxy.*
 class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "OxyActivity"
+    // Bluetooth.MODEL_O2RING, Bluetooth.MODEL_O2M,
+    // Bluetooth.MODEL_BABYO2, Bluetooth.MODEL_BABYO2N,
+    // Bluetooth.MODEL_CHECKO2, Bluetooth.MODEL_SLEEPO2,
+    // Bluetooth.MODEL_SNOREO2, Bluetooth.MODEL_WEARO2,
+    // Bluetooth.MODEL_SLEEPU, Bluetooth.MODEL_OXYLINK,
+    // Bluetooth.MODEL_KIDSO2, Bluetooth.MODEL_OXYFIT,
+    // Bluetooth.MODEL_OXYRING, Bluetooth.MODEL_BBSM_S1,
+    // Bluetooth.MODEL_BBSM_S2, Bluetooth.MODEL_OXYU,
+    // Bluetooth.MODEL_AI_S100
     private var model = Bluetooth.MODEL_O2RING
 
     private var fileNames = arrayListOf<String>()
@@ -67,6 +76,20 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                     fileNames.add(name)
                 }
                 Toast.makeText(this, "file list size ${fileNames.size}", Toast.LENGTH_SHORT).show()
+                // data.batteryState：0（no charge），1（charging），2（charging complete）
+                // data.batteryValue：0%-100%
+                // data.oxiThr：80-95
+                // data.motor：
+                // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX）
+                // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX）
+                // data.workMode：0（Sleep Mode），1（Minitor Mode）
+                // data.oxiSwitch：0（off），1（on）
+                // data.hrSwitch：0（off），1（on）
+                // data.hrLowThr：30-250
+                // data.hrHighThr：30-250
+                // data.curState：0（preparing），1（is ready），2（measuring）
+                // data.lightingMode：0-2（0：Standard Mode，1：Always Off Mode，2：Always On Mode）
+                // data.lightStr：0-2
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileError)
             .observe(this) {
@@ -84,6 +107,18 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 data_log.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
+                // data.operationMode：0（Sleep Mode），1（Minitor Mode）
+                // data.size：Total bytes of this data file package
+                // data.asleepTime：Reserved for total asleep time future
+                // data.avgSpo2：Average blood oxygen saturation
+                // data.minSpo2：Minimum blood oxygen saturation
+                // data.dropsTimes3Percent：drops below baseline - 3
+                // data.dropsTimes4Percent：drops below baseline - 4
+                // data.asleepTimePercent：T90 = (<90% duration time) / (total recording time) *100%
+                // data.durationTime90Percent：Duration time when SpO2 lower than 90%
+                // data.dropsTimes90Percent：Reserved for drop times when SpO2 lower than 90%
+                // data.o2Score：Range: 0~100（For range 0~10, should be (O2 Score) / 10）
+                // data.stepCounter：Total steps
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamData)
             .observe(this) {
@@ -92,6 +127,9 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 tv_pr.text = data.pr.toString()
                 tv_pi.text = data.pi.toString()
                 data_log.text = "$data"
+                // data.battery：0-100
+                // data.batteryState：0（no charge），1（charging），2（charging complete）
+                // data.state：0（lead off），1（lead on），other（error）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset)
             .observe(this) {

@@ -116,6 +116,18 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
                 data_log.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
+                // sampling rate：500HZ
+                // 1mV = n * 0.0012820952991323（data.wFs = data.waveShortData * 0.0012820952991323）
+                // data.result：LeEcgDiagnosis
+                // data.result.isRegular：Whether Regular ECG Rhythm
+                // data.result.isPoorSignal：Whether Unable to analyze
+                // data.result.isHighHr：Whether High Heart Rate
+                // data.result.isLowHr：Whether Low Heart Rate
+                // data.result.isIrregular：Whether Irregular ECG Rhythm
+                // data.result.isHighQrs：Whether High QRS Value
+                // data.result.isHighSt：Whether High ST Value
+                // data.result.isLowSt：Whether Low ST Value
+                // data.result.isPrematureBeat：Whether Suspected Premature Beat
             }
 
     }

@@ -19,11 +19,13 @@ import kotlinx.android.synthetic.main.activity_sp20.*
 class Sp20Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Sp20Activity"
-    private val model = Bluetooth.MODEL_SP20
+    // Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE
+    private var model = Bluetooth.MODEL_SP20
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sp20)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -76,6 +78,10 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
                 tv_pr.text = "${data.pr}"
                 tv_pi.text = "${data.pi}"
                 data_log.text = "$data"
+                // data.spo2：0%-100%（0：invalid）
+                // data.pr：0-511bpm（0：invalid）
+                // data.pi：0%-25.5%（0：invalid）
+                // data.battery：0-3（0：0%-25%，1：25%-50%，2：50%-75%，3：75%-100%）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20RtWave)
             .observe(this) {
@@ -84,8 +90,8 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20Battery)
             .observe(this) {
-                // 0-3 (0:0-25%, 1:25-50%, 2:50-75%, 3:75-100%)
                 val data = it.data as Int
+                // 0-3（0：0-25%，1：25-50%，2：50-75%，3：75-100%）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20GetConfig)
             .observe(this) {
@@ -116,6 +122,12 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
                     }
                     else -> ""
                 }
+                // data.type：
+                // 1：Constant.Sp20ConfigType.ALARM_SWITCH
+                // 2：Constant.Sp20ConfigType.LOW_OXY_THRESHOLD
+                // 3：Constant.Sp20ConfigType.LOW_HR_THRESHOLD
+                // 4：Constant.Sp20ConfigType.HIGH_HR_THRESHOLD
+                // 5：Constant.Sp20ConfigType.PULSE_BEEP
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetConfig)
             .observe(this) {
@@ -125,13 +137,19 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
                 } else {
                     "Set config fail"
                 }
+                // data.type：
+                // 1：Constant.Sp20ConfigType.ALARM_SWITCH
+                // 2：Constant.Sp20ConfigType.LOW_OXY_THRESHOLD
+                // 3：Constant.Sp20ConfigType.LOW_HR_THRESHOLD
+                // 4：Constant.Sp20ConfigType.HIGH_HR_THRESHOLD
+                // 5：Constant.Sp20ConfigType.PULSE_BEEP
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20TempData)
             .observe(this) {
                 val data = it.data as TempResult
-                // result : 0 normal, 1 low, 2 high
-                // unit : 0 : ℃, 1 : ℉
                 data_log.text = "$data"
+                // data.result：0（normal），1（low），2（high）
+                // data.unit：0（℃），1（℉）
             }
     }
 

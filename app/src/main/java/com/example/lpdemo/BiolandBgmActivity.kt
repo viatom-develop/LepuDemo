@@ -49,6 +49,8 @@ class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
+                // data.customerType：0-6（0：APPLE，1：AIAOLE，2：HAIER，3：NULL，4：XIAOMI，5：CHANNEL，6：KANWEI）
+                // data.battery：0-100
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmCountDown)
             .observe(this) {
@@ -64,6 +66,8 @@ class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as GluData
                 data_log.text = "$data"
+                // data.resultMg：unit mg/dL
+                // data.resultMmol：unit mmol/L
             }
     }
 
