@@ -1,13 +1,12 @@
 package com.example.lpdemo
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.example.lpdemo.utils.DataController
-import com.example.lpdemo.utils._bleState
-import com.example.lpdemo.utils.bleState
-import com.example.lpdemo.utils.dataEcgSrc
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -18,6 +17,8 @@ import com.lepu.blepro.ext.pc80b.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
+import com.lepu.blepro.utils.DateUtil
+import com.lepu.blepro.utils.getTimeString
 import kotlinx.android.synthetic.main.activity_pc80b.*
 import kotlin.math.floor
 
@@ -26,6 +27,9 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
     private val TAG = "Pc80bActivity"
     // Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE
     private var model = Bluetooth.MODEL_PC80B
+
+    private lateinit var ecgAdapter: EcgAdapter
+    var ecgList: ArrayList<EcgData> = arrayListOf()
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
@@ -69,6 +73,25 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
+        LinearLayoutManager(this).apply {
+            this.orientation = LinearLayoutManager.VERTICAL
+            ecg_file_rcv.layoutManager = this
+        }
+        ecgAdapter = EcgAdapter(R.layout.device_item, null).apply {
+            ecg_file_rcv.adapter = this
+        }
+        ecgAdapter.setOnItemClickListener { adapter, view, position ->
+            if (adapter.data.size > 0) {
+                (adapter.getItem(position) as EcgData).let {
+                    val intent = Intent(this@Pc80bActivity, WaveEcgActivity::class.java)
+                    intent.putExtra("model", model)
+                    ecgData.startTime = it.startTime
+                    ecgData.shortData = it.shortData
+                    startActivity(intent)
+                }
+            }
+        }
         ecg_bkg.post {
             initEcgView()
         }
@@ -180,11 +203,23 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "ReadingFileProgress $data%"
+                data_log.text = "ReadingFileProgress $data %"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete)
             .observe(this) {
                 val data = it.data as EcgFile
+                val ecgData = EcgData()
+                ecgData.fileName = getTimeString(data.year, data.month, data.day, data.hour, data.minute, data.second)
+                ecgData.startTime = DateUtil.getSecondTimestamp(ecgData.fileName)
+                ecgData.duration = 30
+                val temp = ShortArray(data.ecgInts.size)
+                for ((index, d) in data.ecgInts.withIndex()) {
+                    temp[index] = d.toShort()
+                }
+                ecgData.shortData = temp
+                ecgList.add(ecgData)
+                ecgAdapter.setNewInstance(ecgList)
+                ecgAdapter.notifyDataSetChanged()
                 data_log.text = "$data"
                 // sampling rate：150HZ
                 // 1mV = (n - 2048) * (1 / 330)（data.ecgFloats = (data.ecgInts - 2048) * (1 / 330)）

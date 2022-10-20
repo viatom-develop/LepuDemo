@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.example.lpdemo.utils.DataController
-import com.example.lpdemo.utils._bleState
-import com.example.lpdemo.utils.bleState
-import com.example.lpdemo.utils.dataEcgSrc
+import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -69,6 +66,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         ecg_bkg.post {
             initEcgView()
         }

@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -42,6 +41,9 @@
         <activity android:name=".PoctorM3102Activity" android:screenOrientation="portrait" />
         <activity android:name=".Lpm311Activity" android:screenOrientation="portrait" />
         <activity android:name=".LemActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Er1Activity" android:screenOrientation="portrait" />
+        <activity android:name=".Er2Activity" android:screenOrientation="portrait" />
+        <activity android:name=".WaveEcgActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

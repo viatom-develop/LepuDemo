@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
+import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
@@ -29,6 +30,7 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         bleState.observe(this) {
             if (it) {
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)

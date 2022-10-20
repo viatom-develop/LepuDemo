@@ -11,3 +11,8 @@ val bleState: LiveData<Boolean> = _bleState
 val dataEcgSrc: MutableLiveData<FloatArray> by lazy {
     MutableLiveData<FloatArray>()
 }
+
+val ecgData = EcgData()
+
+var deviceName = ""
+var deviceAddress = ""

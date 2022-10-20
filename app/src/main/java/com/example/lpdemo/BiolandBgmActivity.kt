@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
+import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
@@ -29,6 +30,7 @@ class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.biolandBgmGetInfo(model)
         }
@@ -51,6 +53,7 @@ class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
                 data_log.text = "$data"
                 // data.customerType：0-6（0：APPLE，1：AIAOLE，2：HAIER，3：NULL，4：XIAOMI，5：CHANNEL，6：KANWEI）
                 // data.battery：0-100
+                // data.deviceType：1（sphygmomanometer），2（Blood glucose meter）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmCountDown)
             .observe(this) {
@@ -66,8 +69,8 @@ class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as GluData
                 data_log.text = "$data"
-                // data.resultMg：unit mg/dL
-                // data.resultMmol：unit mmol/L
+                // data.resultMg：unit mg/dL（18-Lo，707-Hi）
+                // data.resultMmol：unit mmol/L（1.0-Lo，39.3-Hi）
             }
     }
 

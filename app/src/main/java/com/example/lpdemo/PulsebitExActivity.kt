@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
+import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
@@ -33,6 +34,7 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pulsebitExGetInfo(model)
         }

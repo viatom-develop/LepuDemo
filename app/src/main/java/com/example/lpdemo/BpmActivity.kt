@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
+import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
@@ -29,6 +30,7 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bpmGetInfo(model)
         }
@@ -95,7 +97,7 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
         return when (state) {
             0 -> "Time setting state"
             1 -> "Historical interface status"
-            2 -> "Measurement status "
+            2 -> "Measurement status"
             3 -> "Measuring the pressurized state"
             4 -> "The flickering indication of the heart rate in deflating mode"
             5 -> "Measurement end state"

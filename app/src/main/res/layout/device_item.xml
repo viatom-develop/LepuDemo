@@ -13,9 +13,9 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="xxxx"
-
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="?android:attr/selectableItemBackgroundBorderless"
 

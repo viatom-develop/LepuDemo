@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
+import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
@@ -21,6 +22,7 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "CheckmePodActivity"
     private val model = Bluetooth.MODEL_CHECK_POD
+    private var isStartRtTask = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,18 +33,29 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         get_info.setOnClickListener {
+            if (isStartRtTask) {
+                isStartRtTask = false
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
             BleServiceHelper.BleServiceHelper.checkmePodGetInfo(model)
         }
         get_list.setOnClickListener {
+            if (isStartRtTask) {
+                isStartRtTask = false
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
             BleServiceHelper.BleServiceHelper.checkmePodGetFileList(model)
         }
         start_rt_task.setOnClickListener {
+            isStartRtTask = true
             if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
             }
         }
         stop_rt_task.setOnClickListener {
+            isStartRtTask = false
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
         bleState.observe(this) {

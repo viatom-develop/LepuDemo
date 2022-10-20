@@ -13,16 +13,29 @@
         android:layout_margin="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="pc102/pc80b/pc60fw/ap20/pod1w/pc68b/checkme/pc303/aoj20a/sp20..."/>
+        android:textColor="@color/black"
+        android:text="pc102/pc80b/pc60fw/ap20/pod1w/pc68b/checkme/pc303..."/>
 
     <Button
         android:id="@+id/scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/demo_model"
         android:text="scan"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ble_split"
+        android:hint="Filter"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintStart_toEndOf="@id/scan"
+        app:layout_constraintTop_toTopOf="@id/scan"
+        app:layout_constraintBottom_toBottomOf="@id/scan"
+        android:textSize="18sp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv"

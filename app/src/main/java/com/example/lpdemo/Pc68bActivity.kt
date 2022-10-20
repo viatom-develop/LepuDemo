@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
+import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
@@ -30,6 +31,7 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
+        ble_name.text = deviceName
         bleState.observe(this) {
             if (it) {
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
@@ -40,14 +42,6 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
 
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc68bGetInfo(model)
-        }
-        enable_rt_param.setOnClickListener {
-            // if you can not receive oxy param data, use this method
-            BleServiceHelper.BleServiceHelper.pc68bEnableRtData(model, Constant.Pc68bEnableType.OXY_PARAM, true)
-        }
-        enable_rt_wave.setOnClickListener {
-            // if you can not receive oxy waveform data, use this method
-            BleServiceHelper.BleServiceHelper.pc68bEnableRtData(model, Constant.Pc68bEnableType.OXY_WAVE, true)
         }
 
     }
