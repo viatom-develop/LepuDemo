@@ -59,6 +59,15 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         read_file.setOnClickListener {
             readFile()
         }
+        set_motor.setOnClickListener {
+            // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX，0 is off）
+            // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
+            BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetMotor", 20)
+        }
+        set_buzzer.setOnClickListener {
+            // checkO2Plus（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
+            BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetBuzzer", 20)
+        }
         get_rt_param.setOnClickListener {
             BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
         }
@@ -85,13 +94,18 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX）
                 // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX）
                 // data.workMode：0（Sleep Mode），1（Minitor Mode）
-                // data.oxiSwitch：0（off），1（on）
-                // data.hrSwitch：0（off），1（on）
+                // data.oxiSwitch：
+                // 0（off），1（on）-----just sound or vibration
+                // 0（sound off，vibration off），1（sound off，vibration on），2（sound on，vibration off），3（sound on，vibration on）-----sound and vibration
+                // data.hrSwitch：
+                // 0（off），1（on）-----just sound or vibration
+                // 0（sound off，vibration off），1（sound off，vibration on），2（sound on，vibration off），3（sound on，vibration on）-----sound and vibration
                 // data.hrLowThr：30-250
                 // data.hrHighThr：30-250
                 // data.curState：0（preparing），1（is ready），2（measuring）
                 // data.lightingMode：0-2（0：Standard Mode，1：Always Off Mode，2：Always On Mode）
                 // data.lightStr：0-2
+                // data.buzzer：checkO2Plus（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileError)
             .observe(this) {
@@ -137,6 +151,13 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "EventOxyFactoryReset $data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo)
+            .observe(this) {
+                val types = it.data as Array<String>
+                for (type in types) {
+                    Log.d(TAG, "$type success")
+                }
             }
     }
 

@@ -317,10 +317,14 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //----------------------oxy---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo)
             .observe(this) {
-                dialog.dismiss()
-                val intent = Intent(this, OxyActivity::class.java)
-                intent.putExtra("model", it.model)
-                startActivity(intent)
+                val types = it.data as Array<String>
+                if (types.isEmpty()) return@observe
+                if (types[0] == "SetTIME") {
+                    dialog.dismiss()
+                    val intent = Intent(this, OxyActivity::class.java)
+                    intent.putExtra("model", it.model)
+                    startActivity(intent)
+                }
             }
         //----------------------bpm---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmSyncTime)
