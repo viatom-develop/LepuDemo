@@ -1,4 +1,3 @@
-
 package com.example.lpdemo
 
 import android.Manifest
@@ -164,7 +163,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         if (BleServiceHelper.BleServiceHelper.checkService()) {
             // BleService already init
         } else {
-            BleServiceHelper.BleServiceHelper.initService(application, BleSO.getInstance(application))
+            BleServiceHelper.BleServiceHelper.initService(application)
         }
     }
 
