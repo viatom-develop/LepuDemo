@@ -26,6 +26,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc80bActivity"
     // Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE
+    // Bluetooth.MODEL_PC80B_BLE2
     private var model = Bluetooth.MODEL_PC80B
 
     private lateinit var ecgAdapter: EcgAdapter
@@ -37,6 +38,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
      * rt wave
      */
     private val waveHandler = Handler()
+    private val ecgWaveTask = EcgWaveTask()
 
     inner class EcgWaveTask : Runnable {
         override fun run() {
@@ -134,7 +136,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         ecgView = EcgView(this)
         ecg_view.addView(ecgView)
 
-        waveHandler.post(EcgWaveTask())
+        waveHandler.post(ecgWaveTask)
 
     }
 
@@ -236,6 +238,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
+        waveHandler.removeCallbacks(ecgWaveTask)
+        DataController.clear()
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

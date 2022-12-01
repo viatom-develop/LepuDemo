@@ -30,6 +30,7 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
      * rt wave
      */
     private val waveHandler = Handler()
+    private val ecgWaveTask = EcgWaveTask()
 
     inner class EcgWaveTask : Runnable {
         override fun run() {
@@ -104,7 +105,7 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
         ecgView = EcgView(this)
         ecg_view.addView(ecgView)
 
-        waveHandler.post(EcgWaveTask())
+        waveHandler.post(ecgWaveTask)
 
     }
 
@@ -133,6 +134,8 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
+        waveHandler.removeCallbacks(ecgWaveTask)
+        DataController.clear()
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

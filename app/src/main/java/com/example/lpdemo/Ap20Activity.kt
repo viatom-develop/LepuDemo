@@ -20,11 +20,13 @@ import kotlinx.android.synthetic.main.activity_ap20.*
 class Ap20Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Ap20Activity"
-    private val model = Bluetooth.MODEL_AP20
+    // MODEL_AP20, MODEL_AP20_WPS
+    private var model = Bluetooth.MODEL_AP20
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ap20)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()

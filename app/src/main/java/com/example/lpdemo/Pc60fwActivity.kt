@@ -27,7 +27,8 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_PF_10BW, Bluetooth.MODEL_PF_10BW1,
     // Bluetooth.MODEL_PF_20AW, Bluetooth.MODEL_PF_20B,
     // Bluetooth.MODEL_S7W, Bluetooth.MODEL_S7BW,
-    // Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1
+    // Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1,
+    // Bluetooth.MODEL_PC60NW_BLE, Bluetooth.MODEL_PC60NW_WPS
     private var model = Bluetooth.MODEL_PC60FW
 
     override fun onCreate(savedInstanceState: Bundle?) {

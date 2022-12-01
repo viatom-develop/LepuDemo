@@ -19,12 +19,11 @@ import kotlinx.android.synthetic.main.activity_vtm20f.*
 class Vtm20fActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Vtm20fActivity"
-    private var model = Bluetooth.MODEL_TV221U
+    private val model = Bluetooth.MODEL_TV221U
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vtm20f)
-        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()

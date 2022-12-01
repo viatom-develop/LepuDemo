@@ -42,6 +42,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
      * rt wave
      */
     private val waveHandler = Handler()
+    private val ecgWaveTask = EcgWaveTask()
 
     inner class EcgWaveTask : Runnable {
         override fun run() {
@@ -117,7 +118,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
         start_rt_task.setOnClickListener {
             isStartRtTask = true
             if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                waveHandler.post(EcgWaveTask())
+                waveHandler.post(ecgWaveTask)
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
             }
         }
@@ -172,7 +173,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
         ecgView = EcgView(this)
         ecg_view.addView(ecgView)
 
-        waveHandler.post(EcgWaveTask())
+        waveHandler.post(ecgWaveTask)
 
     }
 
@@ -249,7 +250,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
                     // diagnosis.isShortQtc：Whether QTc is short
                     // diagnosis.isStElevation：Whether ST segment elevation
                     // diagnosis.isStDepression：Whether ST segment depression
-                } else {
+                } else if (data.fileName.contains("R")) {
                     val file = Er2EcgFile(data.content)
                     val ecgShorts = Er1Decompress.unCompressAlgECG(file.waveData)
                     val ecgData = EcgData()
@@ -284,6 +285,8 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
+        waveHandler.removeCallbacks(ecgWaveTask)
+        DataController.clear()
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

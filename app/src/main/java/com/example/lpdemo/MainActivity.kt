@@ -25,6 +25,7 @@ import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.permissionx.guolindev.PermissionX
 import kotlinx.android.synthetic.main.activity_main.*
+import no.nordicsemi.android.ble.observer.ConnectionObserver
 
 class MainActivity : AppCompatActivity(), BleChangeObserver {
 
@@ -41,7 +42,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_PF_10BW, Bluetooth.MODEL_PF_10BW1,
         Bluetooth.MODEL_PF_20AW, Bluetooth.MODEL_PF_20B,
         Bluetooth.MODEL_S7W, Bluetooth.MODEL_S7BW,
-        Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1,  // Pc60fwActivity
+        Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1,
+        Bluetooth.MODEL_PC60NW_BLE, Bluetooth.MODEL_PC60NW_WPS,  // Pc60fwActivity
         Bluetooth.MODEL_O2RING, Bluetooth.MODEL_O2M,
         Bluetooth.MODEL_BABYO2, Bluetooth.MODEL_BABYO2N,
         Bluetooth.MODEL_CHECKO2, Bluetooth.MODEL_SLEEPO2,
@@ -50,17 +52,21 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_KIDSO2, Bluetooth.MODEL_OXYFIT,
         Bluetooth.MODEL_OXYRING, Bluetooth.MODEL_BBSM_S1,
         Bluetooth.MODEL_BBSM_S2, Bluetooth.MODEL_OXYU,
-        Bluetooth.MODEL_AI_S100,  // OxyActivity
-        Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,  // Pc80bActivity
+        Bluetooth.MODEL_AI_S100, Bluetooth.MODEL_O2M_WPS,
+        Bluetooth.MODEL_CMRING,  // OxyActivity
+        Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
+        Bluetooth.MODEL_PC80B_BLE2,  // Pc80bActivity
         Bluetooth.MODEL_PC100,  // Pc102Activity
-        Bluetooth.MODEL_AP20,  // Ap20Activity
+        Bluetooth.MODEL_AP20, Bluetooth.MODEL_AP20_WPS,  // Ap20Activity
         Bluetooth.MODEL_PC_68B,  // Pc68bActivity
         Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4, Bluetooth.MODEL_CHECKME,  // PulsebitExActivity
         Bluetooth.MODEL_CHECKME_LE,  // CheckmeLeActivity
         Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,  // Pc303Activity
         Bluetooth.MODEL_CHECK_POD,  // CheckmePodActivity
         Bluetooth.MODEL_AOJ20A,  // Aoj20aActivity
-        Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE,  // Sp20Activity
+        Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE,
+        Bluetooth.MODEL_SP20_WPS, Bluetooth.MODEL_SP20_NO_SN,
+        Bluetooth.MODEL_SP20_WPS_NO_SN,   // Sp20Activity
         Bluetooth.MODEL_VETCORDER, Bluetooth.MODEL_CHECK_ADV,  // CheckmeMonitorActivity
         Bluetooth.MODEL_TV221U,  // Vtm20fActivity
         Bluetooth.MODEL_BPM,  // BpmActivity
@@ -210,6 +216,21 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 splitDevices(ble_split.text.toString())
                 Log.d(TAG, "EventDeviceFound")
             }
+        LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceDisconnectReason)
+            .observe(this) {
+                // ConnectionObserver.REASON_NOT_SUPPORTED: SDK will not auto reconnect device, services error, try to reboot device
+                val reason = when (it) {
+                    ConnectionObserver.REASON_UNKNOWN -> "The reason of disconnection is unknown."
+                    ConnectionObserver.REASON_SUCCESS -> "The disconnection was initiated by the user."
+                    ConnectionObserver.REASON_TERMINATE_LOCAL_HOST -> "The local device initiated disconnection."
+                    ConnectionObserver.REASON_TERMINATE_PEER_USER -> "The remote device initiated graceful disconnection."
+                    ConnectionObserver.REASON_LINK_LOSS -> "This reason will only be reported when ConnectRequest.shouldAutoConnect() was called and connection to the device was lost. Android will try to connect automatically."
+                    ConnectionObserver.REASON_NOT_SUPPORTED -> "The device does not hav required services."
+                    ConnectionObserver.REASON_TIMEOUT -> "The connection timed out. The device might have reboot, is out of range, turned off or doesn't respond for another reason."
+                    else -> "disconnect"
+                }
+                Toast.makeText(this, reason, Toast.LENGTH_SHORT).show()
+            }
         //--------------------pc80b,pc102,pc60fw,pc68b,pod1w,pc300--------------------
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
             .observe(this) {
@@ -220,7 +241,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     Bluetooth.MODEL_PC100 -> {
                         startActivity(Intent(this, Pc102Activity::class.java))
                     }
-                    Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE -> {
+                    Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
+                    Bluetooth.MODEL_PC80B_BLE2 -> {
                         val intent = Intent(this, Pc80bActivity::class.java)
                         intent.putExtra("model", it)
                         startActivity(intent)
@@ -233,7 +255,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     Bluetooth.MODEL_PF_10BW, Bluetooth.MODEL_PF_10BW1,
                     Bluetooth.MODEL_PF_20AW, Bluetooth.MODEL_PF_20B,
                     Bluetooth.MODEL_S7W, Bluetooth.MODEL_S7BW,
-                    Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1 -> {
+                    Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1,
+                    Bluetooth.MODEL_PC60NW_BLE, Bluetooth.MODEL_PC60NW_WPS -> {
                         val intent = Intent(this, Pc60fwActivity::class.java)
                         intent.putExtra("model", it)
                         startActivity(intent)
@@ -273,11 +296,13 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                 }
             }
-        //----------------------ap10/ap20---------------------------
+        //----------------------ap10/ap20/ap20wps---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime)
             .observe(this) {
                 dialog.dismiss()
-                startActivity(Intent(this, Ap20Activity::class.java))
+                val intent = Intent(this, Ap20Activity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
             }
         //----------------------pulsebit ex/hhm4/checkme---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime)
@@ -305,7 +330,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 dialog.dismiss()
                 startActivity(Intent(this, Aoj20aActivity::class.java))
             }
-        //----------------------sp20---------------------------
+        //----------------------sp20/sp20wps---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime)
             .observe(this) {
                 dialog.dismiss()
