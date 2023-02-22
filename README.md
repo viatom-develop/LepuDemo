@@ -10,9 +10,16 @@ Version at least Android 7.0
 > lepu-blepro-0.0.2.aar : add POD-1W  
 > lepu-blepro-0.0.3.aar : add PC-68B, PC-303, PulsebitEX, CheckmeLE  
 > lepu-blepro-0.0.4.aar : add Checkme Pod, POD-2W, AOJ-20A  
-> lepu-blepro-0.0.5.aar : add SP-20, Vetcorder, BPM, Bioland-BGM, PoctorM3102, LPM311, LEM
+> lepu-blepro-0.0.5.aar : add SP-20, Vetcorder, BPM, Bioland-BGM, PoctorM3102, LPM311, LEM  
+> lepu-blepro-0.0.8.aar : add ER1, ER2, DuoEK, VBeat, O2, BP2, BP2W, LP-BP2W
 
 ## import SDK
+
+### dependencies
+ 
+Add the dependencies for the artifacts you need in the `build.gradle` file for your app or module :
+> implementation 'no.nordicsemi.android:ble:2.2.4'  
+> implementation(name: 'lepu-blepro-x.x.x', ext: 'aar')  
 
 ### permission
 
@@ -21,19 +28,6 @@ Add the permissions in the `AndroidManifest.xml` file :
 + \<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
 + \<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 + \<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-### dependencies
-
-Add the lepu-blepro-x.x.x.aar to libs directory.  
-Add the dependencies for the artifacts you need in the `build.gradle` file for your app or module :
-+ implementation 'no.nordicsemi.android:ble:2.2.4'
-+ implementation(name: 'lepu-blepro-x.x.x', ext: 'aar')
-
-## BleServiceObserver
-
-Used to monitor BleService lifecycle  
-`onServiceCreate()`   
-`onServiceDestroy()` 
 
 ## BleChangeObserver
 
@@ -44,13 +38,11 @@ Used to monitor BluetoothDevice connect status
 
 ## BleServiceHelper
 
-+ ### initService(application, bleServiceObserver)
++ ### initService(application)
 
 Init BleService in `application onCreate()` , `PS：Only need to initService once during app operation`  
 SDK will send this event after BleService init finish :  
 `LiveEventBus.get<Boolean>(EventMsgConst.Ble.EventServiceConnectedAndInterfaceInit).post(true)` 
-
-+ ### stopService(application)
 
 + ### startScan()
 
@@ -76,6 +68,7 @@ autoReconnect : Whether auto connect BluetoothDevice after disconnect
 
 Disconnect model BluetoothDevice
 
+
 ### AOJ-20A (Bluetooth.MODEL_AOJ20A)
 
 SDK will send this event when BluetoothDevice connected :   
@@ -90,7 +83,7 @@ SDK will send this event when BluetoothDevice connected :
 + #### 2.aoj20aGetFileList(model)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempList).post(InterfaceEvent(model, data))`  
-`data` : `ArrayList<Record>`  com.lepu.blepro.ext.aoj20a.Record  
+`data` : `ArrayList<Record>`, com.lepu.blepro.ext.aoj20a.Record  
 > temp : unit (℃)  
 
 + #### 3.aoj20aDeleteData(model)
@@ -108,7 +101,9 @@ Normal result :
 `data` : com.lepu.blepro.ext.aoj20a.TempResult  
 > temp : unit (℃)  
 
+
 ### AP-20 (Bluetooth.MODEL_AP20)
+### AP-20-WPS (Bluetooth.MODEL_AP20_WPS)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime).post(InterfaceEvent(model, true))` 
@@ -173,6 +168,7 @@ SDK will send this event when BluetoothDevice connected :
 > flowInt : 0-4095  
 > snoreInt : 0-4095
 
+
 ### Bioland-BGM (Bluetooth.MODEL_BIOLAND_BGM)
 
 SDK will send this event when BluetoothDevice connected :  
@@ -205,6 +201,197 @@ If the method biolandBgmGetInfo or biolandBgmGetGluData is called after the devi
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmCountDown).post(InterfaceEvent(model, data))`  
 (2) Measurement result :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BiolandBgm.EventBiolandBgmGluData).post(InterfaceEvent(model, data))`  
+
+
+### BP2 (Bluetooth.MODEL_BP2)
+### BP2A (Bluetooth.MODEL_BP2A)
+### BP2T (Bluetooth.MODEL_BP2T)
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2SyncTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.bp2GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2Info).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2.DeviceInfo  
+
++ #### 2.bp2GetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2FileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`  
+
++ #### 3.bp2ReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2ReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2ReadFileError).post(InterfaceEvent(model, filename))`  
+`data` : String  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2ReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2.Bp2File  
+> type: 1 (BpFile), 2 (EcgFile)  
+> BpFile :  
+> measureTime : unit (s)  
+> EcgFile :  
+> sampling rate : 125HZ  
+> 1mV = waveShortData * 0.003098  
+> measureTime : unit (s)  
+> recordingTime : unit (s)  
+> connectCable : Whether the cable is connected  
+> diagnosis : EcgDiagnosis  
+> - isRegular : Whether Regular ECG Rhythm  
+> - isPoorSignal : Whether Unable to analyze  
+> - isLeadOff : Whether Always lead off  
+> - isFastHr : Whether Fast Heart Rate  
+> - isSlowHr : Whether Slow Heart Rate  
+> - isIrregular : Whether Irregular ECG Rhythm  
+> - isPvcs : Whether Possible ventricular premature beats  
+> - isHeartPause : Whether Possible heart pause  
+> - isFibrillation : Whether Possible Atrial fibrillation  
+> - isWideQrs : Whether Wide QRS duration  
+> - isProlongedQtc : Whether QTc is prolonged  
+> - isShortQtc : Whether QTc is short  
+
++ #### 4.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 5.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 6.Real-time Data
+
+sampling rate : 250HZ  
+1mV = n * 0.003098  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2RtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2.RtData  
+> status : RtStatus  
+> - deviceStatus : 0 (STATUS_SLEEP), 1 (STATUS_MEMERY), 2 (STATUS_CHARGE), 3 (STATUS_READY), 4 (STATUS_BP_MEASURING), 5 (STATUS_BP_MEASURE_END), 6 (STATUS_ECG_MEASURING), 7 (STATUS_ECG_MEASURE_END), 20 (STATUS_VEN)  
+> - batteryStatus : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - percent : 0-100  
+
+> param : RtParam  
+> - paramDataType : 0 (paramData : RtBpIng), 1 (paramData : RtBpResult), 2 (paramData : RtEcgIng), 3 (paramData : RtEcgResult)  
+> - ecgFloats = ecgShorts * 0.003098  
+
++ #### 7.bp2GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2GetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2.Bp2Config  
+> soundOn : Heartbeat sound switch  
+
++ #### 8.bp2SetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2SetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 9.bp2FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2FactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
+
+### BP2W (Bluetooth.MODEL_BP2W)
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wSyncTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.bp2wGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2w.DeviceInfo  
+
++ #### 2.bp2wGetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`  
+
++ #### 3.bp2wReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wReadFileError).post(InterfaceEvent(model, filename))`  
+`data` : String  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2w.Bp2wFile  
+> type: 1 (BpFile), 2 (EcgFile)  
+> BpFile :  
+> measureTime : unit (s)  
+> measureMode : 0 (x1), 1(x3)  
+> EcgFile :  
+> sampling rate : 125HZ  
+> 1mV = waveShortData * 0.003098  
+> measureTime : unit (s)  
+> recordingTime : unit (s)  
+> connectCable : Whether the cable is connected  
+> diagnosis : EcgDiagnosis  
+> - isRegular : Whether Regular ECG Rhythm  
+> - isPoorSignal : Whether Unable to analyze  
+> - isLeadOff : Whether Always lead off  
+> - isFastHr : Whether Fast Heart Rate  
+> - isSlowHr : Whether Slow Heart Rate  
+> - isIrregular : Whether Irregular ECG Rhythm  
+> - isPvcs : Whether Possible ventricular premature beats  
+> - isHeartPause : Whether Possible heart pause  
+> - isFibrillation : Whether Possible Atrial fibrillation  
+> - isWideQrs : Whether Wide QRS duration  
+> - isProlongedQtc : Whether QTc is prolonged  
+> - isShortQtc : Whether QTc is short  
+
++ #### 4.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 5.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 6.Real-time Data
+
+sampling rate : 250HZ  
+1mV = n * 0.003098  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2w.RtData  
+> status : RtStatus  
+> - deviceStatus : 0 (STATUS_SLEEP), 1 (STATUS_MEMERY), 2 (STATUS_CHARGE), 3 (STATUS_READY), 4 (STATUS_BP_MEASURING), 5 (STATUS_BP_MEASURE_END), 6 (STATUS_ECG_MEASURING), 7 (STATUS_ECG_MEASURE_END), 15 (STATUS_BP_AVG_MEASURE), 16 (STATUS_BP_AVG_MEASURE_WAIT), 17 (STATUS_BP_AVG_MEASURE_END), 20 (STATUS_VEN)  
+> - batteryStatus : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - percent : 0-100  
+> - avgCnt : Valid in bp avg measure x3, measure number index(0, 1, 2)  
+> - avgWaitTick : Valid in bp avg measure x3, measure interval wait tick  
+
+> param : RtParam  
+> - paramDataType : 0 (paramData : RtBpIng), 1 (paramData : RtBpResult), 2 (paramData : RtEcgIng), 3 (paramData : RtEcgResult)  
+> - ecgFloats = ecgShorts * 0.003098  
+
++ #### 7.bp2wGetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wGetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp2w.Bp2wConfig  
+> soundOn : Heartbeat sound switch  
+> avgMeasureMode : 0 (bp measure x3 off), 1 (bp measure x3 on, interval 30s), 2 (bp measure x3 on, interval 60s), 3 (bp measure x3 on, interval 90s), 4 (bp measure x3 on, interval 120s)  
+
++ #### 8.bp2wSetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wSetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 9.bp2wFactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wFactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
 
 ### BPM-188 (Bluetooth.MODEL_BPM)
 
@@ -256,6 +443,7 @@ SDK will send this event when BluetoothDevice connected :
 > 7 : Pressure exceeds upper limit  
 > 8 : Calibration data is abnormal or uncalibrated  
 
+
 ### CheckmeLE (Bluetooth.MODEL_CHECKME_LE)
 
 SDK will send this event when BluetoothDevice connected :   
@@ -278,7 +466,7 @@ Get filelist error :
 Get filelist complete :  
 (1) Oximeter List :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeOxyList).post(InterfaceEvent(model, data))`  
-`data` : `ArrayList<OxyRecord>`  com.lepu.blepro.ext.checkmele.OxyRecord  
+`data` : `ArrayList<OxyRecord>`, com.lepu.blepro.ext.checkmele.OxyRecord  
 > timestamp : unit (s)  
 > spo2 : 0%-100% (0 invalid)  
 > pr : 0-255 (0 invalid)  
@@ -287,11 +475,11 @@ Get filelist complete :
 
 (2) ECG Recorder List :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeEcgList).post(InterfaceEvent(model, data))`  
-`data` : `ArrayList<EcgRecord>`  com.lepu.blepro.ext.checkmele.EcgRecord  
+`data` : `ArrayList<EcgRecord>`, com.lepu.blepro.ext.checkmele.EcgRecord  
 
 (3) Daily Check List :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeDlcList).post(InterfaceEvent(model, data))`  
-`data` : `ArrayList<DlcRecord>`  com.lepu.blepro.ext.checkmele.DlcRecord  
+`data` : `ArrayList<DlcRecord>`, com.lepu.blepro.ext.checkmele.DlcRecord  
 
 + #### 3.checkmeLeReadFile(model, fileName)
 
@@ -320,6 +508,7 @@ Read file complete :
 > - isLowSt : Whether Low ST Value  
 > - isPrematureBeat : Whether Suspected Premature Beat  
 
+
 ### Vetcorder (Bluetooth.MODEL_VETCORDER)
 ### CheckADV (Bluetooth.MODEL_CHECK_ADV)
 
@@ -335,6 +524,7 @@ sampling rate : 25HZ
 `data` : com.lepu.blepro.ext.checkmemonitor.RtData
 > ecgFloatData = ecgShortData * 0.0097683451362458  
 > battery : 0-100  
+
 
 ### Checkme Pod (Bluetooth.MODEL_CHECK_POD)
 
@@ -357,7 +547,7 @@ Get filelist error :
 
 Get filelist complete :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodFileList).post(InterfaceEvent(model, data))`  
-`data` : `ArrayList<Record>`  com.lepu.blepro.ext.checkmepod.Record  
+`data` : `ArrayList<Record>`, com.lepu.blepro.ext.checkmepod.Record  
 > timestamp : unit (s)  
 > spo2 : 0-255 (0 invalid value)  
 > pr : 0-255 (0 invalid value)  
@@ -386,6 +576,153 @@ Get filelist complete :
 > - batteryState : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
 > - battery : 0-100  
 > - runStatus : 0 (idle), 1 (prepare), 2 (measuring)  
+
+
+### ER1 (Bluetooth.MODEL_ER1)
+### VBeat (Bluetooth.MODEL_ER1_N)
+### HHM1 (Bluetooth.MODEL_HHM1)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1SetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.er1GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1Info).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er1.DeviceInfo
+
++ #### 2.er1GetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1FileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`  
+
++ #### 3.er1ReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadFileError).post(InterfaceEvent(model, true))`  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er1.Er1File  
+
++ #### 4.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 5.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 6.Real-time Data
+
+sampling rate : 125HZ  
+1mV = n * 0.002467  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1RtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er1.RtData  
+> param : RtParam  
+> - batteryState : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - battery : 0-100  
+> - recordTime : unit (s)  
+> - curStatus：0 (idle), 1 (preparing), 2 (measuring), 3 (saving file), 4 (saving succeed), 5 (less than 30s, file not saved), 6 (6 retests), 7 (lead off)  
+
+> wave : RtWave  
+> - ecgFloats = ecgShorts * 0.002467  
+
++ #### 7.er1GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1GetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er1.Er1Config  
+> vibration : vibration warning switch, true (on), false (off)  
+> threshold1 : vibrate every ten seconds above the threshold  
+> threshold2 : vibrate every two seconds above the threshold  
+
++ #### 8.er1SetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1SetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 9.er1FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ResetFactory).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
+
+### ER2 (Bluetooth.MODEL_ER2)
+### LP ER2 (Bluetooth.MODEL_LP_ER2)
+### DuoEK (Bluetooth.MODEL_DUOEK)
+### HHM2 (Bluetooth.MODEL_HHM2)
+### HHM3 (Bluetooth.MODEL_HHM3)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.er2GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2Info).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er2.DeviceInfo
+
++ #### 2.er2GetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`  
+
++ #### 3.er2ReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadFileError).post(InterfaceEvent(model, true))`  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er2.Er2File  
+
++ #### 4.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 5.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 6.Real-time Data
+
+sampling rate : 125HZ  
+1mV = n * 0.002467  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2RtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er2.RtData  
+> param : RtParam  
+> - batteryState : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - battery : 0-100  
+> - recordTime : unit (s)  
+> - curStatus：0 (idle), 1 (preparing), 2 (measuring), 3 (saving file), 4 (saving succeed), 5 (less than 30s, file not saved), 6 (6 retests), 7 (lead off)  
+
+> wave : RtWave  
+> - ecgFloats = ecgShorts * 0.002467  
+
++ #### 7.er2GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2GetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er2.Er2Config  
+> soundOn : sound reminder switch, true (on), false (off)  
+
++ #### 8.er2SetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 9.er2FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
 
 ### LEM1 (Bluetooth.MODEL_LEM)
 
@@ -435,6 +772,130 @@ SDK will send this event when BluetoothDevice connected :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LEM.EventLemSetMassageLevel).post(InterfaceEvent(model, data))`  
 `data` : int (0-15)
 
+
+### LP-BP2W (Bluetooth.MODEL_LP_BP2W)
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSyncUtcTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.lpBp2wGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.lpbp2w.DeviceInfo  
+
++ #### 2.lpBp2wGetFileList(model, filetype)
+
+filetype : Constant.LpBp2wListType.USER_TYPE  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wUserFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<UserInfo>`, com.lepu.blepro.ext.lpbp2w.UserInfo  
+> aid : account id  
+> uid : user id  
+> birthday : "year-month-day"  
+> gender : 0 (boy), 1 (girl)  
+
+filetype : Constant.LpBp2wListType.BP_TYPE  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wBpFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<BpRecord>`, com.lepu.blepro.ext.lpbp2w.BpRecord  
+> startTime : unit (s)  
+> measureMode : 0 (x1), 1 (x3)  
+
+filetype : Constant.LpBp2wListType.ECG_TYPE  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wEcgFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<EcgRecord>`, com.lepu.blepro.ext.lpbp2w.EcgRecord  
+> startIime : unit (s)  
+> recordingTime : unit (s)  
+> diagnosis : EcgDiagnosis  
+> - isRegular : Whether Regular ECG Rhythm  
+> - isPoorSignal : Whether Unable to analyze  
+> - isLeadOff : Whether Always lead off  
+> - isFastHr : Whether Fast Heart Rate  
+> - isSlowHr : Whether Slow Heart Rate  
+> - isIrregular : Whether Irregular ECG Rhythm  
+> - isPvcs : Whether Possible ventricular premature beats  
+> - isHeartPause : Whether Possible heart pause  
+> - isFibrillation : Whether Possible Atrial fibrillation  
+> - isWideQrs : Whether Wide QRS duration  
+> - isProlongedQtc : Whether QTc is prolonged  
+> - isShortQtc : Whether QTc is short  
+
++ #### 3.lpBp2wReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileError).post(InterfaceEvent(model, filename))`  
+`data` : String  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.lpbp2w.EcgFile  
+> sampling rate : 125HZ  
+> 1mV = waveShortData * 0.003098  
+> startTime : unit (s)  
+> duration : unit (s)  
+
++ #### 4.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 5.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 6.Real-time Data
+
+sampling rate : 250HZ  
+1mV = n * 0.003098  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.lpbp2w.RtData  
+> status : RtStatus  
+> - deviceStatus : 0 (STATUS_SLEEP), 1 (STATUS_MEMERY), 2 (STATUS_CHARGE), 3 (STATUS_READY), 4 (STATUS_BP_MEASURING), 5 (STATUS_BP_MEASURE_END), 6 (STATUS_ECG_MEASURING), 7 (STATUS_ECG_MEASURE_END), 15 (STATUS_BP_AVG_MEASURE), 16 (STATUS_BP_AVG_MEASURE_WAIT), 17 (STATUS_BP_AVG_MEASURE_END), 20 (STATUS_VEN)  
+> - batteryStatus : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - percent : 0-100  
+> - avgCnt : Valid in bp avg measure x3, measure number index(0, 1, 2)  
+> - avgWaitTick : Valid in bp avg measure x3, measure interval wait tick  
+
+> param : RtParam  
+> - paramDataType : 0 (paramData : RtBpIng), 1 (paramData : RtBpResult), 2 (paramData : RtEcgIng), 3 (paramData : RtEcgResult)  
+> - ecgFloats = ecgShorts * 0.003098  
+
++ #### 7.lpBp2wGetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wGetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.lpbp2w.LpBp2wConfig  
+> soundOn : Heartbeat sound switch  
+> avgMeasureMode : 0 (bp measure x3 off), 1 (bp measure x3 on, interval 30s), 2 (bp measure x3 on, interval 60s), 3 (bp measure x3 on, interval 90s), 4 (bp measure x3 on, interval 120s)  
+> volume : Voice announcement volume, 0(off), 1, 2, 3  
+
++ #### 8.lpBp2wSetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 9.lpBp2wFactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wFactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
++ #### 10.lpBp2WriteUserList(model, userlist)
+
+UserInfo.Icon = BitmapConvertor(context).createIcon("username")  
+
+Write file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WritingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Write file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WriteFileError).post(InterfaceEvent(model, filename))`  
+`data` : String  
+
+Write file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WriteFileComplete).post(InterfaceEvent(model, true))`  
+
+
 ### LPM311 (Bluetooth.MODEL_LPM311)
 
 SDK will send this event when BluetoothDevice connected :   
@@ -445,6 +906,97 @@ SDK will send this event when BluetoothDevice connected :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LPM311.EventLpm311Data).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.Lpm311Data
 > unit : 0(mmol/L), 1(mg/dL)
+
+
+### O2Ring (Bluetooth.MODEL_O2RING)
+### O2M (Bluetooth.MODEL_O2M)
+### BabyO2 (Bluetooth.MODEL_BABYO2)
+### BabyO2N (Bluetooth.MODEL_BABYO2N)
+### O2 (Bluetooth.MODEL_CHECKO2)
+### SleepO2 (Bluetooth.MODEL_SLEEPO2)
+### O2BAND (Bluetooth.MODEL_SNOREO2)
+### WearO2 (Bluetooth.MODEL_WEARO2)
+### SleepU (Bluetooth.MODEL_SLEEPU)
+### Oxylink (Bluetooth.MODEL_OXYLINK)
+### KidsO2 (Bluetooth.MODEL_KIDSO2)
+### Oxyfit (Bluetooth.MODEL_OXYFIT)
+### OxyRing (Bluetooth.MODEL_OXYRING)
+### BBSM S1 (Bluetooth.MODEL_BBSM_S1)
+### BBSM S2 (Bluetooth.MODEL_BBSM_S2)
+### OxyU (Bluetooth.MODEL_OXYU)
+### AI S100 (Bluetooth.MODEL_AI_S100)
+### O2M-WPS (Bluetooth.MODEL_O2M_WPS)
+### CMRing (Bluetooth.MODEL_CMRING)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : `Array<String>` ("SetTIME")  
+
++ #### 1.oxyGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.oxy.DeviceInfo  
+> batteryState : 0 (no charge), 1 (charging), 2 (charging complete)  
+> batteryValue : 0-100  
+> oxiThr : 80-95  
+> motor : KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX）, O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX）  
+> workMode : 0 (Sleep Mode), 1 (Minitor Mode)  
+> oxiSwitch :  
+> 0 (off), 1 (on)-----just sound or vibration  
+> 0 (sound off, vibration off), 1 (sound off, vibration on), 2 (sound on, vibration off), 3 (sound on, vibration on)-----sound and vibration  
+> hrSwitch :  
+> 0 (off), 1 (on)-----just sound or vibration  
+> 0 (sound off, vibration off), 1 (sound off, vibration on), 2 (sound on, vibration off), 3 (sound on, vibration on)-----sound and vibration  
+> hrLowThr : 30-250  
+> hrHighThr : 30-250  
+> curState : 0 (preparing), 1 (is ready), 2 (measuring)  
+> lightingMode : 0-2 (0 : Standard Mode, 1 : Always Off Mode, 2 : Always On Mode)  
+> lightStr : light level, 0-2  
+> buzzer : checkO2Plus (0-20 : MIN, 20-40 : LOW, 40-60 : MID, 60-80 : HIGH, 80-100 : MAX)  
+
++ #### 2.oxyReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileError).post(InterfaceEvent(model, true))`  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.oxy.OxyFile  
+> operationMode : 0 (Sleep Mode), 1 (Minitor Mode)  
+> size : Total bytes of this data file package  
+> asleepTime : Reserved for total asleep time future  
+> avgSpo2 : Average blood oxygen saturation  
+> minSpo2 : Minimum blood oxygen saturation  
+> dropsTimes3Percent : drops below baseline - 3  
+> dropsTimes4Percent : drops below baseline - 4 
+> asleepTimePercent : T90 = (<90% duration time) / (total recording time) *100%  
+> durationTime90Percent : Duration time when SpO2 lower than 90%  
+> dropsTimes90Percent : Reserved for drop times when SpO2 lower than 90%  
+> o2Score : Range: 0-100（For range 0-10, should be (O2 Score) / 10）  
+> stepCounter : Total steps  
+
++ #### 3.oxyGetRtParam(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.oxy.RtParam
+> battery : 0-100  
+> batteryState : 0 (no charge), 1 (charging), 2(charging complete)  
+> state : 0 (lead off), 1 (lead on), other (error)  
+
++ #### 4.oxyUpdateSetting(model, type, value)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : `Array<String>` ("SetMotor", "SetBuzzer")  
+
++ #### 5.oxyFactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
 
 ### PC-60FW (Bluetooth.MODEL_PC60FW)
 ### PC-66B (Bluetooth.MODEL_PC66B)
@@ -466,6 +1018,8 @@ SDK will send this event when BluetoothDevice connected :
 ### S6W1 (Bluetooth.MODEL_S6W1)
 ### S7W (Bluetooth.MODEL_S7W)
 ### S7BW (Bluetooth.MODEL_S7BW)
+### PC-60NW_BLE (Bluetooth.MODEL_PC60NW_BLE)
+### PC-60NW-WPS (Bluetooth.MODEL_PC60NW_WPS)
 
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
@@ -605,6 +1159,7 @@ SDK will send this event when BluetoothDevice connected :
 	</tr>
 </table>
 
+
 ### PC-68B (Bluetooth.MODEL_PC68B)
 
 SDK will send this event when BluetoothDevice connected :   
@@ -639,8 +1194,10 @@ if you can not receive real-time data, use this method to enable.
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc68b.RtWave
 
+
 ### PC80B (Bluetooth.MODEL_PC80B)
 ### PC80B-BLE (Bluetooth.MODEL_PC80B_BLE)
+### PC80B_BLE: (Bluetooth.MODEL_PC80B_BLE2)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
@@ -655,7 +1212,7 @@ SDK will send this event when BluetoothDevice connected :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel).post(InterfaceEvent(model, data))`  
 `data` : int (0-3, 0=0-25%, 1=25-50%, 2=50-75%, 3=75-100%)
 
-+ #### 3.Real-time ECG data (frequency 150HZ)
++ #### 3.Real-time ECG data
 
 sampling rate：150HZ  
 1mV = (n - 2048) * (1 / 330))  
@@ -672,13 +1229,15 @@ Fast mode (30 s) :
 > dataType : 1(ECG data), 2(ECG result)  
 > ecgData : ECG data  
 > - ecgFloats = (ecgInts - 2048) * (1 / 330)  
-> ecgResult : ECG result
+
+> ecgResult : ECG result  
 
 Continuous mode :  
 (1) In the preparation stage, you will receive EventPc80bFastData event :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc80b.RtFastData  
-> measureStage : 1(preparing), 5(stop, sdk stop sending EventPc80bFastData event, then start to send EventPc80bContinuousData event)
+> measureStage : 1(preparing), 5(stop, sdk stop sending EventPc80bFastData event, then start to send EventPc80bContinuousData event)  
+
 (2) In the formal measurement stage, you will receive EventPc80bContinuousData event :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc80b.RtContinuousData  
@@ -704,6 +1263,7 @@ read file complete ：
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc80b.EcgFile  
 > ecgFloats = (ecgInts - 2048) * (1 / 330)  
+
 
 ### PC-100 (Bluetooth.MODEL_PC100)
 
@@ -762,6 +1322,7 @@ Error result :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC100.EventPc100RtOxyWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc102.RtOxyWave  
+
 
 ### PC_300SNT (Bluetooth.MODEL_PC303)
 ### PC_300SNT-BLE (Bluetooth.MODEL_PC300_BLE)
@@ -842,6 +1403,7 @@ Error result :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult).post(InterfaceEvent(model, data))`  
 `data` : 30.00-43.00 ℃, normal range is 32.00-43.00 ℃
 
+
 ### PoctorM3102 (Bluetooth.MODEL_POCTOR_M3102)
 
 SDK will send this event when BluetoothDevice connected :   
@@ -911,8 +1473,12 @@ Read file complete :
 > - isStElevation : Whether ST segment elevation  
 > - isStDepression : Whether ST segment depression  
 
-### SP-20 (Bluetooth.MODEL_SP20)
+
+### SP-20:xxxxx (Bluetooth.MODEL_SP20)
 ### SP-20-BLE (Bluetooth.MODEL_SP20_BLE)
+### SP-20-WPS:xxxxx (Bluetooth.MODEL_SP20_WPS)
+### SP-20 (Bluetooth.MODEL_SP20_NO_SN)
+### SP-20-WPS (Bluetooth.MODEL_SP20_WPS_NO_SN)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime).post(InterfaceEvent(model, true))`  
@@ -940,9 +1506,6 @@ SDK will send this event when BluetoothDevice connected :
 `data` : com.lepu.blepro.ext.sp20.GetConfigResult
 > type : Constant.Sp20ConfigType  
 > data : value range  
-> Constant.Sp20ConfigType.BACK_LIGHT (0-5)  
-> Constant.Sp20ConfigType.ALARM_SWITCH (0 : off, 1 : on)  
-> PS : The alarm function is off / on, mainly including low blood oxygen alarm, high or low pulse rate alarm  
 > Constant.Sp20ConfigType.LOW_OXY_THRESHOLD (85-99)  
 > Constant.Sp20ConfigType.LOW_HR_THRESHOLD (30-99)  
 > Constant.Sp20ConfigType.HIGH_HR_THRESHOLD (100-250)
@@ -967,6 +1530,7 @@ SDK will send this event when BluetoothDevice connected :
 `data` : com.lepu.blepro.ext.sp20.TempResult
 > result : 0(normal), 1(low), 2(high)  
 > unit : 0(℃), 1(℉)
+
 
 ### VTM 20F (Bluetooth.MODEL_TV221U)
 

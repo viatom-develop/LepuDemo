@@ -6,12 +6,15 @@ import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import android.provider.Settings
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lpdemo.utils.*
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -82,6 +85,13 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_DUOEK,
         Bluetooth.MODEL_HHM2,
         Bluetooth.MODEL_HHM3,  // Er2Activity
+        Bluetooth.MODEL_BP2,
+        Bluetooth.MODEL_BP2A,
+        Bluetooth.MODEL_BP2T,  // Bp2Activity
+        Bluetooth.MODEL_BP2W,  // Bp2wActivity
+        Bluetooth.MODEL_LP_BP2W,  // LpBp2wActivity
+        Bluetooth.MODEL_ER3,  // Er3Activity
+        Bluetooth.MODEL_LEPOD,  // LepodActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -91,7 +101,6 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         needPermission()
-        needService()
         initService()
         initView()
         initEventBus()
@@ -123,30 +132,56 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun needPermission() {
-        PermissionX.init(this)
-            .permissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN
-            )
-            .onExplainRequestReason { scope, deniedList ->
-                scope.showRequestReasonDialog(
-                    deniedList, "location permission", "ok", "ignore"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PermissionX.init(this)
+                .permissions(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_ADVERTISE
                 )
-            }
-            .onForwardToSettings { scope, deniedList ->
-                scope.showForwardToSettingsDialog(
-                    deniedList, "location setting", "ok", "ignore"
-                )
-            }
-            .request { allGranted, grantedList, deniedList ->
-                Log.d(TAG, "permission : $allGranted, $grantedList, $deniedList")
+                .onExplainRequestReason { scope, deniedList ->
+                    scope.showRequestReasonDialog(
+                        deniedList, "location permission", "ok", "ignore"
+                    )
+                }
+                .onForwardToSettings { scope, deniedList ->
+                    scope.showForwardToSettingsDialog(
+                        deniedList, "location setting", "ok", "ignore"
+                    )
+                }
+                .request { allGranted, grantedList, deniedList ->
+                    Log.d(TAG, "permission : $allGranted, $grantedList, $deniedList")
 
-                //permission OK, check Bluetooth status
-                if (allGranted)
-                    checkBt()
-            }
+                    //permission OK, check Bluetooth status
+                    if (allGranted)
+                        checkBt()
+                }
+        } else {
+            PermissionX.init(this)
+                .permissions(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.BLUETOOTH,
+                    Manifest.permission.BLUETOOTH_ADMIN
+                )
+                .onExplainRequestReason { scope, deniedList ->
+                    scope.showRequestReasonDialog(
+                        deniedList, "location permission", "ok", "ignore"
+                    )
+                }
+                .onForwardToSettings { scope, deniedList ->
+                    scope.showForwardToSettingsDialog(
+                        deniedList, "location setting", "ok", "ignore"
+                    )
+                }
+                .request { allGranted, grantedList, deniedList ->
+                    Log.d(TAG, "permission : $allGranted, $grantedList, $deniedList")
+
+                    //permission OK, check Bluetooth status
+                    if (allGranted)
+                        checkBt()
+                }
+        }
     }
 
     private fun checkBt() {
@@ -157,10 +192,27 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         if (!adapter.isEnabled) {
-            if (adapter.enable()) {
-                Toast.makeText(this, "Bluetooth open successfully", Toast.LENGTH_SHORT).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                    if (adapter.enable()) {
+                        Toast.makeText(this, "Bluetooth open successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Bluetooth open failed", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Bluetooth open failed", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(this, "Bluetooth open failed", Toast.LENGTH_SHORT).show()
+                if (adapter.enable()) {
+                    needService()
+                    Toast.makeText(this, "Bluetooth open successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Bluetooth open failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                needService()
             }
         }
     }
@@ -371,6 +423,38 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 val intent = Intent(this, Er2Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
+            }
+        //------------------bp2/bp2a/bp2t----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2SyncTime)
+            .observe(this) {
+                dialog.dismiss()
+                val intent = Intent(this, Bp2Activity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
+            }
+        //------------------bp2w----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wSyncTime)
+            .observe(this) {
+                dialog.dismiss()
+                startActivity(Intent(this, Bp2wActivity::class.java))
+            }
+        //------------------lp-bp2w----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSyncUtcTime)
+            .observe(this) {
+                dialog.dismiss()
+                startActivity(Intent(this, LpBp2wActivity::class.java))
+            }
+        //------------------er3----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3SetTime)
+            .observe(this) {
+                dialog.dismiss()
+                startActivity(Intent(this, Er3Activity::class.java))
+            }
+        //------------------lepod----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodSetTime)
+            .observe(this) {
+                dialog.dismiss()
+                startActivity(Intent(this, LepodActivity::class.java))
             }
     }
 

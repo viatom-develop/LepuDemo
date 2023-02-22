@@ -50,7 +50,6 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
             }
 
             waveHandler.postDelayed(this, interval.toLong())
-//            LepuBleLog.d("DataRec: ${DataController.dataRec.size}, delayed $interval")
 
             val temp = DataController.draw(5)
             dataEcgSrc.value = DataController.feed(dataEcgSrc.value, temp)
@@ -133,7 +132,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtBpData)
             .observe(this) {
                 val data = it.data as Int
-                tv_ps.text = "real-time pressure : $data"
+                tv_ps.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpResult)
             .observe(this) {

@@ -11,18 +11,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
-
 import androidx.annotation.Nullable;
-
 import com.lepu.blepro.objs.Bluetooth;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
 
 public class WaveEcgView extends View {
     public static final short NULL_VALUE = Short.MAX_VALUE;
@@ -99,13 +95,6 @@ public class WaveEcgView extends View {
     public int ONE_PAGE_POINTS = (int)(SECONDS_PER_LINE * ONE_PAGE_LINES * 125);
     public int PREPARED_DRAW_POINTS = ONE_PAGE_POINTS + POINTS_PER_LINE;
     int model;
-    // About selection rectangle
-//    private float recWidth, recHeight;
-//    private float recX, recY, preRecX, preRecY;
-//    private boolean canSelect = true;
-
-    // Delegate interface
-//    private ECGViewDelegate delegate;
     public WaveEcgView(Context context) {
         this(context, null);
     }
@@ -129,7 +118,6 @@ public class WaveEcgView extends View {
         this.screenW = ScreenW;
 
         initPaint();
-        initGestureDetector(context);
         InitFixParams();
 
         getMinAndMax();
@@ -156,7 +144,7 @@ public class WaveEcgView extends View {
             standard1mV = (float) ((1.0035 * 1800) / (4096 * 178.74));
         } else if (model == Bluetooth.MODEL_BP2
                 || model == Bluetooth.MODEL_BP2W
-                || model == Bluetooth.MODEL_LE_BP2W) {
+                || model == Bluetooth.MODEL_LP_BP2W) {
             standard1mV = 0.003098f;
         } else if (model == Bluetooth.MODEL_PULSEBITEX
                 || model == Bluetooth.MODEL_HHM4
@@ -165,7 +153,8 @@ public class WaveEcgView extends View {
             standard1mV = 4033 / (32767 * 12 * 8f);
             HZ = 500;
         } else if (model == Bluetooth.MODEL_PC80B
-                || model == Bluetooth.MODEL_PC80B_BLE) {
+                || model == Bluetooth.MODEL_PC80B_BLE
+                || model == Bluetooth.MODEL_PC80B_BLE2) {
             standard1mV = 1 / 330f;
             HZ = 150;
         } else if (model == Bluetooth.MODEL_ER3
@@ -193,7 +182,6 @@ public class WaveEcgView extends View {
         this.enableClick = enableClick;
 
         initPaint();
-        initGestureDetector(context);
         InitFixParams();
 
         getMinAndMax();
@@ -213,7 +201,6 @@ public class WaveEcgView extends View {
         this.enableClick = enableClick;
 
         initPaint();
-        initGestureDetector(context);
         InitFixParams();
 
         getMinAndMax();
@@ -266,26 +253,6 @@ public class WaveEcgView extends View {
     }
 
     /**
-     * 初始化手势识别
-     *
-     * @param context
-     */
-    private void initGestureDetector(Context context) {
-        if (context == null) {
-            return;
-        }
-       /* detector = new GestureDetector(context, this);
-        setOnTouchListener(new OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View arg0, MotionEvent arg1) {
-                detector.onTouchEvent(arg1);
-                return false;
-            }
-        });*/
-    }
-
-    /**
      * Initialize parameters
      */
     public void InitFixParams() {
@@ -321,27 +288,6 @@ public class WaveEcgView extends View {
      * And select a ruler in the meantime
      */
     public void getMinAndMax() {
-//        maxY = -100;
-//        minY = 100;
-//        for (int i = 0; i < chartY.length; i++) {
-//            double value = chartY[i];
-//            if ((maxY) < value)
-//                maxY = value;
-//            if ((minY) > value)
-//                minY = value;
-//        }
-//
-//        maxY = Math.min(maxY, standardNmV[0] / 2);
-//        minY = Math.max(minY, -standardNmV[0] / 2);
-//
-//        for(int i = 0; i < standardNmV.length; i++){
-//            if((maxY - minY) <= standardNmV[i])
-//                rulerStandard = standardNmV[i];
-//            currentZoomPosition = i;
-//        }
-//        // Expand the scope of the maximum and minimum
-//        maxY = (maxY + minY) / 2 + rulerStandard;
-//        minY = (maxY + minY) / 2 - rulerStandard;
         rulerStandard = standardNmV[currentZoomPosition];
     }
 
@@ -414,7 +360,6 @@ public class WaveEcgView extends View {
             textPaint.setTextSize(50);
             linePaint.setTextSize(50);
             String timeStamp = new SimpleDateFormat("MM-dd HH:mm:ss", Locale.getDefault()).format(date);
-//                canvas.drawText(timeStamp, chartStartX+5, wholeLineDis * i  + yOffSet - 20, linePaint);
             canvas.drawText(timeStamp, 50, wholeLineDis * i + yOffSet - 20, textPaint);
         }
 
@@ -458,8 +403,6 @@ public class WaveEcgView extends View {
         } else {
             rulerStr = ruleNum + "mV";
         }
-//        String rulerStr =  1 / rulerStandard + "mV";
-
         canvas.drawText(rulerStr, chartStartX + 5, standardLineY - 20, linePaint);
     }
 
@@ -475,17 +418,8 @@ public class WaveEcgView extends View {
 
         //小于一页的数据取实际长度
         int length = Math.min(Math.min(PREPARED_DRAW_POINTS, validValueLength), validValueLength - startPoint);
-/*        short[] drawPoints = Arrays.copyOfRange(chartY, startPoint, startPoint + length);
-        drawPoints = HomeActivity.shortfilter(drawPoints);*/
         for (int i = 0, k = 0; i < length/*Y.length*/; i += sampleStep) {
             float tempX;
-            // Staring position are different from first row and other line
-           /* if(line == 0) {
-                tempX = chartStartX + rulerZeroWidth * 2 + rulerStandardWidth
-                        + disOfRulerChart + k * xDis;
-            } else {
-                tempX = chartStartX + k * xDis;
-            }*/
 
             tempX = chartStartX + k * xDis;
             int index = startPoint + i;
@@ -502,17 +436,7 @@ public class WaveEcgView extends View {
             }
 
             if (preTempX != NULL_VALUE && Y[index] != NULL_VALUE && preChartY != NULL_VALUE) {
-//                if(preTempY>)
-                /*
-                 * */
-                //rjz 修改，避免绘制得波形超出范围 start
-//                    int lineNumber = (int) ((i+yOffSet)/(1250));
-//                    float size = (float) (lineNumber* wholeLineDis + yOffSet);
-//                    if(preTempY>size&&preTempY<(lineNumber+1)*size&&tempY>size&&tempY<(lineNumber+1)*size){
                 canvas.drawLine(preTempX, preTempY, tempX, tempY, linePaint);
-//                    }
-//                    Log.v("drawPath======",""+i+"=====yVal==="+yOffSet);
-                //rjz 修改，避免绘制得波形超出范围 end
             }
             preTempX = tempX;
             preTempY = tempY;
@@ -521,10 +445,7 @@ public class WaveEcgView extends View {
 
             //If draw a line full, move to next line
             if (preTempX >= chartStartX + chartLineLength) {
-//                Logger.d(FilterEcgView.class, xDis  + " " + chartLineLength +" chartLineLength | next line : i " + i);
                 line += wholeLineDis;
-//                canvas.drawLine(chartStartX, lineDis + line, chartStartX
-//                        + chartLineLength, lineDis + line, axisPaint);
                 i--;
                 preTempX = NULL_VALUE;
                 preTempY = NULL_VALUE;
@@ -533,67 +454,6 @@ public class WaveEcgView extends View {
             }
         }
     }
-
-    /*@Override
-    public boolean onDown(MotionEvent e) {
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        float deltaX = Math.abs(e1.getX() - e2.getX());
-        float deltaY = Math.abs(e1.getY() - e2.getY());
-        if(deltaX > deltaY) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        float deltaX = Math.abs(e1.getX() - e2.getX());
-        float deltaY = Math.abs(e1.getY() - e2.getY());
-        if(deltaX < deltaY) {
-            return false;
-        }
-        if (e1.getX() - e2.getX() > 120) {
-            LogUtils.d("左划");
-            if(mOnPageScrolledListener != null) {
-                mOnPageScrolledListener.scrollLeft();
-            }
-            return true;
-        } else if (e1.getX() - e2.getX() < -120) {
-            LogUtils.d("右划");
-            if(mOnPageScrolledListener != null) {
-                mOnPageScrolledListener.scrollRight();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
-        if(enableClick) {
-            changeZoomPosition();
-        }
-        return true;
-    }*/
 
     public int changeZoomPosition() {
         if (currentZoomPosition == (standardNmV.length - 1)) {
@@ -634,7 +494,6 @@ public class WaveEcgView extends View {
         //小于一页的数据取实际长度
         int length = Math.min(Math.min(PREPARED_DRAW_POINTS, validValueLength), validValueLength - startPoint);
         short[] drawPoints = Arrays.copyOfRange(chartY, startPoint, startPoint + length);
-//        drawPoints = HomeActivity.shortfilter(drawPoints);//如果不滤波注释此行
         return drawPoints;
     }
 
@@ -668,7 +527,6 @@ public class WaveEcgView extends View {
             float TempY = event.getY();
             touchY = TempY - preTouchY;
             preTouchY = TempY;
-//            startPoint += touchY;
             if (startPoint == 0 && Math.abs(yOffSet) < touchY && touchY > 0) {
                 return true;
             }
@@ -686,9 +544,6 @@ public class WaveEcgView extends View {
                         yOffSet = -(wholeLineDis - Math.abs(yOffSet));
                     }
                 }
-               /* yOffSet += touchY;
-                invalidate();
-                return true;*/
             }
             yOffSet += touchY;
             float abs = Math.abs(yOffSet);
@@ -704,12 +559,7 @@ public class WaveEcgView extends View {
             if (startPoint < 0) {
                 startPoint = 0;
             }
-            /*if (currentMoveY > 0)
-                currentMoveY = 0;
-            if (-currentMoveY > chartLineLength - screenWidth + 100)
-                currentMoveY = -(chartLineLength - screenWidth + 100);*/
-//            seekBar.setProgress((int) -currentMoveY);
-//            Er1Event.post(Er1Event.REFRESH_ECG_PROGRESS);
+
             if(seekBar != null) {
                 int progress = (int) (getProgressPercent() * seekBar.getMax());
                 if(progress != seekBar.getProgress()) {

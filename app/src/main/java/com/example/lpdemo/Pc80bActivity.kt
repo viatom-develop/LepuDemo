@@ -58,7 +58,6 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             }
 
             waveHandler.postDelayed(this, interval.toLong())
-//            LepuBleLog.d("DataRec: ${DataController.dataRec.size}, delayed $interval")
 
             val temp = DataController.draw(5)
             dataEcgSrc.value = DataController.feed(dataEcgSrc.value, temp)

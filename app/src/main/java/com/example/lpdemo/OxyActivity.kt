@@ -1,6 +1,7 @@
 package com.example.lpdemo
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +35,20 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
     private var fileNames = arrayListOf<String>()
 
+    /**
+     * PS: O2 devices do not support processing multiple commands.
+     *     If you want to use other command and start rtTask, you must stop rtTask.
+     */
+    private var rtHandler = Handler()
+    private var rtTask = RtTask()
+
+    inner class RtTask: Runnable {
+        override fun run() {
+            rtHandler.postDelayed(rtTask, 1000)
+            BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_oxy)
@@ -54,25 +69,43 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         get_info.setOnClickListener {
+            rtHandler.removeCallbacks(rtTask)
             fileNames.clear()
             BleServiceHelper.BleServiceHelper.oxyGetInfo(model)
         }
         read_file.setOnClickListener {
+            rtHandler.removeCallbacks(rtTask)
             readFile()
         }
+        /**
+         * type: "SetOxiThr", value: 80~95
+         *       "SetOxiSwitch", value: (1) just sound or vibration: 0(0ff), 1(on)
+         *                              (2) sound and vibration: 0(sound off, vibration off), 1(sound off, vibration on), 2(sound on, vibration off), 3(sound on, vibration on)
+         *       "SetHRSwitch", value: (1) just sound or vibration: 0(0ff), 1(on)
+         *                             (2) sound and vibration: 0(sound off, vibration off), 1(sound off, vibration on), 2(sound on, vibration off), 3(sound on, vibration on)
+         *       "SetHRLowThr", value: 30~250
+         *       "SetHRHighThr", value: 30~250
+         *       "SetMotor", value: (1) KidsO2、Oxylink(0-5: MIN, 5-10: LOW, 10-17: MID, 17-22: HIGH, 22-35: MAX, 0 is off)
+         *                          (2) O2Ring(0-20: MIN, 20-40: LOW, 40-60: MID, 60-80: HIGH, 80-100: MAX, 0 is off)
+         *       "SetBuzzer", value: just for checkO2Plus(0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off)
+         */
         set_motor.setOnClickListener {
+            rtHandler.removeCallbacks(rtTask)
             // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX，0 is off）
             // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
             BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetMotor", 20)
         }
         set_buzzer.setOnClickListener {
+            rtHandler.removeCallbacks(rtTask)
             // checkO2Plus（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
             BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetBuzzer", 20)
         }
         get_rt_param.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
+            rtHandler.removeCallbacks(rtTask)
+            rtHandler.post(rtTask)
         }
         factory_reset.setOnClickListener {
+            rtHandler.removeCallbacks(rtTask)
             BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
         }
     }
@@ -176,6 +209,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
+        rtHandler.removeCallbacks(rtTask)
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

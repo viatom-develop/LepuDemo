@@ -63,7 +63,6 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
             }
 
             waveHandler.postDelayed(this, interval.toLong())
-//            LepuBleLog.d("DataRec: ${DataController.dataRec.size}, delayed $interval")
 
             val temp = DataController.draw(5)
             dataEcgSrc.value = DataController.feed(dataEcgSrc.value, temp)
@@ -124,6 +123,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
         }
         stop_rt_task.setOnClickListener {
             isStartRtTask = false
+            waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
         get_file_list.setOnClickListener {
@@ -136,6 +136,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
         read_file.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
+                waveHandler.removeCallbacks(ecgWaveTask)
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
             }
             readFile()
@@ -172,9 +173,6 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
         ecg_view.measure(0, 0)
         ecgView = EcgView(this)
         ecg_view.addView(ecgView)
-
-        waveHandler.post(ecgWaveTask)
-
     }
 
     private fun initEventBus() {
@@ -207,7 +205,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                 data_log.text = "${data.param}"
                 // sampling rate：125HZ
                 // 1mV = n * 0.002467（data.wave.ecgFloats = data.wave.ecgShorts * 0.002467）
-                // data.param.batteryState：0（no charge），1（charging），2（charging complete），3（Low battery）
+                // data.param.batteryState：0（no charge），1（charging），2（charging complete），3（low battery）
                 // data.param.battery：0-100
                 // data.param.recordTime：unit（s）
                 // data.param.curStatus：0（idle），1（preparing），2（measuring），3（saving file），4（saving succeed），

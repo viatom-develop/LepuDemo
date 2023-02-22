@@ -8,9 +8,7 @@ import android.graphics.Path;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
-
 import androidx.annotation.ColorRes;
-
 import com.example.lpdemo.R;
 import com.example.lpdemo.utils.DataController;
 
@@ -21,18 +19,12 @@ public class EcgBkg extends View {
     private Paint bkg;
     private Paint bkg_paint_1;
     private Paint bkg_paint_2;
-    private float mTextWidth;
-    private float mTextHeight;
-
-    private Canvas canvas;
 
     public int mWidth;
     public int mHeight;
     public float mTop;
     public float mBottom;
     public int mBase;
-
-    private int maxIndex;
 
     @ColorRes
     private int bgColor = R.color.white;
@@ -100,17 +92,11 @@ public class EcgBkg extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         iniParam();
-
-        this.canvas = canvas;
         drawBkg(canvas);
     }
 
     private void iniParam() {
-
-        maxIndex = DataController.maxIndex;
-
         mWidth = getWidth();
         mHeight = getHeight();
 

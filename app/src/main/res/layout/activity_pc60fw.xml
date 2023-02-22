@@ -158,7 +158,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="get info"
-            android:layout_margin="@dimen/dp_10"/>
+            android:layout_marginStart="@dimen/dp_10"/>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

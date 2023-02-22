@@ -51,20 +51,14 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.sp20GetBattery(model)
         }
         get_config.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.ALARM_SWITCH)
-//            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
+            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_HR_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD)
-//            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.PULSE_BEEP)
         }
         set_config.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.ALARM_SWITCH, 0/*off*/)
-//            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.ALARM_SWITCH, 1/*on*/)
-//            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
+            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
 //            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_HR_THRESHOLD, 99/*(30-99)*/)
 //            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD, 250/*(100-250)*/)
-//            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.PULSE_BEEP, 0/*off*/)
-//            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.PULSE_BEEP, 1/*on*/)
         }
 
     }
@@ -101,13 +95,6 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as GetConfigResult
                 data_log.text = when (data.type) {
-                    Constant.Sp20ConfigType.ALARM_SWITCH -> {
-                        if (data.data == 1) {
-                            "Alarm : on"
-                        } else {
-                            "Alarm : off"
-                        }
-                    }
                     Constant.Sp20ConfigType.LOW_OXY_THRESHOLD -> {
                         "Spo2 Lo (85-99) : ${data.data}"
                     }
@@ -117,21 +104,12 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
                     Constant.Sp20ConfigType.HIGH_HR_THRESHOLD -> {
                         "PR Hi (100-250) : ${data.data}"
                     }
-                    Constant.Sp20ConfigType.PULSE_BEEP -> {
-                        if (data.data == 1) {
-                            "Beep : on"
-                        } else {
-                            "Beep : off"
-                        }
-                    }
                     else -> ""
                 }
                 // data.type：
-                // 1：Constant.Sp20ConfigType.ALARM_SWITCH
                 // 2：Constant.Sp20ConfigType.LOW_OXY_THRESHOLD
                 // 3：Constant.Sp20ConfigType.LOW_HR_THRESHOLD
                 // 4：Constant.Sp20ConfigType.HIGH_HR_THRESHOLD
-                // 5：Constant.Sp20ConfigType.PULSE_BEEP
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetConfig)
             .observe(this) {
@@ -142,11 +120,9 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
                     "Set config fail"
                 }
                 // data.type：
-                // 1：Constant.Sp20ConfigType.ALARM_SWITCH
                 // 2：Constant.Sp20ConfigType.LOW_OXY_THRESHOLD
                 // 3：Constant.Sp20ConfigType.LOW_HR_THRESHOLD
                 // 4：Constant.Sp20ConfigType.HIGH_HR_THRESHOLD
-                // 5：Constant.Sp20ConfigType.PULSE_BEEP
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20TempData)
             .observe(this) {

@@ -7,9 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.View;
-
 import com.example.lpdemo.R;
 import com.example.lpdemo.utils.DataController;
 
@@ -27,8 +25,6 @@ public class EcgView extends View {
     private Paint redPaint;
     private Paint redPaint2;
     private Paint redPaint3;
-    private float mTextWidth;
-    private float mTextHeight;
 
     public int mWidth;
     public int mHeight;
@@ -38,11 +34,7 @@ public class EcgView extends View {
 
     private int maxIndex;
 
-    private int lastAmpKey = 0;
-
     private float[] dataSrc = null;
-
-    private GestureDetector detector;
 
     public EcgView(Context context) {
         super(context);

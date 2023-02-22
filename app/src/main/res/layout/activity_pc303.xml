@@ -260,7 +260,7 @@
                     <TextView
                         android:id="@+id/tv_sys"
                         android:text="\?"
-                        android:textSize="32sp"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:layout_marginStart="30dp"
@@ -272,7 +272,7 @@
                     <TextView
                         android:id="@+id/slash"
                         android:text="/"
-                        android:textSize="32sp"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:layout_marginStart="15dp"
@@ -284,7 +284,7 @@
                     <TextView
                         android:id="@+id/tv_dia"
                         android:text="\?"
-                        android:textSize="32sp"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:layout_marginStart="15dp"
@@ -382,7 +382,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="get info"
-                android:layout_margin="@dimen/dp_10"/>
+                android:layout_marginStart="@dimen/dp_10"/>
 
             <TextView
                 android:id="@+id/data_log"
