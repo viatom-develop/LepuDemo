@@ -1324,7 +1324,7 @@ Error result :
 `data` : com.lepu.blepro.ext.pc102.RtOxyWave  
 
 
-### PC_300SNT (Bluetooth.MODEL_PC303)
+### PC_300SNT (Bluetooth.MODEL_PC300)
 ### PC_300SNT-BLE (Bluetooth.MODEL_PC300_BLE)
 
 SDK will send this event when BluetoothDevice connected :   
@@ -1474,11 +1474,9 @@ Read file complete :
 > - isStDepression : Whether ST segment depression  
 
 
-### SP-20:xxxxx (Bluetooth.MODEL_SP20)
+### SP-20 (Bluetooth.MODEL_SP20)
 ### SP-20-BLE (Bluetooth.MODEL_SP20_BLE)
-### SP-20-WPS:xxxxx (Bluetooth.MODEL_SP20_WPS)
-### SP-20 (Bluetooth.MODEL_SP20_NO_SN)
-### SP-20-WPS (Bluetooth.MODEL_SP20_WPS_NO_SN)
+### SP-20-WPS (Bluetooth.MODEL_SP20_WPS)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime).post(InterfaceEvent(model, true))`  
