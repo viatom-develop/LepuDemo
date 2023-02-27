@@ -20,9 +20,7 @@ import kotlinx.android.synthetic.main.activity_sp20.*
 class Sp20Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Sp20Activity"
-    // Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE,
-    // Bluetooth.MODEL_SP20_WPS, Bluetooth.MODEL_SP20_NO_SN,
-    // Bluetooth.MODEL_SP20_WPS_NO_SN
+    // Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE, Bluetooth.MODEL_SP20_WPS
     private var model = Bluetooth.MODEL_SP20
 
     override fun onCreate(savedInstanceState: Bundle?) {

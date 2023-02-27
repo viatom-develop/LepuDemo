@@ -67,9 +67,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,  // Pc303Activity
         Bluetooth.MODEL_CHECK_POD,  // CheckmePodActivity
         Bluetooth.MODEL_AOJ20A,  // Aoj20aActivity
-        Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE,
-        Bluetooth.MODEL_SP20_WPS, Bluetooth.MODEL_SP20_NO_SN,
-        Bluetooth.MODEL_SP20_WPS_NO_SN,   // Sp20Activity
+        Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE, Bluetooth.MODEL_SP20_WPS,  // Sp20Activity
         Bluetooth.MODEL_VETCORDER, Bluetooth.MODEL_CHECK_ADV,  // CheckmeMonitorActivity
         Bluetooth.MODEL_TV221U,  // Vtm20fActivity
         Bluetooth.MODEL_BPM,  // BpmActivity
