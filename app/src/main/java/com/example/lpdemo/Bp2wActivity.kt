@@ -46,16 +46,16 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
         override fun run() {
             val interval: Int = when {
                 DataController.dataRec.size > 250 -> {
-                    30
+                    20
                 }
                 DataController.dataRec.size > 150 -> {
-                    35
+                    25
                 }
                 DataController.dataRec.size > 75 -> {
-                    40
+                    30
                 }
                 else -> {
-                    45
+                    35
                 }
             }
 
@@ -160,7 +160,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
     private fun initEcgView() {
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
+        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi

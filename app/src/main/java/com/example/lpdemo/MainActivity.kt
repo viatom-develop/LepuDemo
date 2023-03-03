@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import android.provider.Settings
+import android.util.SparseArray
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lpdemo.utils.*
@@ -98,10 +99,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        needPermission()
-        initService()
         initView()
         initEventBus()
+        needPermission()
+        initService()
     }
 
     private fun needService() {
@@ -218,8 +219,15 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     private fun initService() {
         if (BleServiceHelper.BleServiceHelper.checkService()) {
             // BleService already init
+            BleServiceHelper.BleServiceHelper.startScan(models)
         } else {
-            BleServiceHelper.BleServiceHelper.initService(application)
+            // Save the original file path. Er1, VBeat and HHM1 are currently supported
+            val rawFolders = SparseArray<String>()
+            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
+            rawFolders.set(Bluetooth.MODEL_ER1_N, "${getExternalFilesDir(null)?.absolutePath}/vbeat")
+            rawFolders.set(Bluetooth.MODEL_HHM1, "${getExternalFilesDir(null)?.absolutePath}/hhm1")
+
+            BleServiceHelper.BleServiceHelper.initRawFolder(rawFolders).initService(application)
         }
     }
 
@@ -246,6 +254,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 // connect
                 BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
 
+                deviceModel = it.model
                 deviceName = it.name
                 deviceAddress = it.macAddr
 
@@ -258,6 +267,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<Boolean>(EventMsgConst.Ble.EventServiceConnectedAndInterfaceInit)
             .observe(this) {
                 // BleService init success
+                BleServiceHelper.BleServiceHelper.startScan(models)
                 Log.d(TAG, "EventServiceConnectedAndInterfaceInit")
             }
         LiveEventBus.get<Bluetooth>(EventMsgConst.Discovery.EventDeviceFound)

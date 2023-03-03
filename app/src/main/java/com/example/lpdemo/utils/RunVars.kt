@@ -14,6 +14,7 @@ val dataEcgSrc: MutableLiveData<FloatArray> by lazy {
 
 val ecgData = EcgData()
 
+var deviceModel = 0
 var deviceName = ""
 var deviceAddress = ""
 

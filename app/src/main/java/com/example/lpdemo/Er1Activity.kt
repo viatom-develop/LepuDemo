@@ -12,6 +12,7 @@ import com.example.lpdemo.views.EcgView
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
+import com.lepu.blepro.event.EventMsgConst
 import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.er1.*
 import com.lepu.blepro.objs.Bluetooth
@@ -19,7 +20,10 @@ import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
 import com.lepu.blepro.utils.Er1Decompress
+import com.lepu.blepro.utils.HexString
 import kotlinx.android.synthetic.main.activity_er1.*
+import org.apache.commons.io.FileUtils
+import java.io.File
 import kotlin.collections.ArrayList
 import kotlin.math.floor
 
@@ -141,6 +145,9 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
             }
             readFile()
         }
+        cancel_read_file.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.er1CancelReadFile(model)
+        }
         bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
@@ -228,12 +235,21 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadFileComplete)
             .observe(this) {
+                val rawFile = getOffset(it.model, fileNames[0], "")
                 val data = it.data as Er1File
                 if (it.model == Bluetooth.MODEL_ER1_N) {
-                    val file = Er1HrFile(data.content)
+                    val file = if (rawFile.isEmpty()) {
+                        Er1HrFile(data.content)
+                    } else {
+                        Er1HrFile(rawFile)
+                    }
                     // file.recordingTime：unit（s）
                 } else {
-                    val file = Er1EcgFile(data.content)
+                    val file = if (rawFile.isEmpty()) {
+                        Er1EcgFile(data.content)
+                    } else {
+                        Er1EcgFile(rawFile)
+                    }
                     val ecgShorts = Er1Decompress.unCompressAlgECG(file.waveData)
                     val ecgData = EcgData()
                     val startTime = DateUtil.getSecondTimestamp(data.fileName.replace("R", ""))
@@ -251,11 +267,33 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                 fileNames.removeAt(0)
                 readFile()
             }
+        LiveEventBus.get<Int>(EventMsgConst.Download.EventIsCancel)
+            .observe(this) {
+                // model
+
+            }
     }
 
     private fun readFile() {
         if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.er1ReadFile(model, fileNames[0])
+        val offset = getOffset(model, fileNames[0], "")
+        BleServiceHelper.BleServiceHelper.er1ReadFile(model, fileNames[0], "", offset.size)
+    }
+
+    // sdk save the original file name : userId + fileName + .dat
+    private fun getOffset(model: Int, fileName: String, userId: String): ByteArray {
+        val trimStr = HexString.trimStr(fileName)
+        BleServiceHelper.BleServiceHelper.rawFolder?.get(model)?.let { s ->
+            val mFile = File(s, "$userId$trimStr.dat")
+            if (mFile.exists()) {
+                FileUtils.readFileToByteArray(mFile)?.let {
+                    return it
+                }
+            } else {
+                return ByteArray(0)
+            }
+        }
+        return ByteArray(0)
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
