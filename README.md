@@ -238,7 +238,7 @@ Read file complete :
 > measureTime : unit (s)  
 > EcgFile :  
 > sampling rate : 125HZ  
-> 1mV = waveShortData * 0.003098  
+> mV = waveShortData * 0.003098  
 > measureTime : unit (s)  
 > recordingTime : unit (s)  
 > connectCable : Whether the cable is connected  
@@ -267,7 +267,7 @@ Read file complete :
 + #### 6.Real-time Data
 
 sampling rate : 250HZ  
-1mV = n * 0.003098  
+mV = n * 0.003098  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2RtData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.bp2.RtData  
@@ -331,7 +331,7 @@ Read file complete :
 > measureMode : 0 (x1), 1(x3)  
 > EcgFile :  
 > sampling rate : 125HZ  
-> 1mV = waveShortData * 0.003098  
+> mV = waveShortData * 0.003098  
 > measureTime : unit (s)  
 > recordingTime : unit (s)  
 > connectCable : Whether the cable is connected  
@@ -360,7 +360,7 @@ Read file complete :
 + #### 6.Real-time Data
 
 sampling rate : 250HZ  
-1mV = n * 0.003098  
+mV = n * 0.003098  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wRtData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.bp2w.RtData  
@@ -484,7 +484,7 @@ Get filelist complete :
 + #### 3.checkmeLeReadFile(model, fileName)
 
 sampling rate : 500HZ  
-1mV = n * 0.0012820952991323    
+mV = n * 0.0012820952991323    
 
 Read file progress :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeReadingFileProgress).post(InterfaceEvent(model, data))`  
@@ -518,7 +518,7 @@ SDK will send this event when BluetoothDevice connected :
 + #### 1.Real-time data
 
 sampling rate : 25HZ  
-1mV = n * 0.0097683451362458  
+mV = n * 0.0097683451362458  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeMonitor.EventCheckmeMonitorRtData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.checkmemonitor.RtData
@@ -619,7 +619,7 @@ Read file complete :
 + #### 6.Real-time Data
 
 sampling rate : 125HZ  
-1mV = n * 0.002467  
+mV = n * 0.002467  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1RtData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.er1.RtData  
@@ -694,7 +694,7 @@ Read file complete :
 + #### 6.Real-time Data
 
 sampling rate : 125HZ  
-1mV = n * 0.002467  
+mV = n * 0.002467  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2RtData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.er2.RtData  
@@ -832,7 +832,7 @@ Read file complete :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileComplete).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.lpbp2w.EcgFile  
 > sampling rate : 125HZ  
-> 1mV = waveShortData * 0.003098  
+> mV = waveShortData * 0.003098  
 > startTime : unit (s)  
 > duration : unit (s)  
 
@@ -847,7 +847,7 @@ Read file complete :
 + #### 6.Real-time Data
 
 sampling rate : 250HZ  
-1mV = n * 0.003098  
+mV = n * 0.003098  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wRtData).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.lpbp2w.RtData  
@@ -1215,7 +1215,7 @@ SDK will send this event when BluetoothDevice connected :
 + #### 3.Real-time ECG data
 
 sampling rate：150HZ  
-1mV = (n - 2048) * (1 / 330))  
+mV = (n - 2048) * (1 / 330))  
 
 Fast mode (30 s) :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData).post(InterfaceEvent(model, data))`  
@@ -1341,8 +1341,8 @@ SDK will send this event when BluetoothDevice connected :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtEcgWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.RtEcgWave
 > seqNo : 0-255 (0 is preparing, about 10 s, then 1,2,3... is measuring)  
-> digit : 0, 1mV = n * (1 / 28.5) (ecgFloats = ecgInts * (1 / 28.5))  
-> digit : 1, 1mV = n * (1 / 394) (ecgFloats = ecgInts * (1 / 394))
+> digit : 0, mV = n * (1 / 28.5) (ecgFloats = ecgInts * (1 / 28.5))  
+> digit : 1, mV = n * (1 / 394) (ecgFloats = ecgInts * (1 / 394))
 
 + #### 3.Real-time Ecg result
 
@@ -1444,7 +1444,7 @@ Get filelist complete :
 + #### 3.pulsebitExReadFile(model, fileName)
 
 sampling rate : 500HZ  
-1mV = n * 0.0012820952991323
+mV = n * 0.0012820952991323
 
 Read file progress :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadingFileProgress).post(InterfaceEvent(model, data))`  
