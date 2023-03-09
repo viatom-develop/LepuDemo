@@ -248,7 +248,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                                 "duration: ${ecgIng.curDuration} s"
                         DataController.receive(data.param.ecgFloats)
                         // sampling rate：250HZ
-                        // 1mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
+                        // mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
                     }
                     3 -> {
                         val ecgResult = RtEcgResult(data.param.paramData)
@@ -310,7 +310,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                     ecgAdapter.setNewInstance(ecgList)
                     ecgAdapter.notifyDataSetChanged()
                     // sampling rate：125HZ
-                    // 1mV = file.waveShortData * 0.003098
+                    // mV = file.waveShortData * 0.003098
                     // file.measureTime：unit（s）
                     // file.recordingTime：unit（s）
                     // file.connectCable: Whether the cable is connected

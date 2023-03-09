@@ -141,8 +141,8 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             // Constant.LpBp2wListType.USER_TYPE
             // Constant.LpBp2wListType.BP_TYPE
             // Constant.LpBp2wListType.ECG_TYPE
-            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.BP_TYPE)
-//            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.ECG_TYPE)
+//            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.BP_TYPE)
+            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.ECG_TYPE)
 //            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.USER_TYPE)
         }
         get_crc.setOnClickListener {
@@ -309,7 +309,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                                     "duration: ${ecgIng.curDuration} s"
                         DataController.receive(data.param.ecgFloats)
                         // sampling rate：250HZ
-                        // 1mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
+                        // mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
                     }
                     3 -> {
                         val ecgResult = RtEcgResult(data.param.paramData)
@@ -380,7 +380,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 ecgAdapter.notifyDataSetChanged()
                 Log.d(TAG, "EcgFile : $file")
                 // sampling rate：125HZ
-                // 1mV = file.waveShortData * 0.003098
+                // mV = file.waveShortData * 0.003098
                 // file.startTime: unit(s)
                 // file.duration：unit（s）
                 fileNames.removeAt(0)

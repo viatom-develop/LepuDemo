@@ -411,7 +411,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
                         "V5导联脱落：${data.param.isLeadOffV5}\n" +
                         "V6导联脱落：${data.param.isLeadOffV6}"
                 // sampling rate：250HZ
-                // 1mV = n * 0.00244
+                // mV = n * 0.00244
             }
     }
 

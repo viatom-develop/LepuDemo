@@ -207,8 +207,8 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                     "measuring ${data.seqNo}"
                 }
                 // sampling rate：150HZ
-                // data.digit：0，1mV = n * (1 / 28.5)（data.ecgFloats = data.ecgInts * (1 / 28.5)）
-                // data.digit：1，1mV = n * (1 / 394)（data.ecgFloats = data.ecgInts * (1 / 394)）
+                // data.digit：0，mV = n * (1 / 28.5)（data.ecgFloats = data.ecgInts * (1 / 28.5)）
+                // data.digit：1，mV = n * (1 / 394)（data.ecgFloats = data.ecgInts * (1 / 394)）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult)
             .observe(this) {

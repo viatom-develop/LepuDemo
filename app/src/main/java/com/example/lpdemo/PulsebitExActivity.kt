@@ -99,7 +99,7 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
                 fileNames.removeAt(0)
                 readFile()
                 // sampling rate：500HZ
-                // 1mV = n * 0.0012820952991323（data.wFs = data.waveShortData * 0.0012820952991323）
+                // mV = n * 0.0012820952991323（data.wFs = data.waveShortData * 0.0012820952991323）
                 // data.result：ExEcgDiagnosis
                 // data.result.isRegular：Whether Regular ECG Rhythm
                 // data.result.isPoorSignal：Whether Unable to analyze

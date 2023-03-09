@@ -157,7 +157,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                 hr.text = "${data.hr}"
                 data_log.text = "$data"
                 // sampling rate：150HZ
-                // 1mV = (n - 2048) * (1 / 330))（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
+                // mV = (n - 2048) * (1 / 330))（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd)
             .observe(this) {
@@ -187,7 +187,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                         DataController.receive(data2.ecgFloats)
                     }
                     // sampling rate：150HZ
-                    // 1mV = (n - 2048) * (1 / 330)（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
+                    // mV = (n - 2048) * (1 / 330)（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
                 } else {
                     data.ecgResult.let {
                         data_log.text = "result $it"
@@ -223,7 +223,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                 ecgAdapter.notifyDataSetChanged()
                 data_log.text = "$data"
                 // sampling rate：150HZ
-                // 1mV = (n - 2048) * (1 / 330)（data.ecgFloats = (data.ecgInts - 2048) * (1 / 330)）
+                // mV = (n - 2048) * (1 / 330)（data.ecgFloats = (data.ecgInts - 2048) * (1 / 330)）
             }
 
     }

@@ -211,7 +211,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                 hr.text = "${data.param.hr}"
                 data_log.text = "${data.param}"
                 // sampling rate：125HZ
-                // 1mV = n * 0.002467（data.wave.ecgFloats = data.wave.ecgShorts * 0.002467）
+                // mV = n * 0.002467（data.wave.ecgFloats = data.wave.ecgShorts * 0.002467）
                 // data.param.batteryState：0（no charge），1（charging），2（charging complete），3（low battery）
                 // data.param.battery：0-100
                 // data.param.recordTime：unit（s）
@@ -261,7 +261,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                     ecgAdapter.setNewInstance(ecgList)
                     ecgAdapter.notifyDataSetChanged()
                     // sampling rate：125HZ
-                    // 1mV = n * 0.002467（ecgFloats = ecgShorts * 0.002467）
+                    // mV = n * 0.002467（ecgFloats = ecgShorts * 0.002467）
                     // file.recordingTime：unit（s）
                 }
                 fileNames.removeAt(0)
