@@ -23,7 +23,7 @@ public class DataController {
             fs = new float[5];
         }
 
-        if (src == null) {
+        if (src == null || src.length == 0) {
             src = new float[maxIndex];
         }
 

@@ -128,7 +128,7 @@ public class EcgView extends View {
 
         maxIndex = DataController.maxIndex;
 
-        if (dataSrc == null) {
+        if (dataSrc == null || dataSrc.length != maxIndex) {
             dataSrc = new float[maxIndex];
         }
 
