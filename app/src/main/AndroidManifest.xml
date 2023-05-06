@@ -51,7 +51,9 @@
         <activity android:name=".LpBp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".Er3Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".LepodActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".EcnActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".WaveEcgActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".DataActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
     </application>
 
 </manifest>

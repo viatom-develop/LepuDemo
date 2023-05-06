@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_LP_BP2W,  // LpBp2wActivity
         Bluetooth.MODEL_ER3,  // Er3Activity
         Bluetooth.MODEL_LEPOD,  // LepodActivity
+        Bluetooth.MODEL_ECN,  // EcnActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -348,6 +349,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     Bluetooth.MODEL_LEM -> {
                         startActivity(Intent(this, LemActivity::class.java))
+                    }
+                    Bluetooth.MODEL_ECN -> {
+                        startActivity(Intent(this, EcnActivity::class.java))
                     }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()
