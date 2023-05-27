@@ -92,6 +92,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_ER3,  // Er3Activity
         Bluetooth.MODEL_LEPOD,  // LepodActivity
         Bluetooth.MODEL_ECN,  // EcnActivity
+        Bluetooth.MODEL_R20, Bluetooth.MODEL_R21,
+        Bluetooth.MODEL_R10, Bluetooth.MODEL_R11,
+        Bluetooth.MODEL_LERES,  // VentilatorActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -352,6 +355,13 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     Bluetooth.MODEL_ECN -> {
                         startActivity(Intent(this, EcnActivity::class.java))
+                    }
+                    Bluetooth.MODEL_R20, Bluetooth.MODEL_R21,
+                    Bluetooth.MODEL_R10, Bluetooth.MODEL_R11,
+                    Bluetooth.MODEL_LERES -> {
+                        val intent = Intent(this, VentilatorActivity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
                     }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()

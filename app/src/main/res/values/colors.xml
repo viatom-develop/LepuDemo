@@ -10,6 +10,7 @@
 
     <color name="red_m">#ff7c7c</color>
     <color name="red_b">#ff0000</color>
+    <color name="colorRed">#F25555</color>
 
     <color name="color_ecg_grid_1mm">#dae9e9</color>
     <color name="color_ecg_grid_5mm">#99CCCC</color>

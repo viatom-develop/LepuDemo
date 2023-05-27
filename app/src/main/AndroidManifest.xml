@@ -54,6 +54,7 @@
         <activity android:name=".EcnActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".WaveEcgActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".DataActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".VentilatorActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
     </application>
 
 </manifest>
