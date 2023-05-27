@@ -1285,15 +1285,15 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEncrypt)
             .observe(this) {
                 // Constant.VentilatorResponseType
-                // 1:TYPE_NORMAL_RESPONSE success, others error
+                // TYPE_NORMAL_RESPONSE : 1, success, others error
                 val data = it.data as Int
                 when (data) {
                     Constant.VentilatorResponseType.TYPE_NORMAL_RESPONSE -> {
                         // 交换密钥成功
-                        data_log.text = "encrypt succcess"
+                        data_log.text = "exchange key succcess"
                     }
-                    Constant.VentilatorResponseType.TYPE_DECRYPT_FAILED -> {
-                        data_log.text = "encrypt error, disconnect"
+                    Constant.VentilatorResponseType.TYPE_NORMAL_ERROR -> {
+                        data_log.text = "exchange key error, disconnect"
                         BleServiceHelper.BleServiceHelper.disconnect(false)
                     }
                 }
@@ -1309,7 +1309,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                         data_log.text = "sync time succcess"
                     }
                     Constant.VentilatorResponseType.TYPE_DECRYPT_FAILED -> {
-                        data_log.text = "encrypt error, disconnect"
+                        data_log.text = "decrypt data error, disconnect"
                         BleServiceHelper.BleServiceHelper.disconnect(false)
                     }
                 }
@@ -1342,11 +1342,21 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 }
                 BleServiceHelper.BleServiceHelper.ventilatorGetRtState(model)
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetInfoError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         // BleServiceHelper.BleServiceHelper.ventilatorGetVersionInfo(model)
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVersionInfo)
             .observe(this) {
                 val data = it.data as VersionInfo
                 data_log.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVersionInfoError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetFileList)
             .observe(this) {
@@ -1360,6 +1370,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 }
                 data_log.text = "$fileNames"
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetFileListError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
@@ -1372,13 +1387,18 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 fileNames.removeAt(0)
                 readFile()
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorReadFileError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiListError)
             .observe(this) {
                 // Constant.VentilatorResponseType
-                // 1:TYPE_NORMAL_RESPONSE success
-                // 255:TYPE_NORMAL_ERROR wifi scanning
+                // TYPE_NORMAL_RESPONSE : 1, success
+                // TYPE_NORMAL_ERROR : 255, wifi scanning
                 val data = it.data as Int
-                data_log.text = "$data, ${Constant.VentilatorResponseType.TYPE_NORMAL_ERROR}"
+                data_log.text = "$data"
                 when (data) {
                     Constant.VentilatorResponseType.TYPE_NORMAL_ERROR -> {
                         // The device is currently scanning and cannot be obtained. Please call the query WiFi list command again
@@ -1402,6 +1422,23 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 wifiAdapter.setNewInstance(data)
                 wifiAdapter.notifyDataSetChanged()
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiConfigError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                // TYPE_NORMAL_RESPONSE : 1, success
+                // TYPE_NORMAL_ERROR : 255, no wifi config
+                val data = it.data as Int
+                data_log.text = "$data"
+                when (data) {
+                    Constant.VentilatorResponseType.TYPE_NORMAL_ERROR -> {
+                        // no wifi config
+                    }
+                    Constant.VentilatorResponseType.TYPE_DECRYPT_FAILED -> {
+                        data_log.text = "decrypt data error, disconnect"
+                        BleServiceHelper.BleServiceHelper.disconnect(false)
+                    }
+                }
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiConfig)
             .observe(this) {
                 val data = it.data as WifiConfig
@@ -1423,9 +1460,16 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     else -> "绑定消息"
                 }
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDeviceBoundError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDeviceUnBound)
             .observe(this) {
-                data_log.text = "解绑成功"
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+                data_log.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDoctorMode)
             .observe(this) {
@@ -1456,6 +1500,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     }
                 }
                 BleServiceHelper.BleServiceHelper.ventilatorGetRtState(it.model)
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDoctorModeError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtState)
             .observe(this) {
@@ -1510,6 +1559,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     measure_setting.visibility = View.VISIBLE
                 }
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtStateError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtParam)
             .observe(this) {
                 val data = it.data as RtParam
@@ -1531,6 +1585,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                         "spo2：${if (data.spo2 < 70 || data.spo2 > 100) "**" else data.spo2} %\n" +
                         "pr：${if (data.pr < 30 || data.pr > 250) "**" else data.pr} bpm\n" +
                         "hr：${if (data.hr < 30 || data.hr > 250) "**" else data.hr} bpm"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtParamError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorMaskTest)
             .observe(this) {
@@ -1555,12 +1614,22 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 }
                 }"
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorMaskTestError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEvent)
             .observe(this) {
                 // data.eventId: Constant.VentilatorEventId
                 // data.alarmLevel: Constant.VentilatorAlarmLevel
                 val data = it.data as Event
                 ventilator_event.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEventError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetSystemSetting)
             .observe(this) {
@@ -1576,6 +1645,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 tank.progress = systemSetting.replacements.tank
                 volume.progress = systemSetting.volumeSetting.volume.div(5)
                 spinnerSet = true
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetSystemSettingError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetSystemSetting)
             .observe(this) {
@@ -1617,6 +1691,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 mask_type.setSelection(measureSetting.mask.type)
                 mask_pressure.progress = measureSetting.mask.pressure.toInt()
                 spinnerSet = true
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetMeasureSettingError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetMeasureSetting)
             .observe(this) {
@@ -1705,6 +1784,11 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 e_trigger.setSelection(ventilationSetting.exhaleSensitive.sentive)
                 spinnerSet = true
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVentilationSettingError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetVentilationSetting)
             .observe(this) {
                 data_log.text = "通气设置成功"
@@ -1752,10 +1836,25 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 apnea.setSelection(warningSetting.warningApnea.apnea.div(10))
                 spinnerSet = true
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWarningSettingError)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetWarningSetting)
             .observe(this) {
                 data_log.text = "警告设置成功"
                 BleServiceHelper.BleServiceHelper.ventilatorGetWarningSetting(it.model)
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorVentilationSwitch)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorFactoryReset)
+            .observe(this) {
+                // Constant.VentilatorResponseType
+                val data = it.data as Int
             }
     }
 
