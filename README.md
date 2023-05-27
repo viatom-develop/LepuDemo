@@ -11,7 +11,8 @@ Version at least Android 7.0
 > lepu-blepro-0.0.3.aar : add PC-68B, PC-303, PulsebitEX, CheckmeLE  
 > lepu-blepro-0.0.4.aar : add Checkme Pod, POD-2W, AOJ-20A  
 > lepu-blepro-0.0.5.aar : add SP-20, Vetcorder, BPM, Bioland-BGM, PoctorM3102, LPM311, LEM  
-> lepu-blepro-0.0.8.aar : add ER1, ER2, DuoEK, VBeat, O2, BP2, BP2W, LP-BP2W
+> lepu-blepro-0.0.8.aar : add ER1, ER2, DuoEK, VBeat, O2, BP2, BP2W, LP-BP2W  
+> lepu-blepro-0.0.10.aar : add Ventilator  
 
 ## import SDK
 
@@ -1326,6 +1327,7 @@ Error result :
 
 ### PC_300SNT (Bluetooth.MODEL_PC300)
 ### PC_300SNT-BLE (Bluetooth.MODEL_PC300_BLE)
+### GM_300SNT (Bluetooth.MODEL_GM_300SNT)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
@@ -1528,6 +1530,233 @@ SDK will send this event when BluetoothDevice connected :
 `data` : com.lepu.blepro.ext.sp20.TempResult
 > result : 0(normal), 1(low), 2(high)  
 > unit : 0(℃), 1(℉)
+
+
+### R20 (Bluetooth.MODEL_R20)
+### R21 (Bluetooth.MODEL_R21)
+### R10 (Bluetooth.MODEL_R10)
+### R11 (Bluetooth.MODEL_R11)
+### LERES (Bluetooth.MODEL_LERES)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`
+
++ #### 1.ventilatorEncrypt(model, id)
+
+exchange key ：  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEncrypt).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+> TYPE_NORMAL_ERROR : 255, exchange key failed  
+
++ #### 2.syncTime(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetUtcTime).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 3.ventilatorGetInfo(model)
+
+get info error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetInfoError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get info success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.DeviceInfo
+
++ #### 4.ventilatorGetVersionInfo(model)
+
+get version info error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVersionInfoError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get version info success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVersionInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.VersionInfo
+
++ #### 5.ventilatorGetFileList(model)
+
+get file list error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetFileListError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get file list success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetFileList).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.RecordList
+
++ #### 6.ventilatorReadFile(model, fileName)
+
+read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorReadFileError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.StatisticsFile
+
++ #### 7.ventilatorGetWifiList(model)
+
+get wifi list error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiListError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+> TYPE_NORMAL_ERROR : 255, wifi scanning  
+
+get wifi success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<Wifi>` (com.lepu.blepro.ext.ventilator.Wifi)
+
++ #### 8.ventilatorGetWifiConfig(model)
+
+get wifi config error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiConfigError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+> TYPE_NORMAL_ERROR : 255, no wifi config  
+
+get wifi config success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWifiConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.WifiConfig
+
++ #### 9.ventilatorSetWifiConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetWifiConfig).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 10.ventilatorDeviceBound(model, bound)
+
+bound device error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDeviceBoundError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+bound device success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDeviceBound).post(InterfaceEvent(model, data))`  
+`data` : int (0:success, 1:failed, 2:timeout)  
+
+unbound device :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDeviceUnBound).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 11.ventilatorDoctorModeIn(model, password, timestamp)/ventilatorDoctorModeOut(model)
+
+doctor mode error :  
+unbound device :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDoctorModeError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+doctor mode success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDoctorMode).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.DoctorModeResult
+
++ #### 12.ventilatorGetRtState(model)
+
+get real time state error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtStateError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get real time state success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtState).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.RtState
+
++ #### 13.ventilatorGetRtParam(model)
+
+get real time param error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtParamError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get real time param success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtParam).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.RtParam
+
++ #### 14.ventilatorMaskTest(model, start)
+
+mask test error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorMaskTestError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+mask test success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorMaskTest).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.MaskTestResult
+
++ #### 15.Event reporting
+
+event reporting error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEventError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+event reporting success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEvent).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.Event
+
++ #### 16.ventilatorVentilationSwitch(model, start)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorVentilationSwitch).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 17.ventilatorGetSystemSetting(model)
+
+get system setting error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetSystemSettingError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get system setting success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetSystemSetting).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.SystemSetting
+
++ #### 18.ventilatorSetSystemSetting(model, setting)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetSystemSetting).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 19.ventilatorGetMeasureSetting(model)
+
+get measure setting error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetMeasureSettingError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get measure setting success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetMeasureSetting).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.MeasureSetting
+
++ #### 20.ventilatorSetMeasureSetting(model, setting)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetMeasureSetting).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 21.ventilatorGetVentilationSetting(model)
+
+get ventilation setting error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVentilationSettingError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get ventilation setting success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVentilationSetting).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.VentilationSetting
+
++ #### 22.ventilatorSetVentilationSetting(model, setting)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetVentilationSetting).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 23.ventilatorGetWarningSetting(model)
+
+get warning setting error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWarningSettingError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)  
+
+get warning setting success :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWarningSetting).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ventilator.WarningSetting
+
++ #### 24.ventilatorSetWarningSetting(model, setting)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetWarningSetting).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
+
++ #### 25.ventilatorFactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorFactoryReset).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.VentilatorResponseType)
 
 
 ### VTM 20F (Bluetooth.MODEL_TV221U)
