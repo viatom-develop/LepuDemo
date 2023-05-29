@@ -1561,7 +1561,8 @@ get info error :
 
 get info success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetInfo).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.DeviceInfo
+`data` : com.lepu.blepro.ext.ventilator.DeviceInfo  
+> branchCode : used to query whether support the CPAP, APAP, S, S/T, T mode, VentilatorModel(branchCode)
 
 + #### 4.ventilatorGetVersionInfo(model)
 
@@ -1581,7 +1582,9 @@ get file list error :
 
 get file list success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetFileList).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.RecordList
+`data` : com.lepu.blepro.ext.ventilator.RecordList  
+> startTime : timestamp, unit second  
+> type : 1(Daily statistics, file name is yyyyMMdd_day.stat), 2(Single statistics, file name is yyyyMMdd_HHmmss.stat, not used temporarily)
 
 + #### 6.ventilatorReadFile(model, fileName)
 
@@ -1594,7 +1597,33 @@ read file progress :
 `data` : int (0-100)  
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorReadFileComplete).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.StatisticsFile
+`data` : com.lepu.blepro.ext.ventilator.StatisticsFile  
+> duration : unit second  
+> usageDays : one day  
+> spont : proportion of spontaneous respiration, 0-100%  
+> ahiCount : number of apnea hypopnea episodes  
+> aiCount : number of apnea episodes  
+> hiCount : hypoventilation frequency  
+> oaiCount : number of respiratory pauses due to airway obstruction  
+> caiCount : number of central apnea episodes  
+> rearCount : number of awakenings related to respiratory effort  
+> sniCount : snoring frequency  
+> pbCount : periodic breathing frequency  
+> takeOffCount : number of times removed  
+> llTime : time for large air leakage  
+> (x_count * 3600) / recording_time = x_index / hour, (x_index in 0-200)  
+> pressure[] : reports use pressure[4], data range in 0-400, unit 0.1cmH2O/hPa, (0-40cmH2O/hPa)  
+> ipap[] : inspiratory pressure, reports use ipap[4], data range in 0-400, unit 0.1cmH2O/hPa, (0-40cmH2O/hPa)  
+> epap[] : expiratory pressure, reports use epap[4], data range in 0-400, unit 0.1cmH2O/hPa, (0-40cmH2O/hPa)  
+> vt[] : tidal volume, reports use vt[3], data range in 0-3000, unit 1mL, (0-3000mL)  
+> mv[] : minute Volume, reports use mv[3], data range in 0-600, unit 0.1L/min, (0-60L/min)  
+> leak[] : air leakage rate, reports use leak[4], data range in 0-1200, unit 0.1L/min, (0-120L/min)  
+> rr[] : respiratory rate, reports use rr[3], data range in 0-60, unit 1bpm, (0-60bpm)  
+> ti[] : inspiratory time, reports use ti[3], data range in 1-40, unit 0.1s, (0.1-4s)  
+> ie[] : reports use ie[3], data range in 200-30000, unit 0.0001, (1:50-3:1)  
+> spo2[] : reports use spo2[0], data range in 70-100, unit 1%, (70-100%)  
+> pr[] : reports use pr[2], data range in 30-250, unit 1bpm, (30-250bpm)  
+> hr[] : reports use hr[2], data range in 30-250, unit 1bpm, (30-250bpm)
 
 + #### 7.ventilatorGetWifiList(model)
 
@@ -1639,14 +1668,14 @@ unbound device :
 
 + #### 11.ventilatorDoctorModeIn(model, password, timestamp)/ventilatorDoctorModeOut(model)
 
-doctor mode error :  
-unbound device :  
+doctor mode error :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDoctorModeError).post(InterfaceEvent(model, data))`  
 `data` : int (Constant.VentilatorResponseType)  
 
 doctor mode success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorDoctorMode).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.DoctorModeResult
+`data` : com.lepu.blepro.ext.ventilator.DoctorModeResult  
+> errCode : 1(device doctor mode), 2(ble doctor mode), 3(socket doctor mode), 4(password error), 5(normal mode)
 
 + #### 12.ventilatorGetRtState(model)
 
@@ -1656,7 +1685,10 @@ get real time state error :
 
 get real time state success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtState).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.RtState
+`data` : com.lepu.blepro.ext.ventilator.RtState  
+> ventilationMode : 0(CPAP), 1(APAP), 2(S), 3(S/T), 4(T)  
+> deviceMode : 0(normal mode), 1(device doctor mode), 2(ble doctor mode), 3(socket doctor mode)
+> standard : 1(CFDA), 2(CE), 3(FDA)
 
 + #### 13.ventilatorGetRtParam(model)
 
@@ -1666,7 +1698,19 @@ get real time param error :
 
 get real time param success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorRtParam).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.RtParam
+`data` : com.lepu.blepro.ext.ventilator.RtParam  
+> pressure : 0-40cmH2O/hPa  
+> ipap : 0-40cmH2O/hPa  
+> epap : 0-40cmH2O/hPa  
+> vt : 0-3000mL  
+> mv : 0-60L/min  
+> leak : 0-120L/min  
+> rr : 0-60bpm  
+> ti : 0.1-4s  
+> ie : 1:50.0-3.0:1  
+> spo2 : 70-100%  
+> pr : 30-250bpm  
+> hr : 30-250bpm
 
 + #### 14.ventilatorMaskTest(model, start)
 
@@ -1676,7 +1720,10 @@ mask test error :
 
 mask test success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorMaskTest).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.MaskTestResult
+`data` : com.lepu.blepro.ext.ventilator.MaskTestResult  
+> status : 0(not in testing state), 1(under testing), 2(end of testing)  
+> leak : 0-120L/min  
+> result : 0(test not completed), 1(not suitable), 2(suitable)
 
 + #### 15.Event reporting
 
@@ -1686,7 +1733,10 @@ event reporting error :
 
 event reporting success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorEvent).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.Event
+`data` : com.lepu.blepro.ext.ventilator.Event  
+> timestamp : event time, unit second  
+> alarmLevel : Constant.VentilatorAlarmLevel  
+> eventId : Constant.VentilatorEventId
 
 + #### 16.ventilatorVentilationSwitch(model, start)
 
@@ -1701,7 +1751,25 @@ get system setting error :
 
 get system setting success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetSystemSetting).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.SystemSetting
+`data` : com.lepu.blepro.ext.ventilator.SystemSetting  
+> unitSetting : UnitSetting  
+> - pressureUnit : 0(cmH2O), 1(hPa)  
+
+> languageSetting : LanguageSetting  
+> - language : 0(English), 1(Chinese)  
+
+> screenSetting : ScreenSetting  
+> - brightness : 5-100%, step by 1%  
+> - autoOff : 0(always screen on), 30s, 60s, 90s, 120s  
+
+> replacements : Replacements  
+> - filter : 0(off), 1-12  
+> - mask : 0(off), 1-12  
+> - tube : 0(off), 1-12  
+> - tank : 0(off), 1-12  
+
+> volumeSetting : VolumeSetting  
+> - volume : 0-100%, step by 5%
 
 + #### 18.ventilatorSetSystemSetting(model, setting)
 
@@ -1716,7 +1784,26 @@ get measure setting error :
 
 get measure setting success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetMeasureSetting).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.MeasureSetting
+`data` : com.lepu.blepro.ext.ventilator.MeasureSetting  
+> humidification : Humidification  
+> - humidification : 0(off), 1-5, 0xff(auto)  
+
+> pressureReduce : PressureReduce  
+> - epr : expiratory pressure release, 0(off), 1-3  
+
+> autoSwitch : AutoSwitch  
+
+> preHeat : PreHeat  
+
+> ramp : Ramp  
+> - pressure : buffering pressure, 3-cpapPressure(CPAP), 3-apapPressureMin(APAP), 3-epapPressure(S,S/T,T), step by 0.5cmH2O/hPa  
+> - time : buffering time, 0xff(auto), 0-60min, step by 5min  
+
+> tubeType : TubeType  
+> - type : 0(15mm), 1(19mm)  
+
+> mask : Mask  
+> - type : 0(full face), 1(nasal), 2(pillow)
 
 + #### 20.ventilatorSetMeasureSetting(model, setting)
 
@@ -1731,7 +1818,143 @@ get ventilation setting error :
 
 get ventilation setting success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetVentilationSetting).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.VentilationSetting
+`data` : com.lepu.blepro.ext.ventilator.VentilationSetting  
+> ventilationMode : VentilationMode  
+> - mode : 0(CPAP), 1(APAP), 2(S), 3(S/T), 4(T)  
+
+> cpapPressure : CpapPressure  
+> - pressure : 4-20, step by 0.5cmH2O/hPa  
+
+> apapPressureMax : ApapPressureMax  
+> - max : apapPressureMin-20, step by 0.5cmH2O/hPa  
+
+> apapPressureMin : ApapPressureMin  
+> - min : 4-apapPressureMax, step by 0.5cmH2O/hPa  
+
+> pressureExhale : PressureExhale  
+> - exhale : 4-25(CE), 6-25(CFDA), step by 0.5cmH2O/hPa  
+> - inhale >= exhale+2(CFDA), inhale >= exhale(CE)  
+
+> pressureInhale : PressureInhale  
+> - inhale : 4-25(CE), 4-23(CFDA), step by 0.5cmH2O/hPa  
+> - inhale >= exhale+2(CFDA), inhale >= exhale(CE)  
+
+> inhaleDuration : InhaleDuration  
+> - duration : 0.3-4, step by 0.1s  
+> - Max(0.3, pressureRaiseDuration) <= duration <= Min((60/respiratoryRate) * 2 / 3, 4)  
+
+> respiratoryRate : RespiratoryRate  
+> - rate : 5-30, step by 1bpm/min  
+> - 5 <= rate <= Min(60/(inhaleDuration / 2 * 3))  
+
+> pressureRaiseDuration : PressureRaiseDuration  
+> - duration : 100-900ms, step by 50ms  
+> - Max(100ms, minT) <= duration <= Min(900ms, LimT)  
+
+> exhaleSensitive : ExhaleSensitive  
+> - sentive : 0(auto), 1-5  
+
+> inhaleSensitive : InhaleSensitive  
+> - sentive : 0(auto), 1-5  
+<table>
+      <tr>
+         <th>Number</th>
+	 <th>Inhale Duration(s)</th>
+	 <th>Pressure Raise Duration LimT(ms)</th>  
+      </tr>
+      <tr>
+	 <td>1</td>
+	 <td>0.3</td>
+         <td>200</td>
+      </tr>
+      <tr>
+	 <td>2</td>
+	 <td>0.4</td>
+         <td>250</td>
+      </tr>
+      <tr>
+	 <td>3</td>
+	 <td>0.5</td>
+         <td>300</td>
+      </tr>
+      <tr>
+	 <td>4</td>
+	 <td>0.6</td>
+         <td>400</td>
+      </tr>
+      <tr>
+	 <td>5</td>
+	 <td>0.7</td>
+         <td>450</td>
+      </tr>
+      <tr>
+	 <td>6</td>
+	 <td>0.8</td>
+         <td>500</td>
+      </tr>
+      <tr>
+	 <td>7</td>
+	 <td>0.9</td>
+         <td>600</td>
+      </tr>
+      <tr>
+	 <td>8</td>
+	 <td>1.0</td>
+         <td>650</td>
+      </tr>
+      <tr>
+	 <td>9</td>
+	 <td>1.1</td>
+         <td>700</td>
+      </tr>
+      <tr>
+	 <td>10</td>
+	 <td>1.2</td>
+         <td>800</td>
+      </tr>
+      <tr>
+	 <td>11</td>
+	 <td>1.3</td>
+         <td>850</td>
+      </tr>
+      <tr>
+	 <td>12</td>
+	 <td>>=1.4</td>
+         <td>900</td>
+      </tr>
+</table>
+<table>
+      <tr>
+         <th>Number</th>
+	 <th>Pressure Inhale-Pressure Exhale(sub)</th>
+	 <th>Pressure Raise Duration minT(ms)</th>  
+      </tr>
+      <tr>
+	 <td>1</td>
+	 <td>2~5</td>
+         <td>100</td>
+      </tr>
+      <tr>
+	 <td>2</td>
+	 <td>5.5~10</td>
+         <td>200</td>
+      </tr>
+      <tr>
+	 <td>3</td>
+	 <td>10.5~15</td>
+         <td>300</td>
+      </tr>
+      <tr>
+	 <td>4</td>
+	 <td>15.5~20</td>
+         <td>400</td>
+      </tr>
+      <tr>
+	 <td>5</td>
+	 <td>20.5~21</td>
+         <td>450</td>
+      </tr>
+</table>
 
 + #### 22.ventilatorSetVentilationSetting(model, setting)
 
@@ -1746,7 +1969,35 @@ get warning setting error :
 
 get warning setting success :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorGetWarningSetting).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.ventilator.WarningSetting
+`data` : com.lepu.blepro.ext.ventilator.WarningSetting  
+> warningApnea : WarningApnea  
+> - apnea : 0(off), 10s, 20s, 30s  
+
+> warningLeak : WarningLeak  
+> - high : 0(off), 15s, 30s, 45s, 60s  
+
+> warningVt : WarningVt  
+> - low : 0(off), 200-2000ml, step by 10ml  
+
+> warningVentilation : WarningVentilation  
+> - low : 0(off), 1-25L/min, step by 1L/min  
+
+> warningRrHigh : WarningRrHigh  
+> - high : 0(off), 1-60bpm, step by 1bpm  
+> - warningRrLow+2~60 (if low != 0 and warningRrHigh != 0)  
+
+> warningRrLow : WarningRrLow  
+> - low : 0(off), 1-60bpm, step by 1bpm  
+> - 1~warningRrHigh-2 (if low != 0 and warningRrHigh != 0)  
+
+> warningSpo2Low : WarningSpo2Low  
+> - low : 0(off), 80-95%, step by 1%  
+
+> warningHrHigh : WarningHrHigh  
+> - high : 0(off), 100-240bpm, step by 10bpm  
+
+> warningHrLow : WarningHrLow  
+> - low : 0(off), 30-70bpm, step by 5bpm  
 
 + #### 24.ventilatorSetWarningSetting(model, setting)
 
