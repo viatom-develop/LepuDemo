@@ -1601,6 +1601,7 @@ read file progress :
 > duration : unit second  
 > usageDays : one day  
 > spont : proportion of spontaneous respiration, 0-100%  
+> (x_count * 3600) / recording_time = x_index / hour, (x_index in 0-200)  
 > ahiCount : number of apnea hypopnea episodes  
 > aiCount : number of apnea episodes  
 > hiCount : hypoventilation frequency  
@@ -1611,19 +1612,18 @@ read file progress :
 > pbCount : periodic breathing frequency  
 > takeOffCount : number of times removed  
 > llTime : time for large air leakage  
-> (x_count * 3600) / recording_time = x_index / hour, (x_index in 0-200)  
-> pressure[] : reports use pressure[4], data range in 0-400, unit 0.1cmH2O/hPa, (0-40cmH2O/hPa)  
-> ipap[] : inspiratory pressure, reports use ipap[4], data range in 0-400, unit 0.1cmH2O/hPa, (0-40cmH2O/hPa)  
-> epap[] : expiratory pressure, reports use epap[4], data range in 0-400, unit 0.1cmH2O/hPa, (0-40cmH2O/hPa)  
-> vt[] : tidal volume, reports use vt[3], data range in 0-3000, unit 1mL, (0-3000mL)  
-> mv[] : minute Volume, reports use mv[3], data range in 0-600, unit 0.1L/min, (0-60L/min)  
-> leak[] : air leakage rate, reports use leak[4], data range in 0-1200, unit 0.1L/min, (0-120L/min)  
-> rr[] : respiratory rate, reports use rr[3], data range in 0-60, unit 1bpm, (0-60bpm)  
-> ti[] : inspiratory time, reports use ti[3], data range in 1-40, unit 0.1s, (0.1-4s)  
-> ie[] : reports use ie[3], data range in 200-30000, unit 0.0001, (1:50-3:1)  
-> spo2[] : reports use spo2[0], data range in 70-100, unit 1%, (70-100%)  
-> pr[] : reports use pr[2], data range in 30-250, unit 1bpm, (30-250bpm)  
-> hr[] : reports use hr[2], data range in 30-250, unit 1bpm, (30-250bpm)
+> float pressure[] : 0.0-40.0cmH2O/hPa, device reports use pressure[4]  
+> float ipap[] : inspiratory pressure, 0.0-40.0cmH2O/hPa, device reports use ipap[4]  
+> float epap[] : expiratory pressure, 0.0-40.0cmH2O/hPa, device reports use epap[4]  
+> int vt[] : tidal volume, 0-3000mL, device reports use vt[3]  
+> float mv[] : minute Volume, 0.0-60.0L/min, device reports use mv[3]  
+> float leak[] : air leakage rate, 0.0-120.0L/min, device reports use leak[4]  
+> int rr[] : respiratory rate, 0-60bpm, device reports use rr[3]  
+> float ti[] : inspiratory time, 0.1-4.0s, device reports use ti[3]  
+> float ie[] : 1:50-3:1, 0.02-3.0, device reports use ie[3]  
+> int spo2[] : 70-100%, device reports use spo2[0]  
+> int pr[] : 30-250bpm, device reports use pr[2]  
+> int hr[] : 30-250bpm, device reports use hr[2]
 
 + #### 7.ventilatorGetWifiList(model)
 
