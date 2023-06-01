@@ -100,12 +100,14 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.ventilatorGetRtParam(model)
         }
         get_file_list.setOnClickListener {
+            fileNames.clear()
             BleServiceHelper.BleServiceHelper.ventilatorGetFileList(model)
         }
         read_file.setOnClickListener {
             readFile()
         }
         get_wifi_list.setOnClickListener {
+            wifiList.clear()
             BleServiceHelper.BleServiceHelper.ventilatorGetWifiList(model)
         }
         get_wifi_config.setOnClickListener {
