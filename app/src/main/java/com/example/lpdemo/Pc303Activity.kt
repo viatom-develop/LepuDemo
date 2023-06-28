@@ -3,6 +3,9 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
@@ -21,7 +24,7 @@ import kotlin.math.floor
 class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc303Activity"
-    // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE
+    // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE, Bluetooth.MODEL_GM_300SNT
     private var model = Bluetooth.MODEL_PC300
 
     private lateinit var ecgBkg: EcgBkg
@@ -63,6 +66,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
+        BleServiceHelper.BleServiceHelper.pc300GetGlucometerType(model)
     }
 
     private fun initView() {
@@ -72,6 +76,22 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         }
         get_info.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
+        }
+        ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayListOf("爱奥乐", "百捷", "CE")).apply {
+            glu_type.adapter = this
+        }
+        glu_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // 1:爱奥乐 2:百捷 4:CE
+                if (position == 2) {
+                    BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(model, position+2)
+                } else {
+                    BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(model, position+1)
+                }
+
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
         }
         bleState.observe(this) {
             if (it) {
@@ -215,6 +235,33 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as EcgResult
                 hr.text = "${data.hr}"
                 data_log.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300SetGlucometerType)
+            .observe(this) {
+                val data = it.data as Boolean
+                data_log.text = "set glu type $data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GetGlucometerType)
+            .observe(this) {
+                val data = it.data as Int
+                if (data == 4) {
+                    glu_type.setSelection(data-2)
+                } else {
+                    glu_type.setSelection(data-1)
+                }
+                data_log.text = "get glu type $data"
+            }
+        // ----------------------ua----------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300UaResult)
+            .observe(this) {
+                val data = it.data as Float
+                data_log.text = "$data mg/dL"
+            }
+        // ----------------------chol----------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300CholResult)
+            .observe(this) {
+                val data = it.data as Int
+                data_log.text = "$data mg/dL"
             }
     }
 

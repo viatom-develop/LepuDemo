@@ -51,7 +51,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'no.nordicsemi.android:ble:2.2.4'
-    implementation(name: 'lepu-blepro-0.0.10', ext: 'aar')
+    implementation(name: 'lepu-blepro-1.0.1', ext: 'aar')
     implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'

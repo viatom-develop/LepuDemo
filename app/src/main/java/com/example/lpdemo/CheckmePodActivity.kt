@@ -21,12 +21,14 @@ import kotlinx.android.synthetic.main.activity_checkme_pod.*
 class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "CheckmePodActivity"
-    private val model = Bluetooth.MODEL_CHECK_POD
+    // Bluetooth.MODEL_CHECK_POD, Bluetooth.MODEL_CHECKME_POD_WPS
+    private var model = Bluetooth.MODEL_CHECK_POD
     private var isStartRtTask = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkme_pod)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()

@@ -58,16 +58,18 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_OXYRING, Bluetooth.MODEL_BBSM_S1,
         Bluetooth.MODEL_BBSM_S2, Bluetooth.MODEL_OXYU,
         Bluetooth.MODEL_AI_S100, Bluetooth.MODEL_O2M_WPS,
-        Bluetooth.MODEL_CMRING,  // OxyActivity
+        Bluetooth.MODEL_CMRING, Bluetooth.MODEL_OXYFIT_WPS,
+        Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_SI_PO6,  // OxyActivity
         Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
         Bluetooth.MODEL_PC80B_BLE2,  // Pc80bActivity
         Bluetooth.MODEL_PC100,  // Pc102Activity
         Bluetooth.MODEL_AP20, Bluetooth.MODEL_AP20_WPS,  // Ap20Activity
         Bluetooth.MODEL_PC_68B,  // Pc68bActivity
-        Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4, Bluetooth.MODEL_CHECKME,  // PulsebitExActivity
+        Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4,  // PulsebitExActivity
         Bluetooth.MODEL_CHECKME_LE,  // CheckmeLeActivity
-        Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,  // Pc303Activity
-        Bluetooth.MODEL_CHECK_POD,  // CheckmePodActivity
+        Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
+        Bluetooth.MODEL_GM_300SNT,  // Pc303Activity
+        Bluetooth.MODEL_CHECK_POD, Bluetooth.MODEL_CHECKME_POD_WPS,  // CheckmePodActivity
         Bluetooth.MODEL_AOJ20A,  // Aoj20aActivity
         Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE, Bluetooth.MODEL_SP20_WPS,  // Sp20Activity
         Bluetooth.MODEL_VETCORDER, Bluetooth.MODEL_CHECK_ADV,  // CheckmeMonitorActivity
@@ -77,17 +79,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_POCTOR_M3102,  // PoctorM3102Activity
         Bluetooth.MODEL_LPM311,  // Lpm311Activity
         Bluetooth.MODEL_LEM,  // LemActivity
-        Bluetooth.MODEL_ER1,
-        Bluetooth.MODEL_ER1_N,
-        Bluetooth.MODEL_HHM1,  // Er1Activity
-        Bluetooth.MODEL_ER2,
-        Bluetooth.MODEL_LP_ER2,
-        Bluetooth.MODEL_DUOEK,
-        Bluetooth.MODEL_HHM2,
-        Bluetooth.MODEL_HHM3,  // Er2Activity
-        Bluetooth.MODEL_BP2,
-        Bluetooth.MODEL_BP2A,
-        Bluetooth.MODEL_BP2T,  // Bp2Activity
+        Bluetooth.MODEL_ER1, Bluetooth.MODEL_ER1_N, Bluetooth.MODEL_HHM1,  // Er1Activity
+        Bluetooth.MODEL_ER2, Bluetooth.MODEL_LP_ER2, Bluetooth.MODEL_DUOEK,
+        Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3,  // Er2Activity
+        Bluetooth.MODEL_BP2, Bluetooth.MODEL_BP2A, Bluetooth.MODEL_BP2T,  // Bp2Activity
         Bluetooth.MODEL_BP2W,  // Bp2wActivity
         Bluetooth.MODEL_LP_BP2W,  // LpBp2wActivity
         Bluetooth.MODEL_ER3,  // Er3Activity
@@ -96,6 +91,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_R20, Bluetooth.MODEL_R21,
         Bluetooth.MODEL_R10, Bluetooth.MODEL_R11,
         Bluetooth.MODEL_LERES,  // VentilatorActivity
+        Bluetooth.MODEL_FHR,  // FhrActivity
+        Bluetooth.MODEL_VTM_AD5, Bluetooth.MODEL_FETAL,  // Ad5Activity
+        Bluetooth.MODEL_VCOMIN,   // VcominActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -141,7 +139,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 .permissions(
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
-                    Manifest.permission.BLUETOOTH_ADVERTISE
+                    Manifest.permission.BLUETOOTH_ADVERTISE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
                 )
                 .onExplainRequestReason { scope, deniedList ->
                     scope.showRequestReasonDialog(
@@ -228,9 +228,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         } else {
             // Save the original file path. Er1, VBeat and HHM1 are currently supported
             val rawFolders = SparseArray<String>()
-            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
-            rawFolders.set(Bluetooth.MODEL_ER1_N, "${getExternalFilesDir(null)?.absolutePath}/vbeat")
-            rawFolders.set(Bluetooth.MODEL_HHM1, "${getExternalFilesDir(null)?.absolutePath}/hhm1")
+//            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
+//            rawFolders.set(Bluetooth.MODEL_ER1_N, "${getExternalFilesDir(null)?.absolutePath}/vbeat")
+//            rawFolders.set(Bluetooth.MODEL_HHM1, "${getExternalFilesDir(null)?.absolutePath}/hhm1")
 
             BleServiceHelper.BleServiceHelper.initRawFolder(rawFolders).initService(application)
         }
@@ -263,7 +263,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 deviceName = it.name
                 deviceAddress = it.macAddr
 
-                dialog.show()
+                if (this::dialog.isInitialized) {
+                    dialog.show()
+                }
             }
         }
     }
@@ -294,12 +296,17 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     ConnectionObserver.REASON_TIMEOUT -> "The connection timed out. The device might have reboot, is out of range, turned off or doesn't respond for another reason."
                     else -> "disconnect"
                 }
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 Toast.makeText(this, reason, Toast.LENGTH_SHORT).show()
             }
         //--------------------pc80b,pc102,pc60fw,pc68b,pod1w,pc300--------------------
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 // connect success
                 Log.d(TAG, "EventBleDeviceReady")
                 when (it) {
@@ -365,6 +372,17 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         intent.putExtra("model", it)
                         startActivity(intent)
                     }
+                    Bluetooth.MODEL_FHR -> {
+                        startActivity(Intent(this, FhrActivity::class.java))
+                    }
+                    Bluetooth.MODEL_VTM_AD5, Bluetooth.MODEL_FETAL -> {
+                        val intent = Intent(this, Ad5Activity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
+                    }
+                    Bluetooth.MODEL_VCOMIN -> {
+                        startActivity(Intent(this, VcominActivity::class.java))
+                    }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()
                         adapter.setList(null)
@@ -375,7 +393,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //----------------------ap10/ap20/ap20wps---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 val intent = Intent(this, Ap20Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
@@ -383,7 +403,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //----------------------pulsebit ex/hhm4/checkme---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 val intent = Intent(this, PulsebitExActivity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
@@ -391,25 +413,35 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //----------------------checkme le---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeSetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, CheckmeLeActivity::class.java))
             }
         //----------------------checkme pod---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodSetTime)
             .observe(this) {
-                dialog.dismiss()
-                startActivity(Intent(this, CheckmePodActivity::class.java))
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
+                val intent = Intent(this, CheckmePodActivity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
             }
         //----------------------aoj20a---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aSetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, Aoj20aActivity::class.java))
             }
         //----------------------sp20/sp20wps---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 val intent = Intent(this, Sp20Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
@@ -420,7 +452,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 val types = it.data as Array<String>
                 if (types.isEmpty()) return@observe
                 if (types[0] == "SetTIME") {
-                    dialog.dismiss()
+                    if (this::dialog.isInitialized) {
+                        dialog.dismiss()
+                    }
                     val intent = Intent(this, OxyActivity::class.java)
                     intent.putExtra("model", it.model)
                     startActivity(intent)
@@ -429,13 +463,17 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //----------------------bpm---------------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmSyncTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, BpmActivity::class.java))
             }
         //----------------------er1/vbeat/hhm1-------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1SetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 val intent = Intent(this, Er1Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
@@ -443,7 +481,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //------------------er2/lp er2/duoek/hhm2/hhm3----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 val intent = Intent(this, Er2Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
@@ -451,7 +491,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //------------------bp2/bp2a/bp2t----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2SyncTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 val intent = Intent(this, Bp2Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
@@ -459,25 +501,33 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //------------------bp2w----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wSyncTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, Bp2wActivity::class.java))
             }
         //------------------lp-bp2w----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSyncUtcTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, LpBp2wActivity::class.java))
             }
         //------------------er3----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3SetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, Er3Activity::class.java))
             }
         //------------------lepod----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodSetTime)
             .observe(this) {
-                dialog.dismiss()
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
                 startActivity(Intent(this, LepodActivity::class.java))
             }
     }

@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_pulsebit_ex.*
 class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "PulsebitExActivity"
-    // Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4, Bluetooth.MODEL_CHECKME
+    // Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4
     private var model = Bluetooth.MODEL_PULSEBITEX
 
     private var fileNames = arrayListOf<String>()
