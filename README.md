@@ -13,6 +13,7 @@ Version at least Android 7.0
 > lepu-blepro-0.0.5.aar : add SP-20, Vetcorder, BPM, Bioland-BGM, PoctorM3102, LPM311, LEM  
 > lepu-blepro-0.0.8.aar : add ER1, ER2, DuoEK, VBeat, O2, BP2, BP2W, LP-BP2W  
 > lepu-blepro-0.0.10.aar : add Ventilator  
+> lepu-blepro-1.0.1.aar : add AD5, FHR, VCOIMN
 
 ## import SDK
 
@@ -528,6 +529,7 @@ mV = n * 0.0097683451362458
 
 
 ### Checkme Pod (Bluetooth.MODEL_CHECK_POD)
+### Checkme Pod-WPS (Bluetooth.MODEL_CHECKME_POD_WPS)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodSetTime).post(InterfaceEvent(model, true))`  
@@ -928,6 +930,9 @@ SDK will send this event when BluetoothDevice connected :
 ### AI S100 (Bluetooth.MODEL_AI_S100)
 ### O2M-WPS (Bluetooth.MODEL_O2M_WPS)
 ### CMRing (Bluetooth.MODEL_CMRING)
+### Oxyfit-WPS (Bluetooth.MODEL_OXYFIT_WPS)
+### KidsO2-WPS (Bluetooth.MODEL_KIDSO2_WPS)
+### SI PO6 (Bluetooth.MODEL_SI_PO6)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo).post(InterfaceEvent(model, data))`  
@@ -1392,7 +1397,7 @@ Error result :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.RtOxyWave
 
-+ #### 8.GLU Result
++ #### 8.Glu Result
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GluResult).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.pc303.GluResult  
@@ -1423,7 +1428,6 @@ SDK will send this event when BluetoothDevice connected :
 
 ### Pulsebit (Bluetooth.MODEL_PULSEBITEX)
 ### HHM4 (Bluetooth.MODEL_HHM4)
-### Checkme (Bluetooth.MODEL_CHECKME)
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime).post(InterfaceEvent(model, true))`  
@@ -2029,5 +2033,47 @@ SDK will send this event when BluetoothDevice connected :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.VTM20f.EventVTM20fRtWave).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.vtm20f.RtWave
 
+
+### VTM AD5 (Bluetooth.MODEL_VTM_AD5)
+### MD1000AF4 (Bluetooth.MODEL_FETAL)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.Real-time data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AD5.EventAd5RtHr).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.Ad5Data
+
+
+### VCOMIN (Bluetooth.MODEL_VCOMIN)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.Real-time data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.VCOMIN.EventVcominRtHr).post(InterfaceEvent(model, data))`  
+`data` : Int, HR
+
+
+### FHR-666(BLE) (Bluetooth.MODEL_FHR)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.Device info
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.FHR.EventFhrDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.FhrInfo  
+> hr：60-240  
+> volume：0-6  
+> strength：0-2  
+> battery：0-6
+
++ #### 2.Audio data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.FHR.EventFhrAudioData).post(InterfaceEvent(model, data))`  
+`data` : byte[]
 
 
