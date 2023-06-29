@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.Toast
 import android.provider.Settings
 import android.util.SparseArray
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lpdemo.utils.*
@@ -102,10 +103,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         initView()
         initEventBus()
         needPermission()
-        initService()
     }
 
     private fun needService() {
@@ -130,6 +131,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             }
             dialog.setCancelable(false)
             dialog.show()
+        } else {
+            initService()
         }
     }
 
@@ -199,6 +202,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
                     if (adapter.enable()) {
+                        initService()
                         Toast.makeText(this, "Bluetooth open successfully", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Bluetooth open failed", Toast.LENGTH_SHORT).show()
@@ -217,6 +221,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         } else {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 needService()
+            } else {
+                initService()
             }
         }
     }
