@@ -43,6 +43,9 @@ object Er3DataController {
         return amp[ampKey]
     }
 
+    var isLAOff = false  // I
+    var isLLOff = false  // II
+
     /**
      * 12 channel data
      */
@@ -69,7 +72,7 @@ object Er3DataController {
      * receive ecg data from device
      * default 8 channel
      */
-    fun receive(fs: FloatArray) {
+    fun receive(fs: FloatArray, isLAOff: Boolean, isLLOff: Boolean) {
         if (fs.isEmpty()) {
             return
         }
@@ -79,6 +82,8 @@ object Er3DataController {
         System.arraycopy(fs, 0, tmp, dataRec.size, fs.size)
 
         dataRec = tmp
+        this.isLAOff = isLAOff
+        this.isLLOff = isLLOff
     }
 
     /**
@@ -105,18 +110,34 @@ object Er3DataController {
         }
 
         for (i in fs.indices step 8) {
-            src1[index] = fs[i]
-            src2[index] = fs[i+1]
-            src3[index] = fs[i+2]
-            src4[index] = fs[i+3]
-            src5[index] = fs[i+4]
-            src6[index] = fs[i+5]
-            src7[index] = fs[i+6]
-            src8[index] = fs[i+7]
-            src9[index] = fs[i+2] - fs[i+1]  // III = II-I
-            src10[index] = -(fs[i+2] + fs[i+1])/2  // aVR = - (I+II)/2
-            src11[index] = fs[i+1] - fs[i+2]/2  // aVL = I - II/2
-            src12[index] = fs[i+2] - fs[i+1]/2  // aVF = II - I/2
+            // 是否与设备UI显示对齐
+//            if (isLAOff || isLLOff) {
+//                src1[index] = 0f
+//                src2[index] = fs[i+1]
+//                src3[index] = fs[i+2]
+//                src4[index] = 0f
+//                src5[index] = 0f
+//                src6[index] = 0f
+//                src7[index] = 0f
+//                src8[index] = 0f
+//                src9[index] = 0f
+//                src10[index] = 0f
+//                src11[index] = 0f
+//                src12[index] = 0f
+//            } else {
+                src1[index] = fs[i]
+                src2[index] = fs[i+1]
+                src3[index] = fs[i+2]
+                src4[index] = fs[i+3]
+                src5[index] = fs[i+4]
+                src6[index] = fs[i+5]
+                src7[index] = fs[i+6]
+                src8[index] = fs[i+7]
+                src9[index] = fs[i+2] - fs[i+1]  // III = II-I
+                src10[index] = -(fs[i+2] + fs[i+1])/2  // aVR = - (I+II)/2
+                src11[index] = fs[i+1] - fs[i+2]/2  // aVL = I - II/2
+                src12[index] = fs[i+2] - fs[i+1]/2  // aVF = II - I/2
+//            }
 
             index++
             index %= maxIndex

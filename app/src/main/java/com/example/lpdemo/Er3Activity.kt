@@ -349,7 +349,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3RtData)
             .observe(this) {
                 val data = it.data as RtData
-                Er3DataController.receive(data.wave.waveFloats)
+                Er3DataController.receive(data.wave.waveFloats, data.param.isLeadOffLA, data.param.isLeadOffLL)
                 ble_battery.text = "电量：${data.param.battery} %"
                 hr.text = "${data.param.hr}"
                 data_log.text = "脉率：${data.param.pr}\n" +
