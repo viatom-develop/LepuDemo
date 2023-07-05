@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             dialog.setMessage("open location service")
             dialog.setPositiveButton("ok") { _, _ ->
                 val myIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(myIntent)
+                startActivityForResult(myIntent, 888)
             }
             dialog.setNegativeButton("cancel") { _, _ ->
                 finish()
@@ -134,6 +134,11 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         } else {
             initService()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        initService()
     }
 
     private fun needPermission() {
@@ -219,11 +224,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 }
             }
         } else {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                needService()
-            } else {
-                initService()
-            }
+            needService()
         }
     }
 
