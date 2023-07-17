@@ -76,7 +76,7 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtWave)
             .observe(this) {
                 val data = it.data as RtWave
-
+                // data.waveIntData：0-127
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwBatLevel)
             .observe(this) {

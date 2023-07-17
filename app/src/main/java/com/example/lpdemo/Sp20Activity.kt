@@ -82,7 +82,7 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20RtWave)
             .observe(this) {
                 val data = it.data as RtWave
-
+                // data.waveIntData：0-127
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20Battery)
             .observe(this) {

@@ -67,6 +67,7 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC68B.EventPc68bRtWave)
             .observe(this) {
                 val data = it.data as RtWave
+                // data.waveIntData：0-127
                 data_log.text = "$data"
             }
 

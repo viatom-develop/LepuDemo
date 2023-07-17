@@ -119,7 +119,7 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
                 hr.text = "${data.hr}"
                 data_log.text = "$data"
                 // sampling rate：25HZ
-                // mV = n * 0.0097683451362458（data.ecgFloatData = data.ecgShortData * 0.0097683451362458）
+                // mV = n * 0.010769600512711（data.ecgFloatData = data.ecgShortData * 0.010769600512711）
                 // data.battery：0-100
             }
     }

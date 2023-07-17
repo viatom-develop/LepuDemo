@@ -24,7 +24,8 @@ import kotlin.math.floor
 class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc303Activity"
-    // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE, Bluetooth.MODEL_GM_300SNT
+    // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
+    // Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_CMI_303
     private var model = Bluetooth.MODEL_PC300
 
     private lateinit var ecgBkg: EcgBkg
@@ -139,6 +140,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
                 // data.batLevel：0-3（0：0-25%，1：25-50%，2：50-75%，3：75-100%）
+                // data.batStatus：0 正常，1 充电中，2 已充满
             }
         // ----------------------bp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpStart)
@@ -183,7 +185,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyWave)
             .observe(this) {
                 val data = it.data as RtOxyWave
-
+                // data.waveIntData：0-127
             }
         // ----------------------temp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult)

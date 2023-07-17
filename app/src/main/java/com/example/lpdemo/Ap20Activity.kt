@@ -86,7 +86,7 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyWave)
             .observe(this) {
                 val data = it.data as RtOxyWave
-
+                // data.waveIntData：0-127
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtBreathParam)
             .observe(this) {

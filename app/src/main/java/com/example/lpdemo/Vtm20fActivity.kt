@@ -52,7 +52,7 @@ class Vtm20fActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.VTM20f.EventVTM20fRtWave)
             .observe(this) {
                 val data = it.data as RtWave
-
+                // data.wave：0-100
             }
     }
 
