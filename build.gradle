@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = "1.5.0"
+    ext.kotlin_version = "1.5.10"
     repositories {
         google()
         mavenCentral()
@@ -20,6 +20,17 @@ allprojects {
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
+        maven {
+            url "https://git.lepudev.com/api/v4/projects/268/packages/maven"
+            name "blepro"
+            credentials(HttpHeaderCredentials) {
+                name = 'Deploy-Token'
+                value = 'Bzn4z5F53YxRgFAQ5ED5'
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
     }
 }
 

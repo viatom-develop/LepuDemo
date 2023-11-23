@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
                     if (adapter.enable()) {
-                        initService()
+                        needService()
                         Toast.makeText(this, "Bluetooth open successfully", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Bluetooth open failed", Toast.LENGTH_SHORT).show()
@@ -273,6 +273,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 if (this::dialog.isInitialized) {
                     dialog.show()
                 }
+                BluetoothController.clear()
+                splitDevices(ble_split.text.toString())
             }
         }
     }
