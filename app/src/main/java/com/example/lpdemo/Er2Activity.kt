@@ -18,7 +18,7 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
-import com.lepu.blepro.utils.Er1Decompress
+import com.lepu.blepro.utils.DecompressUtil
 import kotlinx.android.synthetic.main.activity_er2.*
 import kotlin.collections.ArrayList
 import kotlin.math.floor
@@ -27,7 +27,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Er2Activity"
     // Bluetooth.MODEL_DUOEK, Bluetooth.MODEL_ER2, Bluetooth.MODEL_LP_ER2,
-    // Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3
+    // Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3, Bluetooth.MODEL_ER2_S
     private var model = Bluetooth.MODEL_ER2
 
     private var config = Er2Config()
@@ -251,7 +251,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
                     // diagnosis.isStDepression：Whether ST segment depression
                 } else if (data.fileName.contains("R")) {
                     val file = Er2EcgFile(data.content)
-                    val ecgShorts = Er1Decompress.unCompressAlgECG(file.waveData)
+                    val ecgShorts = DecompressUtil.er1Decompress(file.waveData)
                     val ecgData = EcgData()
                     val startTime = DateUtil.getSecondTimestamp(data.fileName.replace("R", ""))
                     ecgData.fileName = data.fileName

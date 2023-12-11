@@ -82,12 +82,12 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_LEM,  // LemActivity
         Bluetooth.MODEL_ER1, Bluetooth.MODEL_ER1_N, Bluetooth.MODEL_HHM1,  // Er1Activity
         Bluetooth.MODEL_ER2, Bluetooth.MODEL_LP_ER2, Bluetooth.MODEL_DUOEK,
-        Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3,  // Er2Activity
+        Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3, Bluetooth.MODEL_ER2_S,  // Er2Activity
         Bluetooth.MODEL_BP2, Bluetooth.MODEL_BP2A, Bluetooth.MODEL_BP2T,  // Bp2Activity
         Bluetooth.MODEL_BP2W,  // Bp2wActivity
         Bluetooth.MODEL_LP_BP2W,  // LpBp2wActivity
-        Bluetooth.MODEL_ER3,  // Er3Activity
-        Bluetooth.MODEL_LEPOD,  // LepodActivity
+        Bluetooth.MODEL_ER3, Bluetooth.MODEL_M12,  // Er3Activity
+        Bluetooth.MODEL_LEPOD, Bluetooth.MODEL_LEPOD_PRO,  // LepodActivity
         Bluetooth.MODEL_ECN,  // EcnActivity
         Bluetooth.MODEL_R20, Bluetooth.MODEL_R21,
         Bluetooth.MODEL_R10, Bluetooth.MODEL_R11,
@@ -235,7 +235,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         } else {
             // Save the original file path. Er1, VBeat and HHM1 are currently supported
             val rawFolders = SparseArray<String>()
-//            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
+            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
 //            rawFolders.set(Bluetooth.MODEL_ER1_N, "${getExternalFilesDir(null)?.absolutePath}/vbeat")
 //            rawFolders.set(Bluetooth.MODEL_HHM1, "${getExternalFilesDir(null)?.absolutePath}/hhm1")
 

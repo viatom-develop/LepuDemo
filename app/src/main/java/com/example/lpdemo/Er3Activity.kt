@@ -21,7 +21,7 @@ import kotlin.math.floor
 class Er3Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Er3Activity"
-    // Bluetooth.MODEL_ER3
+    // Bluetooth.MODEL_ER3, Bluetooth.MODEL_M12
     private var model = Bluetooth.MODEL_ER3
 
     private lateinit var ecgBkg1: Er3EcgBkg

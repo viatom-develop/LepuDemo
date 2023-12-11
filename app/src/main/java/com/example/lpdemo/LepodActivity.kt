@@ -21,7 +21,7 @@ import kotlin.math.floor
 class LepodActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "LepodActivity"
-    // Bluetooth.MODEL_LEPOD
+    // Bluetooth.MODEL_LEPOD, Bluetooth.MODEL_LEPOD_PRO
     private var model = Bluetooth.MODEL_LEPOD
 
     private lateinit var ecgBkg1: Er3EcgBkg

@@ -19,7 +19,7 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
-import com.lepu.blepro.utils.Er1Decompress
+import com.lepu.blepro.utils.DecompressUtil
 import com.lepu.blepro.utils.HexString
 import kotlinx.android.synthetic.main.activity_er1.*
 import org.apache.commons.io.FileUtils
@@ -250,7 +250,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         Er1EcgFile(rawFile)
                     }
-                    val ecgShorts = Er1Decompress.unCompressAlgECG(file.waveData)
+                    val ecgShorts = DecompressUtil.er1Decompress(file.waveData)
                     val ecgData = EcgData()
                     val startTime = DateUtil.getSecondTimestamp(data.fileName.replace("R", ""))
                     ecgData.fileName = data.fileName
