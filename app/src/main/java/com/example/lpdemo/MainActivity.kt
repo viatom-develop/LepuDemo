@@ -150,6 +150,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     Manifest.permission.BLUETOOTH_ADVERTISE,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 )
                 .onExplainRequestReason { scope, deniedList ->
                     scope.showRequestReasonDialog(
@@ -174,7 +176,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_ADMIN
+                    Manifest.permission.BLUETOOTH_ADMIN,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 )
                 .onExplainRequestReason { scope, deniedList ->
                     scope.showRequestReasonDialog(
@@ -235,11 +239,11 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         } else {
             // Save the original file path. Er1, VBeat and HHM1 are currently supported
             val rawFolders = SparseArray<String>()
-            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
+//            rawFolders.set(Bluetooth.MODEL_ER1, "${getExternalFilesDir(null)?.absolutePath}/er1")
 //            rawFolders.set(Bluetooth.MODEL_ER1_N, "${getExternalFilesDir(null)?.absolutePath}/vbeat")
 //            rawFolders.set(Bluetooth.MODEL_HHM1, "${getExternalFilesDir(null)?.absolutePath}/hhm1")
 
-            BleServiceHelper.BleServiceHelper.initRawFolder(rawFolders).initService(application)
+            BleServiceHelper.BleServiceHelper.initLog(true).initRawFolder(rawFolders).initService(application)
         }
     }
 
@@ -491,12 +495,24 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         //------------------er2/lp er2/duoek/hhm2/hhm3----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetTime)
             .observe(this) {
+                BleServiceHelper.BleServiceHelper.er2GetInfo(it.model)
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2Info)
+            .observe(this) {
                 if (this::dialog.isInitialized) {
                     dialog.dismiss()
                 }
-                val intent = Intent(this, Er2Activity::class.java)
-                intent.putExtra("model", it.model)
-                startActivity(intent)
+                val data = it.data as com.lepu.blepro.ext.er2.DeviceInfo
+                // ER2-S信心相联 定制版本
+                if (data.branchCode.equals("40020000")) {
+                    val intent = Intent(this, Er2SActivity::class.java)
+                    intent.putExtra("model", it.model)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent(this, Er2Activity::class.java)
+                    intent.putExtra("model", it.model)
+                    startActivity(intent)
+                }
             }
         //------------------bp2/bp2a/bp2t----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2SyncTime)

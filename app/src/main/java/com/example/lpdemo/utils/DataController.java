@@ -10,6 +10,7 @@ public class DataController {
     public static int[] amp = {5, 10 ,20};
     public static int ampKey = 0;
 
+    public static int nWave = 1; // BP 250HZ 2, DuoEK 125HZ 1, ER2-S信心相联 定制版本 500HZ 4
     public static int maxIndex;
     public static float mm2px;
 
@@ -66,6 +67,7 @@ public class DataController {
     }
 
     synchronized public static void clear() {
+        nWave = 1;
         index = 0;
         dataRec = new float[0];
     }

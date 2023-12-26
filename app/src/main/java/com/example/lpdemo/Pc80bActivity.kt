@@ -104,8 +104,11 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         }
         bleState.observe(this) {
             if (it) {
+                waveHandler.removeCallbacks(ecgWaveTask)
+                waveHandler.postDelayed(ecgWaveTask, 1000)
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
+                waveHandler.removeCallbacks(ecgWaveTask)
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
         }
@@ -119,6 +122,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initEcgView() {
+        DataController.nWave = 1
         // cal screen
         val dm = resources.displayMetrics
         val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
@@ -135,7 +139,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         ecgView = EcgView(this)
         ecg_view.addView(ecgView)
 
-        waveHandler.post(ecgWaveTask)
+        waveHandler.removeCallbacks(ecgWaveTask)
+        waveHandler.postDelayed(ecgWaveTask, 1000)
 
     }
 
@@ -239,6 +244,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         Log.d(TAG, "onDestroy")
         waveHandler.removeCallbacks(ecgWaveTask)
         DataController.clear()
+        dataEcgSrc.value = null
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

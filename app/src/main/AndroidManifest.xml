@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -46,6 +48,7 @@
         <activity android:name=".LemActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".Er1Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".Er2Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".Er2SActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".Bp2Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".Bp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".LpBp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>

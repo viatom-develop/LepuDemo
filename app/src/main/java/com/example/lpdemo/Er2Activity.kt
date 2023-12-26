@@ -38,7 +38,6 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
-    private var isStartRtTask = false
     /**
      * rt wave
      */
@@ -47,7 +46,6 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
 
     inner class EcgWaveTask : Runnable {
         override fun run() {
-            if (!isStartRtTask) return
             val interval: Int = when {
                 DataController.dataRec.size > 250 -> {
                     30
@@ -75,6 +73,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
         setContentView(R.layout.activity_er2)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
+        DataController.nWave = 1
         initView()
         initEventBus()
     }
@@ -116,14 +115,11 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.er2SetConfig(model, config)
         }
         start_rt_task.setOnClickListener {
-            isStartRtTask = true
-            if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                waveHandler.post(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.startRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            waveHandler.postDelayed(ecgWaveTask, 1000)
+            BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
         stop_rt_task.setOnClickListener {
-            isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
@@ -135,17 +131,16 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.er2GetFileList(model)
         }
         read_file.setOnClickListener {
-            if (isStartRtTask) {
-                isStartRtTask = false
-                waveHandler.removeCallbacks(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
         }
         bleState.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
+                waveHandler.removeCallbacks(ecgWaveTask)
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
         }
@@ -285,7 +280,9 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         waveHandler.removeCallbacks(ecgWaveTask)
+        BleServiceHelper.BleServiceHelper.stopRtTask(model)
         DataController.clear()
+        dataEcgSrc.value = null
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

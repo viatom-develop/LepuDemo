@@ -38,7 +38,6 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
-    private var isStartRtTask = false
     /**
      * rt wave
      */
@@ -119,14 +118,11 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.lpBp2wSetConfig(model, config)
         }
         start_rt_task.setOnClickListener {
-            isStartRtTask = true
-            if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                waveHandler.post(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.startRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            waveHandler.postDelayed(ecgWaveTask, 1000)
+            BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
         stop_rt_task.setOnClickListener {
-            isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
@@ -149,19 +145,13 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.lpBp2wGetFileListCrc(model, Constant.LpBp2wListType.USER_TYPE)
         }
         read_file.setOnClickListener {
-            if (isStartRtTask) {
-                isStartRtTask = false
-                waveHandler.removeCallbacks(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
         }
         write_users.setOnClickListener {
-            if (isStartRtTask) {
-                isStartRtTask = false
-                waveHandler.removeCallbacks(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            BleServiceHelper.BleServiceHelper.stopRtTask(model)
             userList.clear()
             val user = UserInfo()
             user.aid = 12345
@@ -204,6 +194,8 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
+                waveHandler.removeCallbacks(ecgWaveTask)
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
@@ -217,6 +209,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initEcgView() {
+        DataController.nWave = 2
         // cal screen
         val dm = resources.displayMetrics
         val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
@@ -423,7 +416,9 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         waveHandler.removeCallbacks(ecgWaveTask)
+        BleServiceHelper.BleServiceHelper.stopRtTask(model)
         DataController.clear()
+        dataEcgSrc.value = null
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

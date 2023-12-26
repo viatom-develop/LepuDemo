@@ -18,6 +18,7 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
+import com.lepu.blepro.utils.FilterUtil
 import kotlinx.android.synthetic.main.activity_bp2.*
 import kotlin.math.floor
 
@@ -35,7 +36,6 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
-    private var isStartRtTask = false
     /**
      * rt wave
      */
@@ -112,14 +112,11 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.bp2SetConfig(model, config)
         }
         start_rt_task.setOnClickListener {
-            isStartRtTask = true
-            if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                waveHandler.post(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.startRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            waveHandler.postDelayed(ecgWaveTask, 1000)
+            BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
         stop_rt_task.setOnClickListener {
-            isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
@@ -131,11 +128,8 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.bp2GetFileList(model)
         }
         read_file.setOnClickListener {
-            if (isStartRtTask) {
-                isStartRtTask = false
-                waveHandler.removeCallbacks(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
-            }
+            waveHandler.removeCallbacks(ecgWaveTask)
+            BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
         }
         bleState.observe(this) {
@@ -143,6 +137,8 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
             } else {
+                waveHandler.removeCallbacks(ecgWaveTask)
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
             }
@@ -157,6 +153,7 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun initEcgView() {
         // cal screen, 250HZ
+        DataController.nWave = 2
         val dm = resources.displayMetrics
         val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
         DataController.maxIndex = index
@@ -236,7 +233,7 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
                         data_log.text = "lead status：${if (ecgIng.isLeadOff) "lead off" else "lead on"}\n" +
                                 "pool signal：${if (ecgIng.isPoolSignal) "yes" else "no"}\n" +
                                 "duration: ${ecgIng.curDuration} s"
-                        DataController.receive(data.param.ecgFloats)
+                        DataController.receive(data.param.ecgFloatsFilter)
                         // sampling rate：250HZ
                         // mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
                     }
@@ -293,7 +290,7 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
                     val startTime = DateUtil.getSecondTimestamp(data.fileName)
                     ecgData.fileName = data.fileName
                     ecgData.duration = file.recordingTime
-                    ecgData.shortData = file.waveShortData
+                    ecgData.shortData = FilterUtil.getEcgFileFilterData(it.model, data.content)
                     ecgData.startTime = startTime
                     ecgList.add(ecgData)
                     ecgAdapter.setNewInstance(ecgList)
@@ -338,7 +335,9 @@ class Bp2Activity : AppCompatActivity(), BleChangeObserver {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         waveHandler.removeCallbacks(ecgWaveTask)
+        BleServiceHelper.BleServiceHelper.stopRtTask(model)
         DataController.clear()
+        dataEcgSrc.value = null
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

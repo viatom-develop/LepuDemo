@@ -10,9 +10,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import com.example.lpdemo.R;
 import com.example.lpdemo.utils.DataController;
-import com.example.lpdemo.utils.RunVarsKt;
-import com.lepu.blepro.objs.Bluetooth;
-
 import static com.example.lpdemo.utils.DataController.ampKey;
 
 /**
@@ -37,9 +34,6 @@ public class EcgView extends View {
     private int maxIndex;
 
     private float[] dataSrc = null;
-
-    // 1: 125HZ, 2: 250HZ
-    private int ratio = 1;
 
     public EcgView(Context context) {
         super(context);
@@ -139,13 +133,6 @@ public class EcgView extends View {
         mTop = (float) (mBase - 20/ DataController.mm2px);
         mBottom = (float) (mBase + 20/ DataController.mm2px);
 
-        if (RunVarsKt.getDeviceModel() == Bluetooth.MODEL_BP2
-                || RunVarsKt.getDeviceModel() == Bluetooth.MODEL_BP2W
-                || RunVarsKt.getDeviceModel() == Bluetooth.MODEL_LP_BP2W) {
-            ratio = 2;
-        } else {
-            ratio = 1;
-        }
     }
 
     private void drawRuler(Canvas canvas) {
@@ -168,14 +155,14 @@ public class EcgView extends View {
 
                 float y = (mBase - (DataController.amp[ampKey]*dataSrc[i+4]/ DataController.mm2px));
 
-                float x = (float) (i+4)/5/ DataController.mm2px/ratio;
+                float x = (float) (i+4)/5/ DataController.mm2px/DataController.nWave;
 
                 p.moveTo(x, y);
                 i = i+4;
             } else {
                 float y1 = mBase - (DataController.amp[ampKey]*dataSrc[i]/ DataController.mm2px);
 
-                float x1 = (float) i/5/ DataController.mm2px/ratio;
+                float x1 = (float) i/5/ DataController.mm2px/DataController.nWave;
                 p.lineTo(x1, y1);
             }
         }

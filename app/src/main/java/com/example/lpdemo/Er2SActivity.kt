@@ -12,28 +12,23 @@ import com.example.lpdemo.views.EcgView
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
-import com.lepu.blepro.event.EventMsgConst
 import com.lepu.blepro.event.InterfaceEvent
-import com.lepu.blepro.ext.er1.*
+import com.lepu.blepro.ext.er2.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
-import com.lepu.blepro.utils.DecompressUtil
-import com.lepu.blepro.utils.HexString
-import kotlinx.android.synthetic.main.activity_er1.*
-import org.apache.commons.io.FileUtils
-import java.io.File
+import com.lepu.blepro.utils.FilterUtil
+import kotlinx.android.synthetic.main.activity_er2.*
 import kotlin.collections.ArrayList
 import kotlin.math.floor
 
-class Er1Activity : AppCompatActivity(), BleChangeObserver {
+class Er2SActivity : AppCompatActivity(), BleChangeObserver {
 
-    private val TAG = "Er1Activity"
-    // Bluetooth.MODEL_ER1, Bluetooth.MODEL_ER1_N, Bluetooth.MODEL_HHM1
-    private var model = Bluetooth.MODEL_ER1
+    private val TAG = "Er2SActivity"
+    private var model = Bluetooth.MODEL_DUOEK
 
-    private var config = Er1Config()
+    private var config = Er2Config()
 
     private var fileNames = arrayListOf<String>()
     private lateinit var ecgAdapter: EcgAdapter
@@ -50,32 +45,34 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
     inner class EcgWaveTask : Runnable {
         override fun run() {
             val interval: Int = when {
-                DataController.dataRec.size > 250 -> {
-                    30
+                DataController.dataRec.size > 250*2 -> {
+                    18
                 }
-                DataController.dataRec.size > 150 -> {
-                    35
+                DataController.dataRec.size > 150*2 -> {
+                    19
                 }
-                DataController.dataRec.size > 75 -> {
-                    40
+                DataController.dataRec.size > 75*2 -> {
+                    20
                 }
                 else -> {
-                    45
+                    21
                 }
             }
 
             waveHandler.postDelayed(this, interval.toLong())
 
-            val temp = DataController.draw(5)
+            val temp = DataController.draw(10)
+            Log.d("111111111111", "size:${DataController.dataRec.size}, interval:$interval")
             dataEcgSrc.value = DataController.feed(dataEcgSrc.value, temp)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_er1)
+        setContentView(R.layout.activity_er2)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
+        DataController.nWave = 4
         initView()
         initEventBus()
     }
@@ -92,7 +89,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
             if (adapter.data.size > 0) {
                 (adapter.getItem(position) as EcgData).let {
-                    val intent = Intent(this@Er1Activity, WaveEcgActivity::class.java)
+                    val intent = Intent(this@Er2SActivity, WaveEcgActivity::class.java)
                     intent.putExtra("model", model)
                     ecgData.startTime = it.startTime
                     ecgData.shortData = it.shortData
@@ -104,21 +101,22 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         get_info.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1GetInfo(model)
+            BleServiceHelper.BleServiceHelper.er2GetInfo(model)
         }
         factory_reset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1FactoryReset(model)
+            BleServiceHelper.BleServiceHelper.er2FactoryReset(model)
         }
         get_config.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1GetConfig(model)
+            BleServiceHelper.BleServiceHelper.er2GetConfig(model)
         }
         set_config.setOnClickListener {
-            config.isVibration = !config.isVibration
-            BleServiceHelper.BleServiceHelper.er1SetConfig(model, config)
+            config.isSoundOn = !config.isSoundOn
+            BleServiceHelper.BleServiceHelper.er2SetConfig(model, config)
         }
         start_rt_task.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
+            BleServiceHelper.BleServiceHelper.setRTDelayTime(model, 200)
             BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
         stop_rt_task.setOnClickListener {
@@ -130,15 +128,12 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            BleServiceHelper.BleServiceHelper.er1GetFileList(model)
+            BleServiceHelper.BleServiceHelper.er2GetFileList(model)
         }
         read_file.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
-        }
-        cancel_read_file.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1CancelReadFile(model)
         }
         bleState.observe(this) {
             if (it) {
@@ -159,15 +154,13 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initEcgView() {
-        DataController.nWave = 1
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
+        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 500).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
         DataController.mm2px = mm2px
-
         ecg_bkg.measure(0, 0)
         ecgBkg = EcgBkg(this)
         ecg_bkg.addView(ecgBkg)
@@ -178,34 +171,34 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initEventBus() {
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1Info)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2Info)
             .observe(this) {
                 val data = it.data as DeviceInfo
                 data_log.text = "$data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ResetFactory)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FactoryReset)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr1ResetFactory $data"
+                data_log.text = "EventEr2FactoryReset $data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1GetConfig)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2GetConfig)
             .observe(this) {
-                config = it.data as Er1Config
+                config = it.data as Er2Config
                 data_log.text = "$config"
-                // config.vibration
+                // config.soundOn
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1SetConfig)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr1SetConfig $data"
+                data_log.text = "EventEr2SetConfig $data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1RtData)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2RtData)
             .observe(this) {
                 val data = it.data as RtData
-                DataController.receive(data.wave.ecgFloats)
+                DataController.receive(data.wave.ecgFloatsFilter)
                 hr.text = "${data.param.hr}"
                 data_log.text = "${data.param}"
-                // sampling rate：125HZ
+                // sampling rate：500HZ
                 // mV = n * 0.002467（data.wave.ecgFloats = data.wave.ecgShorts * 0.002467）
                 // data.param.batteryState：0（no charge），1（charging），2（charging complete），3（low battery）
                 // data.param.battery：0-100
@@ -213,44 +206,50 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                 // data.param.curStatus：0（idle），1（preparing），2（measuring），3（saving file），4（saving succeed），
                 //                       5（less than 30s, file not saved），6（6 retests），7（lead off）
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1FileList)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FileList)
             .observe(this) {
                 fileNames = it.data as ArrayList<String>
                 data_log.text = "$fileNames"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadFileError)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadFileError)
             .observe(this) {
                 val data = it.data as Boolean
                 data_log.text = "EventEr1ReadFileError $data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadingFileProgress)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int  // 0-100
                 data_log.text = "${fileNames[0]} $data %"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1ReadFileComplete)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadFileComplete)
             .observe(this) {
-                val rawFile = getOffset(it.model, fileNames[0], "")
-                val data = it.data as Er1File
-                if (it.model == Bluetooth.MODEL_ER1_N) {
-                    val file = if (rawFile.isEmpty()) {
-                        Er1HrFile(data.content)
-                    } else {
-                        Er1HrFile(rawFile)
-                    }
+                val data = it.data as Er2File
+                if (data.fileName.contains("a")) {
+                    val file = Er2AnalysisFile(data.content)
                     // file.recordingTime：unit（s）
-                } else {
-                    val file = if (rawFile.isEmpty()) {
-                        Er1EcgFile(data.content)
-                    } else {
-                        Er1EcgFile(rawFile)
-                    }
-                    val ecgShorts = DecompressUtil.er1Decompress(file.waveData)
+                    // file.resultList.diagnosis：Er2EcgDiagnosis
+                    // diagnosis.isRegular：Whether Regular ECG Rhythm
+                    // diagnosis.isPoorSignal：Whether Unable to analyze
+                    // diagnosis.isLessThan30s：Whether Less than 30s (no analysis if less than 30s)
+                    // diagnosis.isMoving：Whether Action detected (not analyzed)
+                    // diagnosis.isFastHr：Whether Fast Heart Rate
+                    // diagnosis.isSlowHr：Whether Slow Heart Rate
+                    // diagnosis.isIrregular：Whether Irregular ECG Rhythm
+                    // diagnosis.isPvcs：Whether Possible ventricular premature beats
+                    // diagnosis.isHeartPause：Whether Possible heart pause
+                    // diagnosis.isFibrillation：Whether Possible Atrial fibrillation
+                    // diagnosis.isWideQrs：Whether Wide QRS duration
+                    // diagnosis.isProlongedQtc：Whether QTc is prolonged
+                    // diagnosis.isShortQtc：Whether QTc is short
+                    // diagnosis.isStElevation：Whether ST segment elevation
+                    // diagnosis.isStDepression：Whether ST segment depression
+                } else if (data.fileName.contains("R")) {
+                    val file = Er2EcgFile(data.content)
                     val ecgData = EcgData()
                     val startTime = DateUtil.getSecondTimestamp(data.fileName.replace("R", ""))
                     ecgData.fileName = data.fileName
                     ecgData.duration = file.recordingTime
-                    ecgData.shortData = ecgShorts
+                    ecgData.shortData = FilterUtil.getEcgFileFilterData(it.model, data.content)
                     ecgData.startTime = startTime
                     ecgList.add(ecgData)
                     ecgAdapter.setNewInstance(ecgList)
@@ -262,33 +261,11 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                 fileNames.removeAt(0)
                 readFile()
             }
-        LiveEventBus.get<Int>(EventMsgConst.Download.EventIsCancel)
-            .observe(this) {
-                // model
-
-            }
     }
 
     private fun readFile() {
         if (fileNames.size == 0) return
-        val offset = getOffset(model, fileNames[0], "")
-        BleServiceHelper.BleServiceHelper.er1ReadFile(model, fileNames[0], "", offset.size)
-    }
-
-    // sdk save the original file name : userId + fileName + .dat
-    private fun getOffset(model: Int, fileName: String, userId: String): ByteArray {
-        val trimStr = HexString.trimStr(fileName)
-        BleServiceHelper.BleServiceHelper.rawFolder?.get(model)?.let { s ->
-            val mFile = File(s, "$userId$trimStr.dat")
-            if (mFile.exists()) {
-                FileUtils.readFileToByteArray(mFile)?.let {
-                    return it
-                }
-            } else {
-                return ByteArray(0)
-            }
-        }
-        return ByteArray(0)
+        BleServiceHelper.BleServiceHelper.er2ReadFile(model, fileNames[0])
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
