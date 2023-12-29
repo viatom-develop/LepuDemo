@@ -69,7 +69,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4,  // PulsebitExActivity
         Bluetooth.MODEL_CHECKME_LE,  // CheckmeLeActivity
         Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
-        Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_CMI_PC303,  // Pc303Activity
+        Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_GM_300SNT_BLE,
+        Bluetooth.MODEL_CMI_PC303,  // Pc303Activity
         Bluetooth.MODEL_CHECK_POD, Bluetooth.MODEL_CHECKME_POD_WPS,  // CheckmePodActivity
         Bluetooth.MODEL_AOJ20A,  // Aoj20aActivity
         Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE, Bluetooth.MODEL_SP20_WPS,  // Sp20Activity
@@ -351,7 +352,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                         startActivity(Intent(this, Pc68bActivity::class.java))
                     }
                     Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
-                    Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_CMI_PC303-> {
+                    Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_GM_300SNT_BLE,
+                    Bluetooth.MODEL_CMI_PC303-> {
                         val intent = Intent(this, Pc303Activity::class.java)
                         intent.putExtra("model", it)
                         startActivity(intent)

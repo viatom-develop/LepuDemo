@@ -25,7 +25,8 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc303Activity"
     // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
-    // Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_CMI_303
+    // Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_GM_300SNT_BLE,
+    // Bluetooth.MODEL_CMI_303
     private var model = Bluetooth.MODEL_PC300
 
     private lateinit var ecgBkg: EcgBkg
