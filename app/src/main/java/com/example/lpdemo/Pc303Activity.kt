@@ -100,6 +100,8 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                waveHandler.removeCallbacks(ecgWaveTask)
+                waveHandler.postDelayed(ecgWaveTask, 1000)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
@@ -232,9 +234,13 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 } else {
                     "measuring ${data.seqNo}"
                 }
+                Log.d(TAG, "${data.digit}, ${data.ecgInts.joinToString(",")}")
+                Log.d(TAG, "${data.digit}, ${data.ecgFloats.joinToString(",")}")
                 // sampling rate：150HZ
-                // data.digit：0，mV = n * (1 / 28.5)（data.ecgFloats = data.ecgInts * (1 / 28.5)）
-                // data.digit：1，mV = n * (1 / 394)（data.ecgFloats = data.ecgInts * (1 / 394)）
+                // data.digit：0，data.ecgInts：0-255
+                // mV = (n - 128) * (1 / 28.5)（data.ecgFloats = (data.ecgInts - 128) * (1 / 28.5)）
+                // data.digit：1，data.ecgInts：0-4095
+                // mV = (n - 2048) * (1 / 394)（data.ecgFloats = (data.ecgInts - 2048) * (1 / 394)）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult)
             .observe(this) {

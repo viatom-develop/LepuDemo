@@ -72,10 +72,10 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
         }
         bleState.observe(this) {
             if (it) {
-                waveHandler.removeCallbacks(ecgWaveTask)
-                waveHandler.postDelayed(ecgWaveTask, 1000)
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                waveHandler.removeCallbacks(ecgWaveTask)
+                waveHandler.postDelayed(ecgWaveTask, 1000)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
