@@ -19,11 +19,7 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
-import com.lepu.blepro.utils.DecompressUtil
-import com.lepu.blepro.utils.HexString
 import kotlinx.android.synthetic.main.activity_er1.*
-import org.apache.commons.io.FileUtils
-import java.io.File
 import kotlin.collections.ArrayList
 import kotlin.math.floor
 
@@ -95,7 +91,7 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                     val intent = Intent(this@Er1Activity, WaveEcgActivity::class.java)
                     intent.putExtra("model", model)
                     ecgData.startTime = it.startTime
-                    ecgData.shortData = it.shortData
+                    ecgData.fileName = it.fileName
                     startActivity(intent)
                 }
             }
@@ -245,12 +241,10 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         Er1EcgFile(rawFile)
                     }
-                    val ecgShorts = DecompressUtil.er1Decompress(file.waveData)
                     val ecgData = EcgData()
                     val startTime = DateUtil.getSecondTimestamp(data.fileName.replace("R", ""))
                     ecgData.fileName = data.fileName
                     ecgData.duration = file.recordingTime
-                    ecgData.shortData = ecgShorts
                     ecgData.startTime = startTime
                     ecgList.add(ecgData)
                     ecgAdapter.setNewInstance(ecgList)
@@ -273,22 +267,6 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
         if (fileNames.size == 0) return
         val offset = getOffset(model, fileNames[0], "")
         BleServiceHelper.BleServiceHelper.er1ReadFile(model, fileNames[0], "", offset.size)
-    }
-
-    // sdk save the original file name : userId + fileName + .dat
-    private fun getOffset(model: Int, fileName: String, userId: String): ByteArray {
-        val trimStr = HexString.trimStr(fileName)
-        BleServiceHelper.BleServiceHelper.rawFolder?.get(model)?.let { s ->
-            val mFile = File(s, "$userId$trimStr.dat")
-            if (mFile.exists()) {
-                FileUtils.readFileToByteArray(mFile)?.let {
-                    return it
-                }
-            } else {
-                return ByteArray(0)
-            }
-        }
-        return ByteArray(0)
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

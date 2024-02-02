@@ -6,8 +6,11 @@ import android.os.Handler
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lpdemo.utils.ecgData
+import com.example.lpdemo.utils.getOffset
 import com.example.lpdemo.views.WaveEcgView
+import com.lepu.blepro.ext.er1.Er1EcgFile
 import com.lepu.blepro.objs.Bluetooth
+import com.lepu.blepro.utils.DecompressUtil
 
 class WaveEcgActivity : AppCompatActivity() {
 
@@ -31,7 +34,15 @@ class WaveEcgActivity : AppCompatActivity() {
         mAlertDialog?.show()
 
         model = intent.getIntExtra("model", Bluetooth.MODEL_ER1)
-        filterWaveData = ecgData.shortData
+        filterWaveData = when (model) {
+            Bluetooth.MODEL_ER1, Bluetooth.MODEL_HHM1 -> {
+                val data = Er1EcgFile(getOffset(model, ecgData.fileName, ""))
+                DecompressUtil.er1Decompress(data.waveData)
+            }
+            else -> {
+                ecgData.shortData
+            }
+        }
         mills = ecgData.startTime
 
         handler.postDelayed({
