@@ -13,7 +13,8 @@ Version at least Android 7.0
 > lepu-blepro-0.0.5.aar : add SP-20, Vetcorder, BPM, Bioland-BGM, PoctorM3102, LPM311, LEM  
 > lepu-blepro-0.0.8.aar : add ER1, ER2, DuoEK, VBeat, O2, BP2, BP2W, LP-BP2W  
 > lepu-blepro-0.0.10.aar : add Ventilator  
-> lepu-blepro-1.0.1.aar : add AD5, FHR, VCOIMN
+> lepu-blepro-1.0.1.aar : add AD5, FHR, VCOIMN  
+> lepu-blepro-1.0.5.aar : add ER3, Lepod
 
 ## import SDK
 
@@ -724,6 +725,56 @@ mV = n * 0.002467
 + #### 9.er2FactoryReset(model)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
+### ER3 (Bluetooth.MODEL_ER3)
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3SetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.er3GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3Info).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er3.DeviceInfo
+
++ #### 2.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 3.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 4.Real-time Data
+
+sampling rate : 250HZ  
+mV = n * 0.00244  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3RtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.er3.RtData  
+> param : RtParam  
+> - batteryState : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - battery : 0-100  
+> - recordTime : unit (s)  
+
+> wave : RtWave  
+> - For specific usage, please refer to Er3Activity file  
+
++ #### 5.er3GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3GetConfig).post(InterfaceEvent(model, data))`  
+`data` : int(0:Monitoring mode 0.5-40, 1:Surgical mode 1-20, 2:ST mode 0.05-40)  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3GetConfigError).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : get config error)  
+
++ #### 6.er3SetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3SetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 7.er3FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3FactoryReset).post(InterfaceEvent(model, data))`  
 `data` : boolean (true : factory reset success, false : factory reset failed)  
 
 
