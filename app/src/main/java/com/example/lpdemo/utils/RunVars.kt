@@ -75,3 +75,7 @@ fun getOffset(model: Int, fileName: String, userId: String): ByteArray {
     }
     return ByteArray(0)
 }
+
+fun toSignedShort(byte1: Byte, byte2: Byte):Short {
+    return ((byte2.toInt() shl 8) or (byte1.toInt() and 0xFF)).toShort()
+}

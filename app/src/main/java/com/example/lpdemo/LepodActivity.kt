@@ -15,7 +15,13 @@ import com.lepu.blepro.ext.lepod.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
+import com.lepu.blepro.utils.DecompressUtil
 import kotlinx.android.synthetic.main.activity_lepod.*
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import kotlin.math.floor
 
 class LepodActivity : AppCompatActivity(), BleChangeObserver {
@@ -143,6 +149,37 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
             isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
+        }
+        // File data decompress
+        decompress_test.setOnClickListener {
+            // download file path
+            // for example : /sdcard/Android/data/com.example.lpdemo/files/W20240111145412
+            val file = "${getExternalFilesDir(null)?.absolutePath}/W20240111145412"
+            if (!File(file).exists()) return@setOnClickListener
+            val bytes = IOUtils.toByteArray(FileInputStream(file), 10)
+            val leadType = bytes[2].toInt()
+            Thread {
+                DecompressUtil.uncompressEcgDataByType(leadType, file)
+                // The format of the decompressed data file is two bytes per sampling point in small end mode
+                // leadType = 0, 12 channel data, other 8 channel data
+                // 12 channel data :
+                // W20240111145412_I, W20240111145412_II, W20240111145412_III, W20240111145412_aVF
+                // W20240111145412_aVL, W20240111145412_aVR, W20240111145412_V1, W20240111145412_V2
+                // W20240111145412_V3, W20240111145412_V4, W20240111145412_V5, W20240111145412_V6
+                // 8 channel data :
+                // W20240111145412_I, W20240111145412_II, W20240111145412_III, W20240111145412_aVF
+                // W20240111145412_aVL, W20240111145412_aVR, W20240111145412_V1, W20240111145412_V5
+                val file_I = "${getExternalFilesDir(null)?.absolutePath}/W20240111145412_I"
+                if (File(file_I).exists()) {
+                    // sampling rate：250HZ
+                    // mV = n * 0.00244
+                    val data = FileUtils.readFileToByteArray(File(file_I))
+                    val shorts = mutableListOf<Float>()
+                    for (i in 0 until data.size.div(2)) {
+                        shorts.add(toSignedShort(data[i*2], data[i*2+1]) * 0.00244f)
+                    }
+                }
+            }.start()
         }
         bleState.observe(this) {
             if (it) {

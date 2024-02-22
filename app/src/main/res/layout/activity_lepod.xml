@@ -403,6 +403,12 @@
                     android:text="stop rt task"
                     android:layout_marginStart="@dimen/dp_10"/>
             </LinearLayout>
+            <Button
+                android:id="@+id/decompress_test"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="file decompress"
+                android:layout_marginStart="@dimen/dp_10"/>
             <TextView
                 android:id="@+id/data_log"
                 android:layout_width="wrap_content"
