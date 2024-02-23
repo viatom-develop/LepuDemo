@@ -118,6 +118,11 @@ class EcnActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as RtData
                 data_log.text = "$data"
+//                data.wave.len1 : 通道数
+//                data.wave.len2 : 每通道采样点数
+                for (i in 0 until data.wave.len1) {
+                    val data = data.wave.wave.copyOfRange(i*data.wave.len2, (i+1)*data.wave.len2)  // 每通道采样点
+                }
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnGetRtState)
             .observe(this) {
