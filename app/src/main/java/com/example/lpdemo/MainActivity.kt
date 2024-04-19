@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_FHR,  // FhrActivity
         Bluetooth.MODEL_VTM_AD5, Bluetooth.MODEL_FETAL,  // Ad5Activity
         Bluetooth.MODEL_VCOMIN,   // VcominActivity
+        Bluetooth.MODEL_AIRBP,   // AirBpActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -107,6 +108,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        LogcatHelper.getInstance(this).stop()
+        LogcatHelper.getInstance(this).start()
         initView()
         initEventBus()
         needPermission()
@@ -554,7 +557,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 if (this::dialog.isInitialized) {
                     dialog.dismiss()
                 }
-                startActivity(Intent(this, Er3Activity::class.java))
+                val intent = Intent(this, Er3Activity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
             }
         //------------------lepod----------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodSetTime)
@@ -562,7 +567,17 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 if (this::dialog.isInitialized) {
                     dialog.dismiss()
                 }
-                startActivity(Intent(this, LepodActivity::class.java))
+                val intent = Intent(this, LepodActivity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
+            }
+        //------------------airbp----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpSetTime)
+            .observe(this) {
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
+                startActivity(Intent(this, AirBpActivity::class.java))
             }
     }
 

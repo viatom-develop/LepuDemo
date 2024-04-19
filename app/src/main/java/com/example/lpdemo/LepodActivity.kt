@@ -107,6 +107,7 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lepod)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -123,14 +124,14 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
         factory_reset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lepodFactoryReset(model)
         }
-        get_config.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lepodGetConfig(model)
+        get_mode.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.lepodGetMode(model)
         }
-        set_config.setOnClickListener {
+        set_mode.setOnClickListener {
             // 0: 监护模式0.5-40
             // 1: 手术模式1-20
             // 2: ST模式0.05-40
-            BleServiceHelper.BleServiceHelper.lepodSetConfig(model, 0)
+            BleServiceHelper.BleServiceHelper.lepodSetMode(model, 0)
         }
         start_ecg.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lepodStartEcg(model)
@@ -153,7 +154,7 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
         // File data decompress
         decompress_test.setOnClickListener {
             // download file path
-            // for example : /sdcard/Android/data/com.example.lpdemo/files/W20240111145412
+            // for example : /assets/W20240111145412
             val file = "${getExternalFilesDir(null)?.absolutePath}/W20240111145412"
             if (!File(file).exists()) return@setOnClickListener
             val bytes = IOUtils.toByteArray(FileInputStream(file), 10)

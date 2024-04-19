@@ -106,6 +106,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_er3)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -122,14 +123,14 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         factory_reset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er3FactoryReset(model)
         }
-        get_config.setOnClickListener {
+        get_mode.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er3GetConfig(model)
         }
-        set_config.setOnClickListener {
+        set_mode.setOnClickListener {
             // 0: 监护模式0.5-40
             // 1: 手术模式1-20
             // 2: ST模式0.05-40
-            BleServiceHelper.BleServiceHelper.er3SetConfig(model, 0)
+            BleServiceHelper.BleServiceHelper.er3SetMode(model, 0)
         }
         start_rt_task.setOnClickListener {
             isStartRtTask = true
@@ -146,7 +147,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         // File data decompress
         decompress_test.setOnClickListener {
             // download file path
-            // for example : /sdcard/Android/data/com.example.lpdemo/files/W20240111145412
+            // for example : /assets/W20240111145412
             val file = "${getExternalFilesDir(null)?.absolutePath}/W20240111145412"
             if (!File(file).exists()) return@setOnClickListener
             val bytes = IOUtils.toByteArray(FileInputStream(file), 10)
