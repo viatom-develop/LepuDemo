@@ -14,7 +14,8 @@ Version at least Android 7.0
 > lepu-blepro-0.0.8.aar : add ER1, ER2, DuoEK, VBeat, O2, BP2, BP2W, LP-BP2W  
 > lepu-blepro-0.0.10.aar : add Ventilator  
 > lepu-blepro-1.0.1.aar : add AD5, FHR, VCOIMN  
-> lepu-blepro-1.0.5.aar : add ER3, Lepod
+> lepu-blepro-1.0.5.aar : add ER3, Lepod  
+> lepu-blepro-1.0.6.aar : add AirBP  
 
 ## import SDK
 
@@ -72,7 +73,79 @@ autoReconnect : Whether auto connect BluetoothDevice after disconnect
 Disconnect model BluetoothDevice
 
 
+### AirBP (Bluetooth.MODEL_AIRBP)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpSetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.airBpGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpGetInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.airbp.DeviceInfo  
+
++ #### 2.airBpGetBattery(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpGetBattery).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<Record>`, com.lepu.blepro.ext.airbp.Battery  
+> state : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> percent : 1-100  
+
++ #### 3.airBpSetConfig(model, beepSwitchOn)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpSetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 4.airBpGetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpGetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : beep switch on, false : beep switch off)  
+
++ #### 5.Real-time Pressure
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtData).post(InterfaceEvent(model, data))`  
+`data` : Int  
+> ps : unit (mmHg)  
+
++ #### 6.Real-time State
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtResult).post(InterfaceEvent(model, data))`  
+`data` : Int  
+> state : 0-17
+> 0 : inflating  
+> 1 : notice: stop pumping  
+> 2 : measuring  
+> 3 : measure result  
+> 4 : pump again  
+> 5 : measure failed, noise  
+> 6 : measure failed, weak signal  
+> 7 : measure failed, air is leaking  
+> 8 : measure failed, air is blocked  
+> 9 : system error  
+> 10 : no enough pumping  
+> 11 : over range  
+> 12 : pressure over 300 mmHg, stop pumping  
+> 13 : pump timeout  
+> 14 : measure result, irregular heart beat detected  
+> 15 : measure result, disturb detected  
+> 16 : measure finished, user deflate  
+> 17 : measure finished, over pumped  
+
++ #### 7.Real-time Result
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtResult).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.airbp.RtResult  
+> stateCode : refer to 6.Real-time state  
+
+
 ### AOJ-20A (Bluetooth.MODEL_AOJ20A)
+
+Service UUID : 0000FFE0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFE2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFE1-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aSetTime).post(InterfaceEvent(model, true))`  
@@ -107,6 +180,10 @@ Normal result :
 
 ### AP-20 (Bluetooth.MODEL_AP20)
 ### AP-20-WPS (Bluetooth.MODEL_AP20_WPS)
+
+Service UUID : 0000FFB0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFB2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFB2-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetTime).post(InterfaceEvent(model, true))` 
@@ -174,6 +251,10 @@ SDK will send this event when BluetoothDevice connected :
 
 ### Bioland-BGM (Bluetooth.MODEL_BIOLAND_BGM)
 
+Service UUID : 00001000-0000-1000-8000-00805F9B34FB  
+Write UUID : 00001003-0000-1000-8000-00805F9B34FB  
+Notify UUID : 00001002-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
 
@@ -209,6 +290,10 @@ If the method biolandBgmGetInfo or biolandBgmGetGluData is called after the devi
 ### BP2 (Bluetooth.MODEL_BP2)
 ### BP2A (Bluetooth.MODEL_BP2A)
 ### BP2T (Bluetooth.MODEL_BP2T)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2.EventBp2SyncTime).post(InterfaceEvent(model, true))`  
@@ -301,6 +386,10 @@ mV = n * 0.003098
 
 
 ### BP2W (Bluetooth.MODEL_BP2W)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wSyncTime).post(InterfaceEvent(model, true))`  
@@ -398,6 +487,10 @@ mV = n * 0.003098
 
 ### BPM-188 (Bluetooth.MODEL_BPM)
 
+Service UUID : 000018F0-0000-1000-8000-00805F9B34FB  
+Write UUID : 00002AF1-0000-1000-8000-00805F9B34FB  
+Notify UUID : 00002AF0-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmSyncTime).post(InterfaceEvent(model, true))`  
 
@@ -448,6 +541,10 @@ SDK will send this event when BluetoothDevice connected :
 
 
 ### CheckmeLE (Bluetooth.MODEL_CHECKME_LE)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmeLE.EventCheckmeLeSetTime).post(InterfaceEvent(model, true))`  
@@ -515,6 +612,10 @@ Read file complete :
 ### Vetcorder (Bluetooth.MODEL_VETCORDER)
 ### CheckADV (Bluetooth.MODEL_CHECK_ADV)
 
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
 
@@ -531,6 +632,10 @@ mV = n * 0.0097683451362458
 
 ### Checkme Pod (Bluetooth.MODEL_CHECK_POD)
 ### Checkme Pod-WPS (Bluetooth.MODEL_CHECKME_POD_WPS)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodSetTime).post(InterfaceEvent(model, true))`  
@@ -585,6 +690,10 @@ Get filelist complete :
 ### ER1 (Bluetooth.MODEL_ER1)
 ### VBeat (Bluetooth.MODEL_ER1_N)
 ### HHM1 (Bluetooth.MODEL_HHM1)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER1.EventEr1SetTime).post(InterfaceEvent(model, true))`  
@@ -661,6 +770,10 @@ mV = n * 0.002467
 ### HHM2 (Bluetooth.MODEL_HHM2)
 ### HHM3 (Bluetooth.MODEL_HHM3)
 
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetTime).post(InterfaceEvent(model, true))`  
 
@@ -729,6 +842,10 @@ mV = n * 0.002467
 
 ### ER3 (Bluetooth.MODEL_ER3)
 
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3SetTime).post(InterfaceEvent(model, true))`  
 
@@ -778,7 +895,35 @@ mV = n * 0.00244
 `data` : boolean (true : factory reset success, false : factory reset failed)  
 
 
+### FHR-666(BLE) (Bluetooth.MODEL_FHR)
+
+Service UUID : 0000AE30-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000AE01-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000AE02-0000-1000-8000-00805F9B34FB  
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.Device info
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.FHR.EventFhrDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.FhrInfo  
+> hr：60-240  
+> volume：0-6  
+> strength：0-2  
+> battery：0-6
+
++ #### 2.Audio data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.FHR.EventFhrAudioData).post(InterfaceEvent(model, data))`  
+`data` : byte[]
+
+
 ### LEM1 (Bluetooth.MODEL_LEM)
+
+Service UUID : 0000FFB0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFB1-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFB2-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
@@ -828,6 +973,10 @@ SDK will send this event when BluetoothDevice connected :
 
 
 ### LP-BP2W (Bluetooth.MODEL_LP_BP2W)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSyncUtcTime).post(InterfaceEvent(model, true))`  
@@ -952,6 +1101,10 @@ Write file complete :
 
 ### LPM311 (Bluetooth.MODEL_LPM311)
 
+Service UUID : 0000FFE0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFE1-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFE1-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
 
@@ -984,6 +1137,10 @@ SDK will send this event when BluetoothDevice connected :
 ### Oxyfit-WPS (Bluetooth.MODEL_OXYFIT_WPS)
 ### KidsO2-WPS (Bluetooth.MODEL_KIDSO2_WPS)
 ### SI PO6 (Bluetooth.MODEL_SI_PO6)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo).post(InterfaceEvent(model, data))`  
@@ -1056,28 +1213,37 @@ Read file complete :
 
 
 ### PC-60FW (Bluetooth.MODEL_PC60FW)
-### PC-66B (Bluetooth.MODEL_PC66B)
-### OxySmart (Bluetooth.MODEL_OXYSMART)
 ### POD-1 (Bluetooth.MODEL_POD_1W)
-### POD-2B (Bluetooth.MODEL_POD2B)
-### PC-60NW-1 (Bluetooth.MODEL_PC_60NW_1)
-### PC-60NW_SN (Bluetooth.MODEL_PC_60NW)
-### PC-60NW (Bluetooth.MODEL_PC_60NW_NO_SN)
-### PF-10 (Bluetooth.MODEL_PF_10)
-### PF-10AW (Bluetooth.MODEL_PF_10AW)
-### PF-10AW1 (Bluetooth.MODEL_PF_10AW1)
-### PF-10BW (Bluetooth.MODEL_PF_10BW)
-### PF-10BW1 (Bluetooth.MODEL_PF_10BW1)
-### PF-20 (Bluetooth.MODEL_PF_20)
-### PF-20B (Bluetooth.MODEL_PF_20B)
-### PF-20AW (Bluetooth.MODEL_PF_20AW)
 ### S5W (Bluetooth.MODEL_S5W)
 ### S6W (Bluetooth.MODEL_S6W)
 ### S6W1 (Bluetooth.MODEL_S6W1)
 ### S7W (Bluetooth.MODEL_S7W)
 ### S7BW (Bluetooth.MODEL_S7BW)
+### PF-10 (Bluetooth.MODEL_PF_10)
+### PF-10AW (Bluetooth.MODEL_PF_10AW)
+### PF-10AW1 (Bluetooth.MODEL_PF_10AW1)
+### PF-10BW (Bluetooth.MODEL_PF_10BW)
+### PF-10BW1 (Bluetooth.MODEL_PF_10BW1)
+### PC-60NW-1 (Bluetooth.MODEL_PC_60NW_1)
+### POD-2B (Bluetooth.MODEL_POD2B)
+### PF-20 (Bluetooth.MODEL_PF_20)
+### PF-20B (Bluetooth.MODEL_PF_20B)
+### PF-20AW (Bluetooth.MODEL_PF_20AW)
+### OxySmart (Bluetooth.MODEL_OXYSMART)
+
+Service UUID : 6E400001-B5A3-F393-E0A9-E50E24DCCA9E  
+Write UUID : 6E400002-B5A3-F393-E0A9-E50E24DCCA9E  
+Notify UUID : 6E400003-B5A3-F393-E0A9-E50E24DCCA9E  
+
+### PC-66B (Bluetooth.MODEL_PC66B)
+### PC-60NW_SN (Bluetooth.MODEL_PC_60NW)
+### PC-60NW (Bluetooth.MODEL_PC_60NW_NO_SN)
 ### PC-60NW_BLE (Bluetooth.MODEL_PC60NW_BLE)
 ### PC-60NW-WPS (Bluetooth.MODEL_PC60NW_WPS)
+
+Service UUID : 0000FFF0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFF1-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :  
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
@@ -1220,6 +1386,10 @@ SDK will send this event when BluetoothDevice connected :
 
 ### PC-68B (Bluetooth.MODEL_PC68B)
 
+Service UUID : 0000FFB0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFB2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFB2-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
 
@@ -1256,6 +1426,10 @@ if you can not receive real-time data, use this method to enable.
 ### PC80B (Bluetooth.MODEL_PC80B)
 ### PC80B-BLE (Bluetooth.MODEL_PC80B_BLE)
 ### PC80B_BLE: (Bluetooth.MODEL_PC80B_BLE2)
+
+Service UUID : 0000FFF0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFF1-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
@@ -1325,6 +1499,10 @@ read file complete ：
 
 ### PC-100 (Bluetooth.MODEL_PC100)
 
+Service UUID : 0000FFF0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFF1-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)` 
 
@@ -1385,6 +1563,10 @@ Error result :
 ### PC_300SNT (Bluetooth.MODEL_PC300)
 ### PC_300SNT-BLE (Bluetooth.MODEL_PC300_BLE)
 ### GM_300SNT (Bluetooth.MODEL_GM_300SNT)
+
+Service UUID : 0000FFF0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFF1-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
@@ -1465,6 +1647,10 @@ Error result :
 
 ### PoctorM3102 (Bluetooth.MODEL_POCTOR_M3102)
 
+Service UUID : 00010203-0405-0607-0809-0A0B0C0D1910  
+Write UUID : 00010203-0405-0607-0809-0A0B0C0D2B11  
+Notify UUID : 00010203-0405-0607-0809-0A0B0C0D2B10  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
 
@@ -1479,6 +1665,10 @@ SDK will send this event when BluetoothDevice connected :
 
 ### Pulsebit (Bluetooth.MODEL_PULSEBITEX)
 ### HHM4 (Bluetooth.MODEL_HHM4)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitSetTime).post(InterfaceEvent(model, true))`  
@@ -1535,6 +1725,10 @@ Read file complete :
 ### SP-20 (Bluetooth.MODEL_SP20)
 ### SP-20-BLE (Bluetooth.MODEL_SP20_BLE)
 ### SP-20-WPS (Bluetooth.MODEL_SP20_WPS)
+
+Service UUID : 0000FFF0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFF1-0000-1000-8000-00805F9B34FB  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetTime).post(InterfaceEvent(model, true))`  
@@ -1593,6 +1787,10 @@ SDK will send this event when BluetoothDevice connected :
 ### R10 (Bluetooth.MODEL_R10)
 ### R11 (Bluetooth.MODEL_R11)
 ### LERES (Bluetooth.MODEL_LERES)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`
@@ -2068,6 +2266,10 @@ get warning setting success :
 
 ### VTM 20F (Bluetooth.MODEL_TV221U)
 
+Service UUID : 0000FFE0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFE4-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
 
@@ -2086,7 +2288,16 @@ SDK will send this event when BluetoothDevice connected :
 
 
 ### VTM AD5 (Bluetooth.MODEL_VTM_AD5)
+
+Service UUID : 0000FFE0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFE4-0000-1000-8000-00805F9B34FB  
+
 ### MD1000AF4 (Bluetooth.MODEL_FETAL)
+
+Service UUID : 00005500-D102-11E1-9B23-00025B00A5A5  
+Write UUID : 00005501-D102-11E1-9B23-00025B00A5A5  
+Notify UUID : 00005501-D102-11E1-9B23-00025B00A5A5  
 
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
@@ -2099,6 +2310,10 @@ SDK will send this event when BluetoothDevice connected :
 
 ### VCOMIN (Bluetooth.MODEL_VCOMIN)
 
+Service UUID : 0000FFF0-0000-1000-8000-00805F9B34FB  
+Write UUID : 0000FFF2-0000-1000-8000-00805F9B34FB  
+Notify UUID : 0000FFF1-0000-1000-8000-00805F9B34FB  
+
 SDK will send this event when BluetoothDevice connected :   
 `LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
 
@@ -2106,25 +2321,5 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.VCOMIN.EventVcominRtHr).post(InterfaceEvent(model, data))`  
 `data` : Int, HR
-
-
-### FHR-666(BLE) (Bluetooth.MODEL_FHR)
-
-SDK will send this event when BluetoothDevice connected :   
-`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
-
-+ #### 1.Device info
-
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.FHR.EventFhrDeviceInfo).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.ext.FhrInfo  
-> hr：60-240  
-> volume：0-6  
-> strength：0-2  
-> battery：0-6
-
-+ #### 2.Audio data
-
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.FHR.EventFhrAudioData).post(InterfaceEvent(model, data))`  
-`data` : byte[]
 
 
