@@ -102,8 +102,6 @@ class AirBpActivity : AppCompatActivity(), BleChangeObserver {
                             17 -> "打气超过 300mmHg，结束测量，结果异常"
                             else -> ""
                         }}"
-                // data.irregularHrFlag：Whether the heart rate is irregular
-                // data.storeId：Record number
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtData)
             .observe(this) {

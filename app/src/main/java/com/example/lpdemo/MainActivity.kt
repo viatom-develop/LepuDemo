@@ -99,6 +99,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_VTM_AD5, Bluetooth.MODEL_FETAL,  // Ad5Activity
         Bluetooth.MODEL_VCOMIN,   // VcominActivity
         Bluetooth.MODEL_AIRBP,   // AirBpActivity
+        Bluetooth.MODEL_PF_10AW_1, Bluetooth.MODEL_PF_10BWS,
+        Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,   // Pf10Aw1Activity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -578,6 +580,16 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     dialog.dismiss()
                 }
                 startActivity(Intent(this, AirBpActivity::class.java))
+            }
+        //------------------pf10aw1----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1SetUtcTime)
+            .observe(this) {
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
+                val intent = Intent(this, Pf10Aw1Activity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
             }
     }
 

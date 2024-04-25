@@ -63,6 +63,7 @@
         <activity android:name=".Ad5Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".VcominActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
         <activity android:name=".AirBpActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity android:name=".Pf10Aw1Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
     </application>
 
 </manifest>
