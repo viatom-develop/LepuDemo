@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityAp20Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -15,17 +16,18 @@ import com.lepu.blepro.ext.ap20.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_ap20.*
 
 class Ap20Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Ap20Activity"
     // MODEL_AP20, MODEL_AP20_WPS
     private var model = Bluetooth.MODEL_AP20
+    private lateinit var binding: ActivityAp20Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ap20)
+        binding = ActivityAp20Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -33,29 +35,29 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
 
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
         }
-        get_battery.setOnClickListener {
+        binding.getBattery.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetBattery(model)
         }
-        get_config.setOnClickListener {
+        binding.getConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.LOW_OXY_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.LOW_HR_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.HIGH_HR_THRESHOLD)
         }
-        set_config.setOnClickListener {
+        binding.setConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)
 //            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 1/*on*/)
 //            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT, 5/*(0-5)*/)
@@ -70,14 +72,14 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20DeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20RtOxyParam)
             .observe(this) {
                 val data = it.data as RtOxyParam
-                tv_oxy.text = "${data.spo2}"
-                tv_pr.text = "${data.pr}"
-                tv_pi.text = "${data.pi}"
+                binding.tvOxy.text = "${data.spo2}"
+                binding.tvPr.text = "${data.pr}"
+                binding.tvPi.text = "${data.pi}"
                 // data.spo2：0%-100%（0：invalid）
                 // data.pr：0-511bpm（0：invalid）
                 // data.pi：0%-25.5%（0：invalid）
@@ -102,12 +104,12 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20BatLevel)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "battery level : $data (0:0-25%,1:25-50%,2:50-75%,3:75-100%)"
+                binding.dataLog.text = "battery level : $data (0:0-25%,1:25-50%,2:50-75%,3:75-100%)"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20GetConfigResult)
             .observe(this) {
                 val data = it.data as GetConfigResult
-                data_log.text = when (data.type) {
+                binding.dataLog.text = when (data.type) {
                     Constant.Ap20ConfigType.BACK_LIGHT -> {
                         "Backlight level (0-5) : ${data.data}"
                     }
@@ -139,7 +141,7 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AP20.EventAp20SetConfigResult)
             .observe(this) {
                 val data = it.data as SetConfigResult
-                data_log.text = if (data.success) {
+                binding.dataLog.text = if (data.success) {
                     "Set config success"
                 } else {
                     "Set config fail"

@@ -18,6 +18,7 @@ import android.util.SparseArray
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.databinding.ActivityMainBinding
 import com.example.lpdemo.utils.*
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
@@ -29,7 +30,6 @@ import com.lepu.blepro.objs.BluetoothController
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.permissionx.guolindev.PermissionX
-import kotlinx.android.synthetic.main.activity_main.*
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 
 class MainActivity : AppCompatActivity(), BleChangeObserver {
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     private val TAG = "MainActivity"
 
     private lateinit var dialog: ProgressDialog
+    private lateinit var binding: ActivityMainBinding
 
     private val models = intArrayOf(
         Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1,
@@ -108,7 +109,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         LogcatHelper.getInstance(this).stop()
         LogcatHelper.getInstance(this).start()
@@ -263,14 +265,14 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
 
         dialog = ProgressDialog(this)
 
-        scan.setOnClickListener {
+        binding.scan.setOnClickListener {
             BleServiceHelper.BleServiceHelper.startScan(models)
         }
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
-            rcv.layoutManager = this
+            binding.rcv.layoutManager = this
         }
-        rcv.adapter = adapter
+        binding.rcv.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->
             (adapter.getItem(position) as Bluetooth).let {
                 // set interface before connect
@@ -290,7 +292,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     dialog.show()
                 }
                 BluetoothController.clear()
-                splitDevices(ble_split.text.toString())
+                splitDevices(binding.bleSplit.text.toString())
             }
         }
     }
@@ -305,7 +307,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<Bluetooth>(EventMsgConst.Discovery.EventDeviceFound)
             .observe(this) {
                 // scan result
-                splitDevices(ble_split.text.toString())
+                splitDevices(binding.bleSplit.text.toString())
                 Log.d(TAG, "EventDeviceFound")
             }
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceDisconnectReason)

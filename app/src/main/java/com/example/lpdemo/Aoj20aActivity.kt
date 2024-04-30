@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityAoj20aBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -14,37 +15,38 @@ import com.lepu.blepro.ext.aoj20a.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_aoj20a.*
 
 class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Aoj20aActivity"
     private val model = Bluetooth.MODEL_AOJ20A
+    private lateinit var binding: ActivityAoj20aBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_aoj20a)
+        binding = ActivityAoj20aBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        get_info.setOnClickListener {
+        binding.bleName.text = deviceName
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.aoj20aGetInfo(model)
         }
-        get_list.setOnClickListener {
+        binding.getList.setOnClickListener {
             BleServiceHelper.BleServiceHelper.aoj20aGetFileList(model)
         }
-        delete_data.setOnClickListener {
+        binding.deleteData.setOnClickListener {
             BleServiceHelper.BleServiceHelper.aoj20aDeleteData(model)
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
     }
@@ -53,28 +55,28 @@ class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeviceData)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 // data.battery：1-10（1：10%，2：20%...8：80%，9：90%，10：100%）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempErrorMsg)
             .observe(this) {
                 val data = it.data as ErrorResult
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempRtData)
             .observe(this) {
                 val data = it.data as TempResult
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aTempList)
             .observe(this) {
                 val data = it.data as ArrayList<Record>
-                data_log.text = data.toString()
+                binding.dataLog.text = data.toString()
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AOJ20a.EventAOJ20aDeleteData)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "DeleteData $data"
+                binding.dataLog.text = "DeleteData $data"
             }
 
     }

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityOxyBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -16,7 +17,6 @@ import com.lepu.blepro.ext.oxy.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_oxy.*
 
 class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
@@ -33,6 +33,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_CMRING, Bluetooth.MODEL_OXYFIT_WPS,
     // Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_SI_PO6
     private var model = Bluetooth.MODEL_O2RING
+    private lateinit var binding: ActivityOxyBinding
 
     private var fileNames = arrayListOf<String>()
 
@@ -52,7 +53,8 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_oxy)
+        binding = ActivityOxyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -60,21 +62,21 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
 
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             fileNames.clear()
             BleServiceHelper.BleServiceHelper.oxyGetInfo(model)
         }
-        read_file.setOnClickListener {
+        binding.readFile.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             readFile()
         }
@@ -90,22 +92,22 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
          *                          (2) O2Ring(0-20: MIN, 20-40: LOW, 40-60: MID, 60-80: HIGH, 80-100: MAX, 0 is off)
          *       "SetBuzzer", value: just for checkO2Plus(0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off)
          */
-        set_motor.setOnClickListener {
+        binding.setMotor.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX，0 is off）
             // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
             BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetMotor", 20)
         }
-        set_buzzer.setOnClickListener {
+        binding.setBuzzer.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             // checkO2Plus（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
             BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetBuzzer", 20)
         }
-        get_rt_param.setOnClickListener {
+        binding.getRtParam.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             rtHandler.post(rtTask)
         }
-        factory_reset.setOnClickListener {
+        binding.factoryReset.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
         }
@@ -115,7 +117,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 val list = data.fileList.split(",")
                 for (name in list) {
                     if (name == "") continue
@@ -145,17 +147,17 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventOxyReadFileError $data"
+                binding.dataLog.text = "EventOxyReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "进度 $data%"
+                binding.dataLog.text = "进度 $data%"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileComplete)
             .observe(this) {
                 val data = it.data as OxyFile
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
                 // data.operationMode：0（Sleep Mode），1（Minitor Mode）
@@ -174,10 +176,10 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamData)
             .observe(this) {
                 val data = it.data as RtParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
-                data_log.text = "$data"
+                binding.tvOxy.text = data.spo2.toString()
+                binding.tvPr.text = data.pr.toString()
+                binding.tvPi.text = data.pi.toString()
+                binding.dataLog.text = "$data"
                 // data.battery：0-100
                 // data.batteryState：0（no charge），1（charging），2（charging complete）
                 // data.state：0（lead off），1（lead on），other（error）
@@ -185,7 +187,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventOxyFactoryReset $data"
+                binding.dataLog.text = "EventOxyFactoryReset $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo)
             .observe(this) {

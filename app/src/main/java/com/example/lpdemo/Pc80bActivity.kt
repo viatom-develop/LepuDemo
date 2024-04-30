@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.databinding.ActivityPc80bBinding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
@@ -19,7 +20,6 @@ import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
 import com.lepu.blepro.utils.getTimeString
-import kotlinx.android.synthetic.main.activity_pc80b.*
 import kotlin.math.floor
 
 class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
@@ -28,6 +28,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE
     // Bluetooth.MODEL_PC80B_BLE2
     private var model = Bluetooth.MODEL_PC80B
+    private lateinit var binding: ActivityPc80bBinding
 
     private lateinit var ecgAdapter: EcgAdapter
     var ecgList: ArrayList<EcgData> = arrayListOf()
@@ -66,7 +67,8 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pc80b)
+        binding = ActivityPc80bBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -74,13 +76,13 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
-            ecg_file_rcv.layoutManager = this
+            binding.ecgFileRcv.layoutManager = this
         }
         ecgAdapter = EcgAdapter(R.layout.device_item, null).apply {
-            ecg_file_rcv.adapter = this
+            binding.ecgFileRcv.adapter = this
         }
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
             if (adapter.data.size > 0) {
@@ -93,23 +95,23 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                 }
             }
         }
-        ecg_bkg.post {
+        binding.ecgBkg.post {
             initEcgView()
         }
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
         }
-        get_battery.setOnClickListener {
+        binding.getBattery.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc80bGetBattery(model)
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
                 waveHandler.removeCallbacks(ecgWaveTask)
                 waveHandler.postDelayed(ecgWaveTask, 1000)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
         dataEcgSrc.observe(this) {
@@ -125,19 +127,19 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         DataController.nWave = 1
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
+        val index = floor(binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
         DataController.mm2px = mm2px
 
-        ecg_bkg.measure(0, 0)
+        binding.ecgBkg.measure(0, 0)
         ecgBkg = EcgBkg(this)
-        ecg_bkg.addView(ecgBkg)
+        binding.ecgBkg.addView(ecgBkg)
 
-        ecg_view.measure(0, 0)
+        binding.ecgView.measure(0, 0)
         ecgView = EcgView(this)
-        ecg_view.addView(ecgView)
+        binding.ecgView.addView(ecgView)
 
         waveHandler.removeCallbacks(ecgWaveTask)
         waveHandler.postDelayed(ecgWaveTask, 1000)
@@ -148,7 +150,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bDeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bBatLevel)
             .observe(this) {
@@ -159,20 +161,20 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as RtContinuousData
                 DataController.receive(data.ecgData.ecgFloats)
-                hr.text = "${data.hr}"
-                data_log.text = "$data"
+                binding.hr.text = "${data.hr}"
+                binding.dataLog.text = "$data"
                 // sampling rate：150HZ
                 // mV = (n - 2048) * (1 / 330))（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bContinuousDataEnd)
             .observe(this) {
-                data_log.text = "exit continuous measurement"
+                binding.dataLog.text = "exit continuous measurement"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bFastData)
             .observe(this) {
                 val data = it.data as RtFastData
                 if (data.measureMode == 1) {  // 1:Fast mode
-                    data_log.text = when (data.measureStage) {
+                    binding.dataLog.text = when (data.measureStage) {
                         1 -> "preparing"
                         2 -> "measuring"
                         3 -> "analyzing"
@@ -181,7 +183,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                         else -> ""
                     }
                 } else if (data.measureMode == 2) {  // 2:Continuous mode
-                    data_log.text = when (data.measureStage) {
+                    binding.dataLog.text = when (data.measureStage) {
                         1 -> "preparing"
                         5 -> "stop"  // sdk stop sending EventPc80bFastData event, then start to send EventPc80bContinuousData event
                         else -> ""
@@ -195,21 +197,21 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                     // mV = (n - 2048) * (1 / 330)（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
                 } else {
                     data.ecgResult.let {
-                        data_log.text = "result $it"
+                        binding.dataLog.text = "result $it"
                     }
                 }
-                hr.text = "${data.hr}"
-//                data_log.text = data.toString()
+                binding.hr.text = "${data.hr}"
+//                binding.dataLog.text = data.toString()
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "ReadFileError $data"
+                binding.dataLog.text = "ReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "ReadingFileProgress $data %"
+                binding.dataLog.text = "ReadingFileProgress $data %"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC80B.EventPc80bReadFileComplete)
             .observe(this) {
@@ -226,7 +228,7 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                 ecgList.add(ecgData)
                 ecgAdapter.setNewInstance(ecgList)
                 ecgAdapter.notifyDataSetChanged()
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 // sampling rate：150HZ
                 // mV = (n - 2048) * (1 / 330)（data.ecgFloats = (data.ecgInts - 2048) * (1 / 330)）
             }

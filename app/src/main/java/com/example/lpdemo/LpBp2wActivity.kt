@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.databinding.ActivityLpBp2wBinding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
@@ -18,7 +19,6 @@ import com.lepu.blepro.ext.lpbp2w.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_lp_bp2w.*
 import kotlin.math.floor
 
 class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
@@ -26,6 +26,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
     private val TAG = "LpBp2wActivity"
     // Bluetooth.MODEL_LP_BP2W
     private var model = Bluetooth.MODEL_LP_BP2W
+    private lateinit var binding: ActivityLpBp2wBinding
 
     private var config = LpBp2wConfig()
 
@@ -70,20 +71,21 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lp_bp2w)
+        binding = ActivityLpBp2wBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
-            ecg_file_rcv.layoutManager = this
+            binding.ecgFileRcv.layoutManager = this
         }
         ecgAdapter = EcgAdapter(R.layout.device_item, null).apply {
-            ecg_file_rcv.adapter = this
+            binding.ecgFileRcv.adapter = this
         }
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
             if (adapter.data.size > 0) {
@@ -96,19 +98,19 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 }
             }
         }
-        ecg_bkg.post {
+        binding.ecgBkg.post {
             initEcgView()
         }
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lpBp2wGetInfo(model)
         }
-        factory_reset.setOnClickListener {
+        binding.factoryReset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lpBp2wFactoryReset(model)
         }
-        get_config.setOnClickListener {
+        binding.getConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lpBp2wGetConfig(model)
         }
-        set_config.setOnClickListener {
+        binding.setConfig.setOnClickListener {
             config.isSoundOn = !config.isSoundOn
             config.avgMeasureMode = 1
             config.volume = 0
@@ -117,16 +119,16 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             // config.volume: 0(off), 1, 2, 3
             BleServiceHelper.BleServiceHelper.lpBp2wSetConfig(model, config)
         }
-        start_rt_task.setOnClickListener {
+        binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
             BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
-        stop_rt_task.setOnClickListener {
+        binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
-        get_file_list.setOnClickListener {
+        binding.getFileList.setOnClickListener {
             fileNames.clear()
             userList.clear()
             bpRecords.clear()
@@ -141,15 +143,15 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.ECG_TYPE)
 //            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.USER_TYPE)
         }
-        get_crc.setOnClickListener {
+        binding.getCrc.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lpBp2wGetFileListCrc(model, Constant.LpBp2wListType.USER_TYPE)
         }
-        read_file.setOnClickListener {
+        binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
         }
-        write_users.setOnClickListener {
+        binding.writeUsers.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
             userList.clear()
@@ -191,13 +193,13 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
         dataEcgSrc.observe(this) {
@@ -212,26 +214,26 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         DataController.nWave = 2
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
+        val index = floor(binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
         DataController.mm2px = mm2px
 
-        ecg_bkg.measure(0, 0)
+        binding.ecgBkg.measure(0, 0)
         ecgBkg = EcgBkg(this)
-        ecg_bkg.addView(ecgBkg)
+        binding.ecgBkg.addView(ecgBkg)
 
-        ecg_view.measure(0, 0)
+        binding.ecgView.measure(0, 0)
         ecgView = EcgView(this)
-        ecg_view.addView(ecgView)
+        binding.ecgView.addView(ecgView)
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wFactoryReset)
             .observe(this) {
@@ -244,12 +246,12 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 //                        3(bp measure x3 on, interval 90s), 4(bp measure x3 on, interval 120s)
                 // config.volume: Voice announcement volume, 0(off), 1, 2, 3
                 config = it.data as LpBp2wConfig
-                data_log.text = "$config"
+                binding.dataLog.text = "$config"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventLpBp2wSetConfig $data"
+                binding.dataLog.text = "EventLpBp2wSetConfig $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wRtData)
             .observe(this) {
@@ -269,20 +271,20 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 when (data.param.paramDataType) {
                     0 -> {
                         val bpIng = RtBpIng(data.param.paramData)
-                        tv_ps.text = "${bpIng.pressure}"
-                        tv_pr_bp.text = "${bpIng.pr}"
-                        data_log.text = "deflate：${if (bpIng.isDeflate) "yes" else "no"}\n" +
+                        binding.tvPs.text = "${bpIng.pressure}"
+                        binding.tvPrBp.text = "${bpIng.pr}"
+                        binding.dataLog.text = "deflate：${if (bpIng.isDeflate) "yes" else "no"}\n" +
                                 "pulse wave：${if (bpIng.isPulse) "yes" else "no"}\n" +
                                 "x3 index: ${data.status.avgCnt}\n" +
                                 "x3 wait tick: ${data.status.avgWaitTick} s"
                     }
                     1 -> {
                         val bpResult = RtBpResult(data.param.paramData)
-                        tv_sys.text = "${bpResult.sys}"
-                        tv_dia.text = "${bpResult.dia}"
-                        tv_mean.text = "${bpResult.mean}"
-                        tv_pr_bp.text = "${bpResult.pr}"
-                        data_log.text = "deflate：${if (bpResult.isDeflate) "yes" else "no"}\n" +
+                        binding.tvSys.text = "${bpResult.sys}"
+                        binding.tvDia.text = "${bpResult.dia}"
+                        binding.tvMean.text = "${bpResult.mean}"
+                        binding.tvPrBp.text = "${bpResult.pr}"
+                        binding.dataLog.text = "deflate：${if (bpResult.isDeflate) "yes" else "no"}\n" +
                                 "result：${
                                     when (bpResult.result) {
                                         0 -> "Normal"
@@ -295,8 +297,8 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     2 -> {
                         val ecgIng = RtEcgIng(data.param.paramData)
-                        hr.text = "${ecgIng.hr}"
-                        data_log.text =
+                        binding.hr.text = "${ecgIng.hr}"
+                        binding.dataLog.text =
                             "lead status：${if (ecgIng.isLeadOff) "lead off" else "lead on"}\n" +
                                     "pool signal：${if (ecgIng.isPoolSignal) "Yes" else "No"}\n" +
                                     "duration: ${ecgIng.curDuration} s"
@@ -306,8 +308,8 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     3 -> {
                         val ecgResult = RtEcgResult(data.param.paramData)
-                        hr.text = "${ecgResult.hr}"
-                        data_log.text = "result：${ecgResult.diagnosis.resultMess}\n" +
+                        binding.hr.text = "${ecgResult.hr}"
+                        binding.dataLog.text = "result：${ecgResult.diagnosis.resultMess}\n" +
                                 "hr：${ecgResult.hr}\n" +
                                 "qrs：${ecgResult.qrs}\n" +
                                 "pvcs：${ecgResult.pvcs}\n" +
@@ -331,12 +333,12 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wUserFileList)
             .observe(this) {
                 userList = it.data as ArrayList<UserInfo>
-                data_log.text = "$userList"
+                binding.dataLog.text = "$userList"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wBpFileList)
             .observe(this) {
                 bpRecords = it.data as ArrayList<BpRecord>
-                data_log.text = "$bpRecords"
+                binding.dataLog.text = "$bpRecords"
                 // record.startTime: unit(s)
                 // record.measureMode: 0(x1), 1(x3)
             }
@@ -346,18 +348,18 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 for (record in ecgRecords) {
                     fileNames.add(record.fileName)
                 }
-                data_log.text = "$fileNames"
+                binding.dataLog.text = "$fileNames"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileError)
             .observe(this) {
                 val data = it.data as String
-                data_log.text = "EventLpBp2wReadFileError $data"
+                binding.dataLog.text = "EventLpBp2wReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int  // 0-100
                 if (fileNames.size != 0) {
-                    data_log.text = "${fileNames[0]} $data %"
+                    binding.dataLog.text = "${fileNames[0]} $data %"
                 }
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileComplete)
@@ -382,22 +384,22 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WriteFileError)
             .observe(this) {
                 val data = it.data as String
-                data_log.text = "EventLpBp2WriteFileError $data"
+                binding.dataLog.text = "EventLpBp2WriteFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WritingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "EventLpBp2WritingFileProgress $data %"
+                binding.dataLog.text = "EventLpBp2WritingFileProgress $data %"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WriteFileComplete)
             .observe(this) {
                 val data = it.data as FileListCrc
-                data_log.text = "EventLpBp2WriteFileComplete $data"
+                binding.dataLog.text = "EventLpBp2WriteFileComplete $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wGetFileListCrc)
             .observe(this) {
                 val data = it.data as FileListCrc
-                data_log.text = "EventLpBp2wGetFileListCrc $data"
+                binding.dataLog.text = "EventLpBp2wGetFileListCrc $data"
             }
     }
 

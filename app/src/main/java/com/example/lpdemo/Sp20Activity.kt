@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivitySp20Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -15,17 +16,18 @@ import com.lepu.blepro.ext.sp20.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_sp20.*
 
 class Sp20Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Sp20Activity"
     // Bluetooth.MODEL_SP20, Bluetooth.MODEL_SP20_BLE, Bluetooth.MODEL_SP20_WPS
     private var model = Bluetooth.MODEL_SP20
+    private lateinit var binding: ActivitySp20Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sp20)
+        binding = ActivitySp20Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -33,27 +35,27 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
 
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.sp20GetInfo(model)
         }
-        get_battery.setOnClickListener {
+        binding.getBattery.setOnClickListener {
             BleServiceHelper.BleServiceHelper.sp20GetBattery(model)
         }
-        get_config.setOnClickListener {
+        binding.getConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_HR_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD)
         }
-        set_config.setOnClickListener {
+        binding.setConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
 //            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_HR_THRESHOLD, 99/*(30-99)*/)
 //            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD, 250/*(100-250)*/)
@@ -65,15 +67,15 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20DeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20RtParam)
             .observe(this) {
                 val data = it.data as RtParam
-                tv_oxy.text = "${data.spo2}"
-                tv_pr.text = "${data.pr}"
-                tv_pi.text = "${data.pi}"
-                data_log.text = "$data"
+                binding.tvOxy.text = "${data.spo2}"
+                binding.tvPr.text = "${data.pr}"
+                binding.tvPi.text = "${data.pi}"
+                binding.dataLog.text = "$data"
                 // data.spo2：0%-100%（0：invalid）
                 // data.pr：0-511bpm（0：invalid）
                 // data.pi：0%-25.5%（0：invalid）
@@ -92,7 +94,7 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20GetConfig)
             .observe(this) {
                 val data = it.data as GetConfigResult
-                data_log.text = when (data.type) {
+                binding.dataLog.text = when (data.type) {
                     Constant.Sp20ConfigType.LOW_OXY_THRESHOLD -> {
                         "Spo2 Lo (85-99) : ${data.data}"
                     }
@@ -112,7 +114,7 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20SetConfig)
             .observe(this) {
                 val data = it.data as SetConfigResult
-                data_log.text = if (data.success) {
+                binding.dataLog.text = if (data.success) {
                     "Set config success"
                 } else {
                     "Set config fail"
@@ -125,7 +127,7 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.SP20.EventSp20TempData)
             .observe(this) {
                 val data = it.data as TempResult
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 // data.result：0（normal），1（low），2（high）
                 // data.unit：0（℃），1（℉）
             }

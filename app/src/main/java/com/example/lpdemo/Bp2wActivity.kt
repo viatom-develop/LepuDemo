@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.databinding.ActivityBp2wBinding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
@@ -18,7 +19,6 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
-import kotlinx.android.synthetic.main.activity_bp2w.*
 import kotlin.math.floor
 
 class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
@@ -26,6 +26,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
     private val TAG = "Bp2wActivity"
     // Bluetooth.MODEL_BP2W
     private var model = Bluetooth.MODEL_BP2W
+    private lateinit var binding: ActivityBp2wBinding
 
     private var config = Bp2wConfig()
 
@@ -67,20 +68,21 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_bp2w)
+        binding = ActivityBp2wBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
-            ecg_file_rcv.layoutManager = this
+            binding.ecgFileRcv.layoutManager = this
         }
         ecgAdapter = EcgAdapter(R.layout.device_item, null).apply {
-            ecg_file_rcv.adapter = this
+            binding.ecgFileRcv.adapter = this
         }
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
             if (adapter.data.size > 0) {
@@ -93,55 +95,55 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                 }
             }
         }
-        ecg_bkg.post {
+        binding.ecgBkg.post {
             initEcgView()
         }
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bp2wGetInfo(model)
         }
-        factory_reset.setOnClickListener {
+        binding.factoryReset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bp2wFactoryReset(model)
         }
-        get_config.setOnClickListener {
+        binding.getConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bp2wGetConfig(model)
         }
-        set_config.setOnClickListener {
+        binding.setConfig.setOnClickListener {
             config.isSoundOn = !config.isSoundOn
             config.avgMeasureMode = 1
             // config.avgMeasureMode: 0(bp x3 off), 1(bp x3 on, interval 30s), 2(bp x3 on, interval 60s),
             //                        3(bp x3 on, interval 90s), 4(bp x3 on, interval 120s)
             BleServiceHelper.BleServiceHelper.bp2wSetConfig(model, config)
         }
-        start_rt_task.setOnClickListener {
+        binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
             BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
-        stop_rt_task.setOnClickListener {
+        binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
-        get_file_list.setOnClickListener {
+        binding.getFileList.setOnClickListener {
             fileNames.clear()
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
             BleServiceHelper.BleServiceHelper.bp2wGetFileList(model)
         }
-        read_file.setOnClickListener {
+        binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
         dataEcgSrc.observe(this) {
@@ -156,26 +158,26 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
         DataController.nWave = 2
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
+        val index = floor(binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
         DataController.mm2px = mm2px
 
-        ecg_bkg.measure(0, 0)
+        binding.ecgBkg.measure(0, 0)
         ecgBkg = EcgBkg(this)
-        ecg_bkg.addView(ecgBkg)
+        binding.ecgBkg.addView(ecgBkg)
 
-        ecg_view.measure(0, 0)
+        binding.ecgView.measure(0, 0)
         ecgView = EcgView(this)
-        ecg_view.addView(ecgView)
+        binding.ecgView.addView(ecgView)
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wFactoryReset)
             .observe(this) {
@@ -187,12 +189,12 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                 // config.soundOn: Heartbeat sound switch
                 // config.avgMeasureMode: 0(bp measure x3 off), 1(bp measure x3 on, interval 30s), 2(bp measure x3 on, interval 60s),
                 //                        3(bp measure x3 on, interval 90s), 4(bp measure x3 on, interval 120s)
-                data_log.text = "$config"
+                binding.dataLog.text = "$config"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wSetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventBp2wSetConfig $data"
+                binding.dataLog.text = "EventBp2wSetConfig $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wRtData)
             .observe(this) {
@@ -212,20 +214,20 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                 when(data.param.paramDataType) {
                     0 -> {
                         val bpIng = RtBpIng(data.param.paramData)
-                        tv_ps.text = "${bpIng.pressure}"
-                        tv_pr_bp.text = "${bpIng.pr}"
-                        data_log.text = "deflate：${if (bpIng.isDeflate) "yes" else "no"}\n" +
+                        binding.tvPs.text = "${bpIng.pressure}"
+                        binding.tvPrBp.text = "${bpIng.pr}"
+                        binding.dataLog.text = "deflate：${if (bpIng.isDeflate) "yes" else "no"}\n" +
                                 "pulse wave：${if (bpIng.isPulse) "yes" else "no"}\n" +
                                 "x3 index: ${data.status.avgCnt}\n" +
                                 "x3 wait tick: ${data.status.avgWaitTick} s"
                     }
                     1 -> {
                         val bpResult = RtBpResult(data.param.paramData)
-                        tv_sys.text = "${bpResult.sys}"
-                        tv_dia.text = "${bpResult.dia}"
-                        tv_mean.text = "${bpResult.mean}"
-                        tv_pr_bp.text = "${bpResult.pr}"
-                        data_log.text = "deflate：${if (bpResult.isDeflate) "yes" else "no"}\n" +
+                        binding.tvSys.text = "${bpResult.sys}"
+                        binding.tvDia.text = "${bpResult.dia}"
+                        binding.tvMean.text = "${bpResult.mean}"
+                        binding.tvPrBp.text = "${bpResult.pr}"
+                        binding.dataLog.text = "deflate：${if (bpResult.isDeflate) "yes" else "no"}\n" +
                                 "result：${
                                     when (bpResult.result) {
                                         0 -> "Normal"
@@ -238,8 +240,8 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     2 -> {
                         val ecgIng = RtEcgIng(data.param.paramData)
-                        hr.text = "${ecgIng.hr}"
-                        data_log.text = "lead status：${if (ecgIng.isLeadOff) "lead off" else "lead on"}\n" +
+                        binding.hr.text = "${ecgIng.hr}"
+                        binding.dataLog.text = "lead status：${if (ecgIng.isLeadOff) "lead off" else "lead on"}\n" +
                                 "pool signal：${if (ecgIng.isPoolSignal) "yes" else "no"}\n" +
                                 "duration: ${ecgIng.curDuration} s"
                         DataController.receive(data.param.ecgFloats)
@@ -248,8 +250,8 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     3 -> {
                         val ecgResult = RtEcgResult(data.param.paramData)
-                        hr.text = "${ecgResult.hr}"
-                        data_log.text = "result：${ecgResult.diagnosis.resultMess}\n" +
+                        binding.hr.text = "${ecgResult.hr}"
+                        binding.dataLog.text = "result：${ecgResult.diagnosis.resultMess}\n" +
                                 "hr：${ecgResult.hr}\n" +
                                 "qrs：${ecgResult.qrs}\n" +
                                 "pvcs：${ecgResult.pvcs}\n" +
@@ -273,17 +275,17 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wFileList)
             .observe(this) {
                 fileNames = it.data as ArrayList<String>
-                data_log.text = "$fileNames"
+                binding.dataLog.text = "$fileNames"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wReadFileError)
             .observe(this) {
                 val data = it.data as String
-                data_log.text = "EventBp2wReadFileError $data"
+                binding.dataLog.text = "EventBp2wReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int  // 0-100
-                data_log.text = "${fileNames[0]} $data %"
+                binding.dataLog.text = "${fileNames[0]} $data %"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wReadFileComplete)
             .observe(this) {

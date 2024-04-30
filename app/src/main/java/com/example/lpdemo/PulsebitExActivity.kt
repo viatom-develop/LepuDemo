@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityPulsebitExBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -14,19 +15,20 @@ import com.lepu.blepro.ext.pulsebit.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pulsebit_ex.*
 
 class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "PulsebitExActivity"
     // Bluetooth.MODEL_PULSEBITEX, Bluetooth.MODEL_HHM4
     private var model = Bluetooth.MODEL_PULSEBITEX
+    private lateinit var binding: ActivityPulsebitExBinding
 
     private var fileNames = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pulsebit_ex)
+        binding = ActivityPulsebitExBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -34,23 +36,23 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        get_info.setOnClickListener {
+        binding.bleName.text = deviceName
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pulsebitExGetInfo(model)
         }
-        get_file_list.setOnClickListener {
+        binding.getFileList.setOnClickListener {
             // 1. get list first
             BleServiceHelper.BleServiceHelper.pulsebitExGetFileList(model)
         }
-        read_file.setOnClickListener {
+        binding.readFile.setOnClickListener {
             // 2. then read file
             readFile()
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
     }
@@ -59,18 +61,18 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitDeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileListError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "GetFileListError $data"
+                binding.dataLog.text = "GetFileListError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileListProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "GetFileListProgress $data%"
+                binding.dataLog.text = "GetFileListProgress $data%"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitGetFileList)
             .observe(this) {
@@ -78,24 +80,24 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
                 for (i in data) {
                     fileNames.add(i)
                 }
-                data_log.text = data.toString()
+                binding.dataLog.text = data.toString()
             }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadFileError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "ReadFileError $data"
+                binding.dataLog.text = "ReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "ReadingFileProgress $data%"
+                binding.dataLog.text = "ReadingFileProgress $data%"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pulsebit.EventPulsebitReadFileComplete)
             .observe(this) {
                 val data = it.data as EcgFile
                 Log.d(TAG, "data: $data")
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
                 // sampling rate：500HZ

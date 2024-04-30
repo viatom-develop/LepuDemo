@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.databinding.ActivityEr2Binding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
@@ -19,7 +20,6 @@ import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DateUtil
 import com.lepu.blepro.utils.FilterUtil
-import kotlinx.android.synthetic.main.activity_er2.*
 import kotlin.collections.ArrayList
 import kotlin.math.floor
 
@@ -27,6 +27,7 @@ class Er2SActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Er2SActivity"
     private var model = Bluetooth.MODEL_DUOEK
+    private lateinit var binding: ActivityEr2Binding
 
     private var config = Er2Config()
 
@@ -69,7 +70,8 @@ class Er2SActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_er2)
+        binding = ActivityEr2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         DataController.nWave = 4
@@ -78,13 +80,13 @@ class Er2SActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.VERTICAL
-            ecg_file_rcv.layoutManager = this
+            binding.ecgFileRcv.layoutManager = this
         }
         ecgAdapter = EcgAdapter(R.layout.device_item, null).apply {
-            ecg_file_rcv.adapter = this
+            binding.ecgFileRcv.adapter = this
         }
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
             if (adapter.data.size > 0) {
@@ -97,51 +99,51 @@ class Er2SActivity : AppCompatActivity(), BleChangeObserver {
                 }
             }
         }
-        ecg_bkg.post {
+        binding.ecgBkg.post {
             initEcgView()
         }
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er2GetInfo(model)
         }
-        factory_reset.setOnClickListener {
+        binding.factoryReset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er2FactoryReset(model)
         }
-        get_config.setOnClickListener {
+        binding.getConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er2GetConfig(model)
         }
-        set_config.setOnClickListener {
+        binding.setConfig.setOnClickListener {
             config.isSoundOn = !config.isSoundOn
             BleServiceHelper.BleServiceHelper.er2SetConfig(model, config)
         }
-        start_rt_task.setOnClickListener {
+        binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
             BleServiceHelper.BleServiceHelper.setRTDelayTime(model, 200)
             BleServiceHelper.BleServiceHelper.startRtTask(model)
         }
-        stop_rt_task.setOnClickListener {
+        binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
-        get_file_list.setOnClickListener {
+        binding.getFileList.setOnClickListener {
             fileNames.clear()
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
             BleServiceHelper.BleServiceHelper.er2GetFileList(model)
         }
-        read_file.setOnClickListener {
+        binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
             readFile()
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
         dataEcgSrc.observe(this) {
@@ -156,48 +158,48 @@ class Er2SActivity : AppCompatActivity(), BleChangeObserver {
     private fun initEcgView() {
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 500).toInt()
+        val index = floor(binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 500).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
         DataController.mm2px = mm2px
-        ecg_bkg.measure(0, 0)
+        binding.ecgBkg.measure(0, 0)
         ecgBkg = EcgBkg(this)
-        ecg_bkg.addView(ecgBkg)
+        binding.ecgBkg.addView(ecgBkg)
 
-        ecg_view.measure(0, 0)
+        binding.ecgView.measure(0, 0)
         ecgView = EcgView(this)
-        ecg_view.addView(ecgView)
+        binding.ecgView.addView(ecgView)
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2Info)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FactoryReset)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr2FactoryReset $data"
+                binding.dataLog.text = "EventEr2FactoryReset $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2GetConfig)
             .observe(this) {
                 config = it.data as Er2Config
-                data_log.text = "$config"
+                binding.dataLog.text = "$config"
                 // config.soundOn
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2SetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr2SetConfig $data"
+                binding.dataLog.text = "EventEr2SetConfig $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2RtData)
             .observe(this) {
                 val data = it.data as RtData
                 DataController.receive(data.wave.ecgFloatsFilter)
-                hr.text = "${data.param.hr}"
-                data_log.text = "${data.param}"
+                binding.hr.text = "${data.param.hr}"
+                binding.dataLog.text = "${data.param}"
                 // sampling rate：500HZ
                 // mV = n * 0.002467（data.wave.ecgFloats = data.wave.ecgShorts * 0.002467）
                 // data.param.batteryState：0（no charge），1（charging），2（charging complete），3（low battery）
@@ -209,17 +211,17 @@ class Er2SActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2FileList)
             .observe(this) {
                 fileNames = it.data as ArrayList<String>
-                data_log.text = "$fileNames"
+                binding.dataLog.text = "$fileNames"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadFileError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr1ReadFileError $data"
+                binding.dataLog.text = "EventEr1ReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int  // 0-100
-                data_log.text = "${fileNames[0]} $data %"
+                binding.dataLog.text = "${fileNames[0]} $data %"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER2.EventEr2ReadFileComplete)
             .observe(this) {

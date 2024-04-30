@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityPc303Binding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
@@ -18,7 +19,6 @@ import com.lepu.blepro.ext.pc303.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pc303.*
 import kotlin.math.floor
 
 class Pc303Activity : AppCompatActivity(), BleChangeObserver {
@@ -28,6 +28,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_GM_300SNT_BLE,
     // Bluetooth.MODEL_CMI_303
     private var model = Bluetooth.MODEL_PC300
+    private lateinit var binding: ActivityPc303Binding
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
@@ -63,7 +64,8 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pc303)
+        binding = ActivityPc303Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -72,17 +74,17 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        ecg_bkg.post {
+        binding.bleName.text = deviceName
+        binding.ecgBkg.post {
             initEcgView()
         }
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
         }
         ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayListOf("爱奥乐", "百捷", "CE")).apply {
-            glu_type.adapter = this
+            binding.gluType.adapter = this
         }
-        glu_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        binding.gluType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // 1:爱奥乐 2:百捷 4:CE
                 if (position == 2) {
@@ -97,16 +99,16 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
                 waveHandler.removeCallbacks(ecgWaveTask)
                 waveHandler.postDelayed(ecgWaveTask, 1000)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
         dataEcgSrc.observe(this) {
@@ -121,19 +123,19 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         DataController.nWave = 1
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(ecg_bkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
+        val index = floor(binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
         DataController.mm2px = mm2px
 
-        ecg_bkg.measure(0, 0)
+        binding.ecgBkg.measure(0, 0)
         ecgBkg = EcgBkg(this)
-        ecg_bkg.addView(ecgBkg)
+        binding.ecgBkg.addView(ecgBkg)
 
-        ecg_view.measure(0, 0)
+        binding.ecgView.measure(0, 0)
         ecgView = EcgView(this)
-        ecg_view.addView(ecgView)
+        binding.ecgView.addView(ecgView)
 
         waveHandler.removeCallbacks(ecgWaveTask)
         waveHandler.postDelayed(ecgWaveTask, 1000)
@@ -144,46 +146,46 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300DeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 // data.batLevel：0-3（0：0-25%，1：25-50%，2：50-75%，3：75-100%）
                 // data.batStatus：0 正常，1 充电中，2 已充满
             }
         // ----------------------bp----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpStart)
             .observe(this) {
-                data_log.text = "bp start"
+                binding.dataLog.text = "bp start"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpStop)
             .observe(this) {
-                data_log.text = "bp stop"
+                binding.dataLog.text = "bp stop"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtBpData)
             .observe(this) {
                 val data = it.data as Int
-                tv_ps.text = "$data"
+                binding.tvPs.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpResult)
             .observe(this) {
                 val data = it.data as BpResult
-                tv_sys.text = "${data.sys}"
-                tv_dia.text = "${data.dia}"
-                tv_mean.text = "${data.map}"
-                tv_pr_bp.text = "${data.pr}"
-                data_log.text = "$data"
+                binding.tvSys.text = "${data.sys}"
+                binding.tvDia.text = "${data.dia}"
+                binding.tvMean.text = "${data.map}"
+                binding.tvPrBp.text = "${data.pr}"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpErrorResult)
             .observe(this) {
                 val data = it.data as BpResultError
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         // ----------------------oxy----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyParam)
             .observe(this) {
                 val data = it.data as RtOxyParam
-                tv_oxy.text = "${data.spo2}"
-                tv_pr.text = "${data.pr}"
-                tv_pi.text = "${data.pi}"
-                data_log.text = "$data"
+                binding.tvOxy.text = "${data.spo2}"
+                binding.tvPr.text = "${data.pr}"
+                binding.tvPi.text = "${data.pi}"
+                binding.dataLog.text = "$data"
                 // data.spo2：0%-100%（0：invalid）
                 // data.pr：0-511bpm（0：invalid）
                 // data.pi：0%-25.5%（0：invalid）
@@ -199,7 +201,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 // if receive twice same result, just get one of them
                 // normal temp：32 - 43
                 val data = it.data as Float
-                data_log.text = if (data < 32 || data > 43) {
+                binding.dataLog.text = if (data < 32 || data > 43) {
                     "abnormal temp $data ℃"
                 } else {
                     "normal temp $data ℃"
@@ -209,7 +211,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GluResult)
             .observe(this) {
                 val data = it.data as GluResult
-                data_log.text = if (data.unit == 0) {
+                binding.dataLog.text = if (data.unit == 0) {
                     "${data.data} mmol/L, result : ${data.resultMess}"
                 } else {
                     "${data.data} mg/dL, result : ${data.resultMess}"
@@ -218,18 +220,18 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         // ----------------------ecg----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStart)
             .observe(this) {
-                data_log.text = "ecg start"
+                binding.dataLog.text = "ecg start"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgStop)
             .observe(this) {
-                data_log.text = "ecg stop"
+                binding.dataLog.text = "ecg stop"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtEcgWave)
             .observe(this) {
                 val data = it.data as RtEcgWave
                 DataController.receive(data.ecgFloats)
                 // 0 is preparing, about 10 s, then 1,2,3... is measuring
-                data_log.text = if (data.seqNo == 0) {
+                binding.dataLog.text = if (data.seqNo == 0) {
                     "preparing ${data.seqNo}"
                 } else {
                     "measuring ${data.seqNo}"
@@ -245,35 +247,35 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300EcgResult)
             .observe(this) {
                 val data = it.data as EcgResult
-                hr.text = "${data.hr}"
-                data_log.text = "$data"
+                binding.hr.text = "${data.hr}"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300SetGlucometerType)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "set glu type $data"
+                binding.dataLog.text = "set glu type $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GetGlucometerType)
             .observe(this) {
                 val data = it.data as Int
                 if (data == 4) {
-                    glu_type.setSelection(data-2)
+                    binding.gluType.setSelection(data-2)
                 } else {
-                    glu_type.setSelection(data-1)
+                    binding.gluType.setSelection(data-1)
                 }
-                data_log.text = "get glu type $data"
+                binding.dataLog.text = "get glu type $data"
             }
         // ----------------------ua----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300UaResult)
             .observe(this) {
                 val data = it.data as Float
-                data_log.text = "$data mg/dL"
+                binding.dataLog.text = "$data mg/dL"
             }
         // ----------------------chol----------------------
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300CholResult)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "$data mg/dL"
+                binding.dataLog.text = "$data mg/dL"
             }
     }
 

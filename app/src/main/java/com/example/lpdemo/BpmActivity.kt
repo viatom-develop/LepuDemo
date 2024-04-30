@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityBpmBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -14,37 +15,38 @@ import com.lepu.blepro.ext.bpm.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_bpm.*
 
 class BpmActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "BpmActivity"
     private val model = Bluetooth.MODEL_BPM
+    private lateinit var binding: ActivityBpmBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_bpm)
+        binding = ActivityBpmBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        get_info.setOnClickListener {
+        binding.bleName.text = deviceName
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bpmGetInfo(model)
         }
-        get_rt_state.setOnClickListener {
+        binding.getRtState.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bpmGetRtState(model)
         }
-        get_file_list.setOnClickListener {
+        binding.getFileList.setOnClickListener {
             BleServiceHelper.BleServiceHelper.bpmGetFileList(model)
         }
         bleState.observe(this) {
             if (it) {
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
     }
@@ -53,43 +55,43 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmState)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "device state : ${getRtState(data)}"
+                binding.dataLog.text = "device state : ${getRtState(data)}"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmRtData)
             .observe(this) {
                 val data = it.data as Int
-                tv_ps.text = "$data"
-                data_log.text = "real-time pressure : $data"
+                binding.tvPs.text = "$data"
+                binding.dataLog.text = "real-time pressure : $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmMeasureResult)
             .observe(this) {
                 val data = it.data as RecordData
-                tv_sys.text = "${data.sys}"
-                tv_dia.text = "${data.dia}"
-                tv_pr_bp.text = "${data.pr}"
-                data_log.text = "$data"
+                binding.tvSys.text = "${data.sys}"
+                binding.tvDia.text = "${data.dia}"
+                binding.tvPrBp.text = "${data.pr}"
+                binding.dataLog.text = "$data"
                 // data.irregularHrFlag：Whether the heart rate is irregular
                 // data.storeId：Record number
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmMeasureErrorResult)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "error result : ${getErrorResult(data)}"
+                binding.dataLog.text = "error result : ${getErrorResult(data)}"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmRecordData)
             .observe(this) {
                 val data = it.data as RecordData
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BPM.EventBpmRecordEnd)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "get file list end : $data"
+                binding.dataLog.text = "get file list end : $data"
             }
     }
 

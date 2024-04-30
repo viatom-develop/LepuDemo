@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityCheckmePodBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -16,18 +17,19 @@ import com.lepu.blepro.ext.checkmepod.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_checkme_pod.*
 
 class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "CheckmePodActivity"
     // Bluetooth.MODEL_CHECK_POD, Bluetooth.MODEL_CHECKME_POD_WPS
     private var model = Bluetooth.MODEL_CHECK_POD
+    private lateinit var binding: ActivityCheckmePodBinding
     private var isStartRtTask = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_checkme_pod)
+        binding = ActivityCheckmePodBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -35,36 +37,36 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        get_info.setOnClickListener {
+        binding.bleName.text = deviceName
+        binding.getInfo.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
             }
             BleServiceHelper.BleServiceHelper.checkmePodGetInfo(model)
         }
-        get_list.setOnClickListener {
+        binding.getList.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
             }
             BleServiceHelper.BleServiceHelper.checkmePodGetFileList(model)
         }
-        start_rt_task.setOnClickListener {
+        binding.startRtTask.setOnClickListener {
             isStartRtTask = true
             if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
             }
         }
-        stop_rt_task.setOnClickListener {
+        binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
     }
@@ -81,39 +83,39 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodDeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
 
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodGetFileListError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "GetFileListError $data"
+                binding.dataLog.text = "GetFileListError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodGetFileListProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "GetFileListProgress $data%"
+                binding.dataLog.text = "GetFileListProgress $data%"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodFileList)
             .observe(this) {
                 val data = it.data as ArrayList<Record>
-                data_log.text = data.toString()
+                binding.dataLog.text = data.toString()
                 Toast.makeText(this, "${data.size}", Toast.LENGTH_SHORT).show()
                 // data.temp：unit ℃
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodRtDataError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "RtDataError $data"
+                binding.dataLog.text = "RtDataError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.CheckmePod.EventCheckmePodRtData)
             .observe(this) {
                 val data = it.data as RtData
-                tv_oxy.text = "${data.param.spo2}"
-                tv_pr.text = "${data.param.pr}"
-                tv_pi.text = "${data.param.pi}"
-                tv_temp.text = "${data.param.temp}"
-                data_log.text = "$data"
+                binding.tvOxy.text = "${data.param.spo2}"
+                binding.tvPr.text = "${data.param.pr}"
+                binding.tvPi.text = "${data.param.pi}"
+                binding.tvTemp.text = "${data.param.temp}"
+                binding.dataLog.text = "$data"
                 // data.param.temp：unit ℃
                 // data.param.oxyState：0（Blood oxygen cable is not inserted），1（Insert the blood oxygen cable but not the finger），2（Finger inserted）
                 // data.param.tempState：0（Temperature cable is not inserted），1（Temperature cable is inserted）

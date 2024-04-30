@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityPc60fwBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -14,7 +15,6 @@ import com.lepu.blepro.ext.pc60fw.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pc60fw.*
 
 class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
 
@@ -31,10 +31,12 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_PC60NW_BLE, Bluetooth.MODEL_PC60NW_WPS,
     // Bluetooth.MODEL_PC_60NW_NO_SN
     private var model = Bluetooth.MODEL_PC60FW
+    private lateinit var binding: ActivityPc60fwBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pc60fw)
+        binding = ActivityPc60fwBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -42,16 +44,16 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
 
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc60fwGetInfo(model)
         }
 
@@ -61,14 +63,14 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwDeviceInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwRtParam)
             .observe(this) {
                 val data = it.data as RtParam
-                tv_oxy.text = "${data.spo2}"
-                tv_pr.text = "${data.pr}"
-                tv_pi.text = "${data.pi}"
+                binding.tvOxy.text = "${data.spo2}"
+                binding.tvPr.text = "${data.pr}"
+                binding.tvPi.text = "${data.pi}"
                 // data.spo2：0%-100%（0：invalid）
                 // data.pr：0-511bpm（0：invalid）
                 // data.pi：0%-25.5%（0：invalid）
@@ -86,7 +88,7 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwWorkingStatus)
             .observe(this) {
                 val data = it.data as WorkingStatus
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
 
     }

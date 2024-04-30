@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityEr3Binding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.Er3EcgBkg
 import com.example.lpdemo.views.Er3EcgView
@@ -16,7 +17,6 @@ import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import com.lepu.blepro.utils.DecompressUtil
-import kotlinx.android.synthetic.main.activity_er3.*
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import java.io.File
@@ -28,6 +28,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
     private val TAG = "Er3Activity"
     // Bluetooth.MODEL_ER3, Bluetooth.MODEL_M12
     private var model = Bluetooth.MODEL_ER3
+    private lateinit var binding: ActivityEr3Binding
 
     private lateinit var ecgBkg1: Er3EcgBkg
     private lateinit var ecgView1: Er3EcgView
@@ -105,7 +106,8 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_er3)
+        binding = ActivityEr3Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -113,39 +115,39 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        bkg12.post {
+        binding.bleName.text = deviceName
+        binding.bkg12.post {
             initEcgView()
         }
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er3GetInfo(model)
         }
-        factory_reset.setOnClickListener {
+        binding.factoryReset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er3FactoryReset(model)
         }
-        get_mode.setOnClickListener {
+        binding.getMode.setOnClickListener {
             BleServiceHelper.BleServiceHelper.er3GetConfig(model)
         }
-        set_mode.setOnClickListener {
+        binding.setMode.setOnClickListener {
             // 0: 监护模式0.5-40
             // 1: 手术模式1-20
             // 2: ST模式0.05-40
             BleServiceHelper.BleServiceHelper.er3SetMode(model, 0)
         }
-        start_rt_task.setOnClickListener {
+        binding.startRtTask.setOnClickListener {
             isStartRtTask = true
             if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
                 waveHandler.post(ecgWaveTask)
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
             }
         }
-        stop_rt_task.setOnClickListener {
+        binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
         }
         // File data decompress
-        decompress_test.setOnClickListener {
+        binding.decompressTest.setOnClickListener {
             // download file path
             // for example : /assets/W20240111145412
             val file = "${getExternalFilesDir(null)?.absolutePath}/W20240111145412"
@@ -177,9 +179,9 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
         dataEcgSrc1.observe(this) {
@@ -260,118 +262,118 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         // cal screen
         val dm = resources.displayMetrics
         // 最多可以画多少点=屏幕宽度像素/每英寸像素*25.4mm/25mm/s走速*250个点/s
-        val index = floor(bkg1.width / dm.xdpi * 25.4 / 25 * 250).toInt()
+        val index = floor(binding.bkg1.width / dm.xdpi * 25.4 / 25 * 250).toInt()
         Er3DataController.maxIndex = index
 
         // 每像素占多少mm=每英寸长25.4mm/每英寸像素
         val mm2px = 25.4f / dm.xdpi
         Er3DataController.mm2px = mm2px
 
-        bkg1.measure(0, 0)
+        binding.bkg1.measure(0, 0)
         ecgBkg1 = Er3EcgBkg(this)
-        bkg1.addView(ecgBkg1)
-        view1.measure(0, 0)
+        binding.bkg1.addView(ecgBkg1)
+        binding.view1.measure(0, 0)
         ecgView1 = Er3EcgView(this)
-        view1.addView(ecgView1)
+        binding.view1.addView(ecgView1)
 
-        bkg2.measure(0, 0)
+        binding.bkg2.measure(0, 0)
         ecgBkg2 = Er3EcgBkg(this)
-        bkg2.addView(ecgBkg2)
-        view2.measure(0, 0)
+        binding.bkg2.addView(ecgBkg2)
+        binding.view2.measure(0, 0)
         ecgView2 = Er3EcgView(this)
-        view2.addView(ecgView2)
+        binding.view2.addView(ecgView2)
 
-        bkg3.measure(0, 0)
+        binding.bkg3.measure(0, 0)
         ecgBkg3 = Er3EcgBkg(this)
-        bkg3.addView(ecgBkg3)
-        view3.measure(0, 0)
+        binding.bkg3.addView(ecgBkg3)
+        binding.view3.measure(0, 0)
         ecgView3 = Er3EcgView(this)
-        view3.addView(ecgView3)
+        binding.view3.addView(ecgView3)
 
-        bkg4.measure(0, 0)
+        binding.bkg4.measure(0, 0)
         ecgBkg4 = Er3EcgBkg(this)
-        bkg4.addView(ecgBkg4)
-        view4.measure(0, 0)
+        binding.bkg4.addView(ecgBkg4)
+        binding.view4.measure(0, 0)
         ecgView4 = Er3EcgView(this)
-        view4.addView(ecgView4)
+        binding.view4.addView(ecgView4)
 
-        bkg5.measure(0, 0)
+        binding.bkg5.measure(0, 0)
         ecgBkg5 = Er3EcgBkg(this)
-        bkg5.addView(ecgBkg5)
-        view5.measure(0, 0)
+        binding.bkg5.addView(ecgBkg5)
+        binding.view5.measure(0, 0)
         ecgView5 = Er3EcgView(this)
-        view5.addView(ecgView5)
+        binding.view5.addView(ecgView5)
 
-        bkg6.measure(0, 0)
+        binding.bkg6.measure(0, 0)
         ecgBkg6 = Er3EcgBkg(this)
-        bkg6.addView(ecgBkg6)
-        view6.measure(0, 0)
+        binding.bkg6.addView(ecgBkg6)
+        binding.view6.measure(0, 0)
         ecgView6 = Er3EcgView(this)
-        view6.addView(ecgView6)
+        binding.view6.addView(ecgView6)
 
-        bkg7.measure(0, 0)
+        binding.bkg7.measure(0, 0)
         ecgBkg7 = Er3EcgBkg(this)
-        bkg7.addView(ecgBkg7)
-        view7.measure(0, 0)
+        binding.bkg7.addView(ecgBkg7)
+        binding.view7.measure(0, 0)
         ecgView7 = Er3EcgView(this)
-        view7.addView(ecgView7)
+        binding.view7.addView(ecgView7)
 
-        bkg8.measure(0, 0)
+        binding.bkg8.measure(0, 0)
         ecgBkg8 = Er3EcgBkg(this)
-        bkg8.addView(ecgBkg8)
-        view8.measure(0, 0)
+        binding.bkg8.addView(ecgBkg8)
+        binding.view8.measure(0, 0)
         ecgView8 = Er3EcgView(this)
-        view8.addView(ecgView8)
+        binding.view8.addView(ecgView8)
 
-        bkg9.measure(0, 0)
+        binding.bkg9.measure(0, 0)
         ecgBkg9 = Er3EcgBkg(this)
-        bkg9.addView(ecgBkg9)
-        view9.measure(0, 0)
+        binding.bkg9.addView(ecgBkg9)
+        binding.view9.measure(0, 0)
         ecgView9 = Er3EcgView(this)
-        view9.addView(ecgView9)
+        binding.view9.addView(ecgView9)
 
-        bkg10.measure(0, 0)
+        binding.bkg10.measure(0, 0)
         ecgBkg10 = Er3EcgBkg(this)
-        bkg10.addView(ecgBkg10)
-        view10.measure(0, 0)
+        binding.bkg10.addView(ecgBkg10)
+        binding.view10.measure(0, 0)
         ecgView10 = Er3EcgView(this)
-        view10.addView(ecgView10)
+        binding.view10.addView(ecgView10)
 
-        bkg11.measure(0, 0)
+        binding.bkg11.measure(0, 0)
         ecgBkg11 = Er3EcgBkg(this)
-        bkg11.addView(ecgBkg11)
-        view11.measure(0, 0)
+        binding.bkg11.addView(ecgBkg11)
+        binding.view11.measure(0, 0)
         ecgView11 = Er3EcgView(this)
-        view11.addView(ecgView11)
+        binding.view11.addView(ecgView11)
 
-        bkg12.measure(0, 0)
+        binding.bkg12.measure(0, 0)
         ecgBkg12 = Er3EcgBkg(this)
-        bkg12.addView(ecgBkg12)
-        view12.measure(0, 0)
+        binding.bkg12.addView(ecgBkg12)
+        binding.view12.measure(0, 0)
         ecgView12 = Er3EcgView(this)
-        view12.addView(ecgView12)
+        binding.view12.addView(ecgView12)
     }
 
     private fun initEventBus() {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3Info)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3FactoryReset)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr3FactoryReset $data"
+                binding.dataLog.text = "EventEr3FactoryReset $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3GetConfigError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr3GetConfigError $data"
+                binding.dataLog.text = "EventEr3GetConfigError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3GetConfig)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "${when (data) {
+                binding.dataLog.text = "${when (data) {
                     0 -> "监护模式0.5-40"
                     1 -> "手术模式1-20"
                     2 -> "ST模式0.05-40"
@@ -381,15 +383,15 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3SetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventEr3SetConfig $data"
+                binding.dataLog.text = "EventEr3SetConfig $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3RtData)
             .observe(this) {
                 val data = it.data as RtData
                 Er3DataController.receive(data.wave.waveFloats, data.param.isLeadOffLA, data.param.isLeadOffLL)
-                ble_battery.text = "电量：${data.param.battery} %"
-                hr.text = "${data.param.hr}"
-                data_log.text = "脉率：${data.param.pr}\n" +
+                binding.bleBattery.text = "电量：${data.param.battery} %"
+                binding.hr.text = "${data.param.hr}"
+                binding.dataLog.text = "脉率：${data.param.pr}\n" +
                         "体温：${data.param.temp} ℃\n" +
                         "血氧：${data.param.spo2} %\n" +
                         "pi：${data.param.pi} %\n" +

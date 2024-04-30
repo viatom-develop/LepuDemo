@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityAirbpBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -14,16 +15,17 @@ import com.lepu.blepro.ext.airbp.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_airbp.*
 
 class AirBpActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "AirBpActivity"
     private val model = Bluetooth.MODEL_AIRBP
+    private lateinit var binding: ActivityAirbpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_airbp)
+        binding = ActivityAirbpBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -31,23 +33,23 @@ class AirBpActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        get_info.setOnClickListener {
+        binding.bleName.text = deviceName
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.airBpGetInfo(model)
         }
-        get_battery.setOnClickListener {
+        binding.getBattery.setOnClickListener {
             BleServiceHelper.BleServiceHelper.airBpGetBattery(model)
         }
-        beep_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.beepSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 BleServiceHelper.BleServiceHelper.airBpSetConfig(model, isChecked)
             }
         }
         bleState.observe(this) {
             if (it) {
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                bp_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bpBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
     }
@@ -56,31 +58,31 @@ class AirBpActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpGetBattery)
             .observe(this) {
                 val data = it.data as Battery
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpGetInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpSetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "set config : $data"
+                binding.dataLog.text = "set config : $data"
                 BleServiceHelper.BleServiceHelper.airBpGetConfig(model)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpGetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                beep_switch.isChecked = data
+                binding.beepSwitch.isChecked = data
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtResult)
             .observe(this) {
                 val data = it.data as RtResult
-                tv_sys.text = "${data.sys}"
-                tv_dia.text = "${data.dia}"
-                tv_pr_bp.text = "${data.pr}"
-                data_log.text = "$data\n" +
+                binding.tvSys.text = "${data.sys}"
+                binding.tvDia.text = "${data.dia}"
+                binding.tvPrBp.text = "${data.pr}"
+                binding.dataLog.text = "$data\n" +
                         "状态码${data.stateCode}：\n${when (data.stateCode) {
                             0 -> "充气阶段"
                             1 -> "提示停止打气"
@@ -106,12 +108,12 @@ class AirBpActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtData)
             .observe(this) {
                 val data = it.data as Int
-                tv_ps.text = "$data"
+                binding.tvPs.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtState)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "当前运行状态${data}：\n${when (data) {
+                binding.dataLog.text = "当前运行状态${data}：\n${when (data) {
                     0 -> "充气阶段"
                     1 -> "提示停止打气"
                     2 -> "测量中，不要打气"

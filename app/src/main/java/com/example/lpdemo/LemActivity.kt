@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityLemBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -15,50 +16,51 @@ import com.lepu.blepro.ext.LemData
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_lem.*
 
 class LemActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "LemActivity"
     private val model = Bluetooth.MODEL_LEM
+    private lateinit var binding: ActivityLemBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lem)
+        binding = ActivityLemBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
     }
 
     private fun initView() {
-        ble_name.text = deviceName
-        get_info.setOnClickListener {
+        binding.bleName.text = deviceName
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lemGetInfo(model)
         }
-        get_battery.setOnClickListener {
+        binding.getBattery.setOnClickListener {
             BleServiceHelper.BleServiceHelper.lemGetBattery(model)
         }
-        heat_switch.setOnClickListener {
+        binding.heatSwitch.setOnClickListener {
             // true：Heating mode on，false：Heating mode off
             BleServiceHelper.BleServiceHelper.lemHeatMode(model, true)
         }
-        set_time.setOnClickListener {
+        binding.setTime.setOnClickListener {
             // Constant.LemMassageTime
             BleServiceHelper.BleServiceHelper.lemMassageTime(model, Constant.LemMassageTime.MIN_10)
         }
-        set_mode.setOnClickListener {
+        binding.setMode.setOnClickListener {
             // Constant.LemMassageMode
             BleServiceHelper.BleServiceHelper.lemMassageMode(model, Constant.LemMassageMode.SOOTHING)
         }
-        set_level.setOnClickListener {
+        binding.setLevel.setOnClickListener {
             // 0-15
             BleServiceHelper.BleServiceHelper.lemMassageLevel(model, 10)
         }
         bleState.observe(this) {
             if (it) {
-                ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
     }
@@ -67,7 +69,7 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LEM.EventLemDeviceInfo)
             .observe(this) {
                 val data = it.data as LemData
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 // data.battery：1-100
                 // data.heatMode：true（Heating mode on），false（Heating mode off）
                 // data.massageLevel：0-15

@@ -1,10 +1,9 @@
 package com.example.lpdemo
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.databinding.ActivityPf10aw1Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
 import com.example.lpdemo.utils.deviceName
@@ -16,7 +15,6 @@ import com.lepu.blepro.ext.pf10aw1.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import kotlinx.android.synthetic.main.activity_pf10aw1.*
 
 class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
 
@@ -24,12 +22,14 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_PF_10AW_1, Bluetooth.MODEL_PF_10BWS,
     // Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,
     private var model = Bluetooth.MODEL_PF_10BWS
+    private lateinit var binding: ActivityPf10aw1Binding
 
     private var fileNames = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pf10aw1)
+        binding = ActivityPf10aw1Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
@@ -37,52 +37,52 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initView() {
-        ble_name.text = deviceName
+        binding.bleName.text = deviceName
         bleState.observe(this) {
             if (it) {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_ok)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
-                oxy_ble_state.setImageResource(R.mipmap.bluetooth_error)
+                binding.oxyBleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
 
-        get_info.setOnClickListener {
+        binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pf10Aw1GetInfo(model)
         }
-        get_config.setOnClickListener {
+        binding.getConfig.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pf10Aw1GetConfig(model)
         }
-        get_file_list.setOnClickListener {
+        binding.getFileList.setOnClickListener {
             fileNames.clear()
             BleServiceHelper.BleServiceHelper.pf10Aw1GetFileList(model)
         }
-        read_file.setOnClickListener {
+        binding.readFile.setOnClickListener {
             readFile()
         }
-        set_spo2_low.setOnClickListener {
+        binding.setSpo2Low.setOnClickListener {
             // 85%-99%, 1%
             BleServiceHelper.BleServiceHelper.pf10Aw1SetSpo2Low(model, 90)
         }
-        set_pr_low.setOnClickListener {
+        binding.setPrLow.setOnClickListener {
             // 30bpm-60bpm, 5bpm
             BleServiceHelper.BleServiceHelper.pf10Aw1SetPrLow(model, 60)
         }
-        set_pr_high.setOnClickListener {
+        binding.setPrHigh.setOnClickListener {
             // 100bpm-240bpm, 5bpm
             BleServiceHelper.BleServiceHelper.pf10Aw1SetPrHigh(model, 120)
         }
-        set_es_mode.setOnClickListener {
+        binding.setEsMode.setOnClickListener {
             // 0：keep screen on，1：1 min screen off，2：3 min screen off，3：5 min screen off
             BleServiceHelper.BleServiceHelper.pf10Aw1SetEsMode(model, 0)
         }
-        set_alarm.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.setAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             // Threshold reminder switch
             BleServiceHelper.BleServiceHelper.pf10Aw1SetAlarmSwitch(model, isChecked)
         }
-        set_beep.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.setBeep.setOnCheckedChangeListener { buttonView, isChecked ->
             BleServiceHelper.BleServiceHelper.pf10Aw1SetBeepSwitch(model, isChecked)
         }
-        factory_reset.setOnClickListener {
+        binding.factoryReset.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pf10Aw1FactoryReset(model)
         }
     }
@@ -91,7 +91,7 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1GetInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1GetFileList)
             .observe(this) {
@@ -100,17 +100,17 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1ReadFileError)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventPf10Aw1ReadFileError $data"
+                binding.dataLog.text = "EventPf10Aw1ReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1ReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                data_log.text = "进度 $data%"
+                binding.dataLog.text = "进度 $data%"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1ReadFileComplete)
             .observe(this) {
                 val data = it.data as OxyFile
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
                 fileNames.removeAt(0)
                 readFile()
             }
@@ -133,26 +133,26 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1RtParam)
             .observe(this) {
                 val data = it.data as RtParam
-                tv_oxy.text = data.spo2.toString()
-                tv_pr.text = data.pr.toString()
-                tv_pi.text = data.pi.toString()
+                binding.tvOxy.text = data.spo2.toString()
+                binding.tvPr.text = data.pr.toString()
+                binding.tvPi.text = data.pi.toString()
                 // data.batLevel：0-3
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1GetConfig)
             .observe(this) {
                 val data = it.data as Config
-                data_log.text = "$data"
+                binding.dataLog.text = "$data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1SetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventPf10Aw1SetConfig $data"
+                binding.dataLog.text = "EventPf10Aw1SetConfig $data"
                 BleServiceHelper.BleServiceHelper.pf10Aw1GetConfig(it.model)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1FactoryReset)
             .observe(this) {
                 val data = it.data as Boolean
-                data_log.text = "EventPf10Aw1FactoryReset $data"
+                binding.dataLog.text = "EventPf10Aw1FactoryReset $data"
             }
     }
 
