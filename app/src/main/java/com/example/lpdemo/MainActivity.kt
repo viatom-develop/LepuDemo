@@ -152,7 +152,36 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun needPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            PermissionX.init(this)
+                .permissions(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_ADVERTISE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+                )
+                .onExplainRequestReason { scope, deniedList ->
+                    scope.showRequestReasonDialog(
+                        deniedList, "location permission", "ok", "ignore"
+                    )
+                }
+                .onForwardToSettings { scope, deniedList ->
+                    scope.showForwardToSettingsDialog(
+                        deniedList, "location setting", "ok", "ignore"
+                    )
+                }
+                .request { allGranted, grantedList, deniedList ->
+                    Log.d(TAG, "permission : $allGranted, $grantedList, $deniedList")
+
+                    //permission OK, check Bluetooth status
+                    if (allGranted)
+                        checkBt()
+                }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PermissionX.init(this)
                 .permissions(
                     Manifest.permission.BLUETOOTH_SCAN,

@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.example.lpdemo"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 6
         versionName "1.0.6"
 
@@ -58,10 +58,10 @@ dependencies {
 
     implementation 'no.nordicsemi.android:ble:2.2.4'
     implementation(name: 'lepu-blepro-1.0.6', ext: 'aar')
-    implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'  // targetSdkVersion 34---implementation 'com.github.michaellee123:LiveEventBus:1.8.14'
+    implementation 'com.github.michaellee123:LiveEventBus:1.8.14'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
-    implementation 'com.permissionx.guolindev:permissionx:1.4.0'  // implementation 'com.guolindev.permissionx:permissionx:1.7.1'
+    implementation 'com.guolindev.permissionx:permissionx:1.7.1'
     implementation 'commons-io:commons-io:2.6'
     // pdf
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
