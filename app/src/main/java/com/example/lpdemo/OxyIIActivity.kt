@@ -172,6 +172,12 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as Boolean
                 binding.dataLog.text = "EventOxyIISetConfig $data"
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIRtPpg)
+            .observe(this) {
+                // BleServiceHelper.BleServiceHelper.oxyIIGetRtPpg(model)
+                val data = it.data as RtPpg
+                binding.dataLog.text = "$data"
+            }
     }
 
     private fun readFile() {

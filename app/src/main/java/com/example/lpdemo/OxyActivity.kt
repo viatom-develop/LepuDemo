@@ -196,6 +196,12 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                     Log.d(TAG, "$type success")
                 }
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyPpgData)
+            .observe(this) {
+                // BleServiceHelper.BleServiceHelper.oxyGetPpgRt(model)
+                val data = it.data as RtPpg
+                binding.dataLog.text = "$data"
+            }
     }
 
     private fun readFile() {
