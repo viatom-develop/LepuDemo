@@ -1197,20 +1197,109 @@ Read file complete :
 + #### 3.oxyGetRtParam(model)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamData).post(InterfaceEvent(model, data))`  
-`data` : com.lepu.blepro.oxy.RtParam
+`data` : com.lepu.blepro.oxy.RtParam  
 > battery : 0-100  
 > batteryState : 0 (no charge), 1 (charging), 2(charging complete)  
 > state : 0 (lead off), 1 (lead on), other (error)  
 
-+ #### 4.oxyUpdateSetting(model, type, value)
++ #### 4.oxyGetPpgRt(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyPpgData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.oxy.RtPpg   
+> sampling rate 150HZ  
+
++ #### 5.oxyUpdateSetting(model, type, value)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxySyncDeviceInfo).post(InterfaceEvent(model, data))`  
 `data` : `Array<String>` ("SetMotor", "SetBuzzer")  
 
-+ #### 5.oxyFactoryReset(model)
++ #### 6.oxyFactoryReset(model)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset).post(InterfaceEvent(model, data))`  
 `data` : boolean (true : factory reset success, false : factory reset failed)  
+
+
+### O2Ring S (Bluetooth.MODEL_O2RING_S)
+### S8-AW (Bluetooth.MODEL_S8_AW)
+
+Service UUID : E8FB0001-A14B-98F9-831B-4E2941D01248  
+Write UUID : E8FB0002-A14B-98F9-831B-4E2941D01248  
+Notify UUID : E8FB0003-A14B-98F9-831B-4E2941D01248  
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIISetTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.oxyIIGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIGetInfo).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.oxy2.DeviceInfo  
+
++ #### 2.oxyIIGetBattery(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIGetBattery).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.oxy2.Battery  
+> state：0（no charge），1（charging），2（charging complete）, 3:Low battery 10%  
+
++ #### 3.oxyIIGetFileList(model, fileType)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIGetInfo).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.oxy2.FileList  
+> type : Constant.OxyIIFileType.PPG, Constant.OxyIIFileType.OXY  
+
++ #### 4.oxyIIReadFile(model, fileName, fileType)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIReadFileError).post(InterfaceEvent(model, true))`  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.oxy2.FileContent  
+> name : file name  
+> type : Constant.OxyIIFileType.OXY (OxyFile(content)), Constant.OxyIIFileType.PPG (PpgFile(content))  
+
++ #### 5.oxyIIGetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIGetConfig).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.oxy2.Config  
+> spo2Low.low : 80-95%, step 1%, default 88%  
+> hrLow.low : 30-70, step 5, default 50  
+> hrHi.hi : 70-200, step 5, default 120  
+> motor.motor : 20/40/60/80/100  
+> buzzer.buzzer : 20/40/60/80/100  
+> displayMode.mode : 0:Standard,  2:Always On  
+> brightnessMode.mode : 0：low, 1：mid, 2：high  
+> storageInterval.interval : data storage interval, unit:s  
+
++ #### 6.oxyIISetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIISetConfig).post(InterfaceEvent(model, data))`  
+`data` ： boolean  
+
++ #### 7.Real-time Data(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIISetConfig).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.oxy2.RtData  
+> wave : sampling rate 125HZ  
+> param : sampling rate 1HZ  
+> param.batteryPercent：0-100  
+> param.batteryState：0（no charge），1（charging），2（charging complete）, 3:Low battery 10%  
+> param.runStatus：1（measurement preparation stage, 2 min），2（measuring），3（measurement completed）  
+> param.sensorState：0（lead off），1（lead on），2:SENSOR_STA_PROBE_OUT 3: Sensor or probe malfunction   
+
++ #### 8.oxyIIGetRtPpg(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIRtPpg).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.oxy2.RtPpg  
+> sampling rate 200HZ  
+
++ #### 9.oxyIIFactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIFactoryReset).post(InterfaceEvent(model, data))`  
+`data` ： boolean  
 
 
 ### PF-10AW-1 (Bluetooth.MODEL_PF_10AW_1)
