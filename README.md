@@ -16,6 +16,7 @@ Version at least Android 7.0
 > lepu-blepro-1.0.1.aar : add AD5, FHR, VCOIMN  
 > lepu-blepro-1.0.5.aar : add ER3, Lepod  
 > lepu-blepro-1.0.6.aar : add AirBP  
+> lepu-blepro-1.0.7.aar : add PF-10AW-1, O2Ring S  
 
 ## import SDK
 
@@ -1210,6 +1211,81 @@ Read file complete :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset).post(InterfaceEvent(model, data))`  
 `data` : boolean (true : factory reset success, false : factory reset failed)  
+
+
+### PF-10AW-1 (Bluetooth.MODEL_PF_10AW_1)
+### PF-10BWS (Bluetooth.MODEL_PF_10BWS)
+### SA10AW-PU (Bluetooth.MODEL_SA10AW_PU)
+### PF10BW-VE (Bluetooth.MODEL_PF10BW_VE)
+
+Service UUID : E8FB0001-A14B-98F9-831B-4E2941D01248  
+Write UUID : E8FB0002-A14B-98F9-831B-4E2941D01248  
+Notify UUID : E8FB0003-A14B-98F9-831B-4E2941D01248  
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1SetTime).post(InterfaceEvent(model, true))` 
+
++ #### 1.pf10Aw1GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC60Fw.EventPC60FwDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.pf10aw1.DeviceInfo
+
++ #### 2.pf10Aw1GetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1GetFileList).post(InterfaceEvent(model, data))`  
+`data` ： `ArrayList<String>`
+
++ #### 3.pf10Aw1ReadFile(model, fileName)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1ReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1ReadFileError).post(InterfaceEvent(model, true))`  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1ReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.pf10aw1.OxyFile  
+
++ #### 4.pf10Aw1GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1GetConfig).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.pf10aw1.Config  
+> spo2Low : 85%-99%, 1%  
+> prHi : 100bpm-240bpm, 5bpm  
+> prLow : 30bpm-60bpm, 5bpm  
+> esMode : 0：keep screen on，1：1 min screen off，2：3 min screen off，3：5 min screen off  
+
++ #### 5.pf10Aw1SetSpo2Low, pf10Aw1SetPrLow, pf10Aw1SetPrHigh, pf10Aw1SetEsMode, pf10Aw1SetAlarmSwitch, pf10Aw1SetBeepSwitch
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1SetConfig).post(InterfaceEvent(model, data))`  
+`data` ： boolean
+
++ #### 6.Real-time status
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1WorkingStatus).post(InterfaceEvent(model, data))`  
+`data` ： com.lepu.blepro.ext.pf10aw1.WorkingStatus  
+> data.mode : 1（Spot mode, Not currently supported）  
+> 
+> data.mode : 2（Continuous mode）, data.mode : 3（menu）  
+> data.step : 0(prepare) 1(measuring) 2(completed, saved) 3(less than 2 min, not save)  
+> data.para1 : duration(unit s)  
+
++ #### 7.Real-time Waveform data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1RtWave).post(InterfaceEvent(model, data))`   
+`data` ： com.lepu.blepro.ext.pf10aw1.RtWave  
+
++ #### 8.Real-time Param data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1RtWave).post(InterfaceEvent(model, data))`   
+`data` ： com.lepu.blepro.ext.pf10aw1.RtParam  
+
++ #### 9.pf10Aw1FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1FactoryReset).post(InterfaceEvent(model, data))`  
+`data` ： boolean
 
 
 ### PC-60FW (Bluetooth.MODEL_PC60FW)
