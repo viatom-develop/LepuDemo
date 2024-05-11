@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_AIRBP,   // AirBpActivity
         Bluetooth.MODEL_PF_10AW_1, Bluetooth.MODEL_PF_10BWS,
         Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,   // Pf10Aw1Activity
+        Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,   // OxyIIActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -613,12 +614,22 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 startActivity(Intent(this, AirBpActivity::class.java))
             }
         //------------------pf10aw1----------------
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1SetUtcTime)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1SetTime)
             .observe(this) {
                 if (this::dialog.isInitialized) {
                     dialog.dismiss()
                 }
                 val intent = Intent(this, Pf10Aw1Activity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
+            }
+        //------------------O2Ring S----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIISetTime)
+            .observe(this) {
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
+                val intent = Intent(this, OxyIIActivity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
             }
