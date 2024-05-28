@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lpdemo.databinding.ActivityBp2wBinding
@@ -152,13 +155,47 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                 ecgView.invalidate()
             }
         }
+        ArrayAdapter(this,
+            android.R.layout.simple_list_item_1,
+            arrayListOf("5mm/mV", "10mm/mV", "20mm/mV")
+        ).apply {
+            binding.gain.adapter = this
+        }
+        binding.gain.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                DataController.ampKey = position
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        ArrayAdapter(this,
+            android.R.layout.simple_list_item_1,
+            arrayListOf("25mm/s", "12.5mm/s", "6.25mm/s")
+        ).apply {
+            binding.speed.adapter = this
+        }
+        binding.speed.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> DataController.speed = 1
+                    1 -> DataController.speed = 2
+                    2 -> DataController.speed = 4
+                }
+                val dm = resources.displayMetrics
+                val index = floor((binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250) * DataController.speed).toInt()
+                DataController.maxIndex = index
+                dataEcgSrc.value = null
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
     }
 
     private fun initEcgView() {
         DataController.nWave = 2
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor(binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250).toInt()
+        val index = floor((binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250) * DataController.speed).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi

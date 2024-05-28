@@ -70,7 +70,7 @@ public class WaveEcgView extends View {
     private GestureDetector detector;
     ViewGroup parent;
     float x, y, x1, y1;
-    private int currentZoomPosition = 1;
+    private int currentZoomPosition = 0;
     private boolean enableClick = true;
     private int startPoint = 0;
     public float preTouchY = 0;
@@ -468,6 +468,16 @@ public class WaveEcgView extends View {
 
     public void setCurrentZoomPosition(int zoomPosition) {
         rulerStandard = standardNmV[zoomPosition];
+        postInvalidate();
+    }
+
+    public void setmSpeed(float mSpeed) {
+        this.mSpeed = mSpeed;
+        SECONDS_PER_LINE = screenW / (1 / mGrid1mmLength) / mSpeed;
+        POINTS_PER_LINE = (int) (SECONDS_PER_LINE * HZ);
+        ONE_PAGE_POINTS = (int) (SECONDS_PER_LINE * ONE_PAGE_LINES * HZ);
+        PREPARED_DRAW_POINTS = ONE_PAGE_POINTS + POINTS_PER_LINE;
+        InitFixParams();
         postInvalidate();
     }
 

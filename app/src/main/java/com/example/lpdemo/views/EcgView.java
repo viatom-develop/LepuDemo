@@ -155,14 +155,14 @@ public class EcgView extends View {
 
                 float y = (mBase - (DataController.amp[ampKey]*dataSrc[i+4]/ DataController.mm2px));
 
-                float x = (float) (i+4)/5/ DataController.mm2px/DataController.nWave;
+                float x = (float) (i+4)/5/ DataController.mm2px/DataController.nWave/DataController.speed;
 
                 p.moveTo(x, y);
                 i = i+4;
             } else {
                 float y1 = mBase - (DataController.amp[ampKey]*dataSrc[i]/ DataController.mm2px);
 
-                float x1 = (float) i/5/ DataController.mm2px/DataController.nWave;
+                float x1 = (float) i/5/ DataController.mm2px/DataController.nWave/DataController.speed;
                 p.lineTo(x1, y1);
             }
         }
