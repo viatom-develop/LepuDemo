@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_PF_10AW_1, Bluetooth.MODEL_PF_10BWS,
         Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,   // Pf10Aw1Activity
         Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,   // OxyIIActivity
+        Bluetooth.MODEL_CHECKME,   // CheckmeActivity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -441,6 +442,9 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     }
                     Bluetooth.MODEL_VCOMIN -> {
                         startActivity(Intent(this, VcominActivity::class.java))
+                    }
+                    Bluetooth.MODEL_CHECKME -> {
+                        startActivity(Intent(this, CheckmeActivity::class.java))
                     }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()

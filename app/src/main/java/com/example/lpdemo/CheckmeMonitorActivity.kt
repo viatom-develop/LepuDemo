@@ -125,7 +125,7 @@ class CheckmeMonitorActivity : AppCompatActivity(), BleChangeObserver {
                 DataController.receive(data.ecgFloatData)
                 binding.hr.text = "${data.hr}"
                 binding.dataLog.text = "$data"
-                // sampling rate：25HZ
+                // sampling rate：125HZ
                 // mV = n * 0.010769600512711（data.ecgFloatData = data.ecgShortData * 0.010769600512711）
                 // data.battery：0-100
             }
