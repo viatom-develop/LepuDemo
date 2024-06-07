@@ -113,7 +113,7 @@ SDK will send this event when BluetoothDevice connected :
 
 + #### 6.Real-time State
 
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtResult).post(InterfaceEvent(model, data))`  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.AirBP.EventAirBpRtState).post(InterfaceEvent(model, data))`  
 `data` : Int  
 > state : 0-17
 > 0 : inflating  
@@ -1137,7 +1137,6 @@ SDK will send this event when BluetoothDevice connected :
 ### CMRing (Bluetooth.MODEL_CMRING)
 ### Oxyfit-WPS (Bluetooth.MODEL_OXYFIT_WPS)
 ### KidsO2-WPS (Bluetooth.MODEL_KIDSO2_WPS)
-### SI PO6 (Bluetooth.MODEL_SI_PO6)
 
 Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
 Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  

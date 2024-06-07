@@ -31,7 +31,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
     // Bluetooth.MODEL_BBSM_S2, Bluetooth.MODEL_OXYU,
     // Bluetooth.MODEL_AI_S100, Bluetooth.MODEL_O2M_WPS
     // Bluetooth.MODEL_CMRING, Bluetooth.MODEL_OXYFIT_WPS,
-    // Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_SI_PO6
+    // Bluetooth.MODEL_KIDSO2_WPS
     private var model = Bluetooth.MODEL_O2RING
     private lateinit var binding: ActivityOxyBinding
 

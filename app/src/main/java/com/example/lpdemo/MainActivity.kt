@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_BBSM_S2, Bluetooth.MODEL_OXYU,
         Bluetooth.MODEL_AI_S100, Bluetooth.MODEL_O2M_WPS,
         Bluetooth.MODEL_CMRING, Bluetooth.MODEL_OXYFIT_WPS,
-        Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_SI_PO6,  // OxyActivity
+        Bluetooth.MODEL_KIDSO2_WPS,  // OxyActivity
         Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
         Bluetooth.MODEL_PC80B_BLE2,  // Pc80bActivity
         Bluetooth.MODEL_PC100,  // Pc102Activity
