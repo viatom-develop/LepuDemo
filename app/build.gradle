@@ -11,8 +11,8 @@ android {
         applicationId "com.example.lpdemo"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 6
-        versionName "1.0.6"
+        versionCode 7
+        versionName "1.0.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +42,27 @@ android {
     buildFeatures {
         viewBinding true
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            def buildTypeName = ""
 
+            if (outputFile != null) {
+                if (outputFile.name.contains('release')) {
+                    buildTypeName += "release-"
+                } else if (outputFile.name.contains('debug')) {
+                    buildTypeName += "debug-"
+                }
+
+            }
+
+            def fileName = "LepuDemo-" +
+                    "${buildTypeName}" +
+                    "${variant.versionName}" +
+                    ".apk"
+            outputFileName = fileName
+        }
+    }
 }
 
 dependencies {
