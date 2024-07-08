@@ -27,7 +27,8 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
     private lateinit var binding: ActivityCheckmeBinding
 
     private var fileNames = arrayListOf<String>()
-    private var userId = 1
+    private var userIds = mutableListOf<Int>()
+    private var type = Constant.CheckmeListType.ECG_TYPE
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
@@ -77,6 +78,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.checkmeGetInfo(model)
         }
         binding.getUserList.setOnClickListener {
+            userIds.clear()
             BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.USER_TYPE)
         }
         binding.getTempList.setOnClickListener {
@@ -86,13 +88,26 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.OXY_TYPE)
         }
         binding.getGluList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.GLU_TYPE, userId)
+            // userIds
+            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.GLU_TYPE, 1)
         }
         binding.getDlcList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.DLC_TYPE, userId)
+            type = Constant.CheckmeListType.DLC_TYPE
+            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.DLC_TYPE, 1)
+        }
+        binding.getPedList.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.PED_TYPE, 2)
+        }
+        binding.getBpList.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.BP_TYPE, 1)
         }
         binding.getEcgList.setOnClickListener {
+            type = Constant.CheckmeListType.ECG_TYPE
             BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.ECG_TYPE)
+        }
+        binding.getSlmList.setOnClickListener {
+            type = Constant.CheckmeListType.SLM_TYPE
+            BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.SLM_TYPE)
         }
         binding.readFile.setOnClickListener {
             // 1. get list first 2. then read file
@@ -174,27 +189,52 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as Int
                 binding.dataLog.text = "GetFileListProgress $data%"
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetBpList)
+            .observe(this) {
+                val data = it.data as ArrayList<BpRecord>
+                binding.dataLog.text = data.toString()
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetPedList)
+            .observe(this) {
+                val data = it.data as ArrayList<PedRecord>
+                binding.dataLog.text = data.toString()
+                // data.distance : km
+                // data.avgSpeed : km/s
+                // data.calorie : kcal
+                // data.fat : g
+                // data.duration : s
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetOxyList)
             .observe(this) {
                 val data = it.data as ArrayList<OxyRecord>
                 binding.dataLog.text = data.toString()
+                // data.measureMode : 0(Internal leads), 1(External leads)
+                // data.result : 0(normal), 1(abnormal)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetGluList)
             .observe(this) {
                 val data = it.data as ArrayList<GluRecord>
                 binding.dataLog.text = data.toString()
+                // data.glu : mg/dL
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetTempList)
             .observe(this) {
                 val data = it.data as ArrayList<TempRecord>
                 binding.dataLog.text = data.toString()
+                // data.measureMode : 0(body temperature), 1(object temperature)
+                // data.temp : ℃
+                // data.result : 0(normal), 1(abnormal)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetUserList)
             .observe(this) {
                 val data = it.data as ArrayList<UserInfo>
                 binding.dataLog.text = data.toString()
-                if (data.size != 0)
-                    userId = data[0].id+1
+                for (i in data) {
+                    userIds.add(i.id)
+                }
+                // data.sex : 0(boy), 1(girl)
+                // data.weight : kg
+                // data.height : cm
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetEcgList)
             .observe(this) {
@@ -203,6 +243,8 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
                     fileNames.add(i.recordName)
                 }
                 binding.dataLog.text = data.toString()
+                // data.measureMode : 1：Hand-Hand，2：Hand-Chest，3：1-Lead，4：2-Lead
+                // data.result : 0(normal), 1(abnormal)
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetDlcList)
             .observe(this) {
@@ -211,11 +253,23 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
                     fileNames.add(i.recordName)
                 }
                 binding.dataLog.text = data.toString()
+                // data.ecgResult : 0(normal), 1(abnormal)
+                // data.spo2Result : 0(normal), 1(abnormal)
+                // data.bpiResult : 0(normal), 1(abnormal)
             }
-
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetSlmList)
+            .observe(this) {
+                val data = it.data as ArrayList<SlmRecord>
+                for (i in data) {
+                    fileNames.add(i.recordName)
+                }
+                binding.dataLog.text = data.toString()
+                // data.lowSpo2Time : s
+                // data.result : 0(normal), 1(abnormal)
+            }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadFileError)
             .observe(this) {
-                val data = it.data as Boolean
+                val data = it.data as Int  // Constant.CheckmeFileType
                 binding.dataLog.text = "ReadFileError $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadingFileProgress)
@@ -223,7 +277,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as Int
                 binding.dataLog.text = "ReadingFileProgress $data%"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadFileComplete)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadEcgFileComplete)
             .observe(this) {
                 val data = it.data as EcgFile
                 Log.d(TAG, "data: $data")
@@ -243,11 +297,24 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
                 // data.result.isLowSt：Whether Low ST Value
                 // data.result.isPrematureBeat：Whether Suspected Premature Beat
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadSlmFileComplete)
+            .observe(this) {
+                // Store a point every two seconds
+                val data = it.data as SlmFile
+                Log.d(TAG, "data: $data")
+                binding.dataLog.text = "$data"
+                fileNames.removeAt(0)
+                readFile()
+            }
     }
 
     private fun readFile() {
         if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.checkmeReadFile(model, "", fileNames[0])
+        if (type == Constant.CheckmeListType.SLM_TYPE) {
+            BleServiceHelper.BleServiceHelper.checkmeReadFile(model, fileNames[0], Constant.CheckmeFileType.SLM_TYPE)
+        } else {
+            BleServiceHelper.BleServiceHelper.checkmeReadFile(model, fileNames[0], Constant.CheckmeFileType.ECG_TYPE)
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

@@ -246,22 +246,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10">
                 <Button
-                    android:id="@+id/get_dlc_list"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="get dlc list"/>
-                <Button
-                    android:id="@+id/get_glu_list"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="get glu list"
-                    android:layout_marginStart="@dimen/dp_10"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10">
-                <Button
                     android:id="@+id/get_temp_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -273,11 +257,37 @@
                     android:text="get user list"
                     android:layout_marginStart="@dimen/dp_10"/>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10">
+                <Button
+                    android:id="@+id/get_bp_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="get bp list"/>
+                <Button
+                    android:id="@+id/get_ped_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="get ped list"
+                    android:layout_marginStart="@dimen/dp_10"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10">
+                <Button
+                    android:id="@+id/get_glu_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="get glu list"/>
+            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="1. get list first(ecg, dlc), 2. then read file"
+                android:text="1. get list first(ecg, dlc, slm), 2. then read file"
                 android:layout_marginStart="15dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -288,6 +298,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="get ecg list"/>
+                <Button
+                    android:id="@+id/get_dlc_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="get dlc list"
+                    android:layout_marginStart="@dimen/dp_10"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10">
+                <Button
+                    android:id="@+id/get_slm_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="get slm list"/>
                 <Button
                     android:id="@+id/read_file"
                     android:layout_width="wrap_content"

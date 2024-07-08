@@ -189,13 +189,14 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
                         else -> ""
                     }
                 }
+                // data.dataType : 1(measuring), 2(measurement finish)
                 if (data.dataType == 1) {
                     data.ecgData.let { data2 ->
                         DataController.receive(data2.ecgFloats)
                     }
                     // sampling rate：150HZ
                     // mV = (n - 2048) * (1 / 330)（data.ecgData.ecgFloats = (data.ecgData.ecgInts - 2048) * (1 / 330)）
-                } else {
+                } else if (data.dataType == 2) {
                     data.ecgResult.let {
                         binding.dataLog.text = "result $it"
                     }
