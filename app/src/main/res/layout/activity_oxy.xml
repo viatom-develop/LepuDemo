@@ -203,6 +203,12 @@
             android:layout_height="wrap_content"
             android:text="factory reset"
             android:layout_marginStart="@dimen/dp_10"/>
+        <Button
+            android:id="@+id/set_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="set time"
+            android:layout_marginStart="@dimen/dp_10"/>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
