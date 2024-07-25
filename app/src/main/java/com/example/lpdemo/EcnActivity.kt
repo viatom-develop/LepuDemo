@@ -12,7 +12,6 @@ import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.ext.ecn.File
-import com.lepu.blepro.ext.ecn.FileList
 import com.lepu.blepro.ext.ecn.RtData
 import com.lepu.blepro.ext.ecn.RtState
 import com.lepu.blepro.objs.Bluetooth
@@ -131,11 +130,8 @@ class EcnActivity : AppCompatActivity(), BleChangeObserver {
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnGetFileList)
             .observe(this) {
-                val data = it.data as FileList
-                binding.dataLog.text = "$data"
-                for (file in data.list) {
-                    fileNames.add(file.fileName)
-                }
+                fileNames = it.data as ArrayList<String>
+                binding.dataLog.text = "$fileNames"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnReadingFileProgress)
             .observe(this) {
