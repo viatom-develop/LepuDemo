@@ -85,5 +85,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     // pdf
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    api 'io.getstream:stream-log-android:1.1.4'
+    api 'io.getstream:stream-log-android-file:1.1.4'
 
 }

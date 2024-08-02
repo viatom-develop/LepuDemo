@@ -296,6 +296,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
 
         dialog = ProgressDialog(this)
 
+        binding.demoModel.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.shareLog()
+            true
+        }
         binding.scan.setOnClickListener {
             BleServiceHelper.BleServiceHelper.startScan(models)
         }
