@@ -16,7 +16,10 @@ import com.example.lpdemo.views.EcgView
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
+import com.lepu.blepro.constants.Constant
+import com.lepu.blepro.event.EventMsgConst
 import com.lepu.blepro.event.InterfaceEvent
+import com.lepu.blepro.ext.CrcError
 import com.lepu.blepro.ext.er2.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
@@ -301,6 +304,22 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
                 }
                 fileNames.removeAt(0)
                 readFile()
+            }
+        LiveEventBus.get<CrcError>(EventMsgConst.Cmd.EventCmdCrcError)
+            .observe(this) {
+                when (it.model) {
+                    Bluetooth.MODEL_DUOEK, Bluetooth.MODEL_ER2, Bluetooth.MODEL_LP_ER2,
+                    Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3, Bluetooth.MODEL_ER2_S -> {
+                        when (it.type) {
+                            Constant.ErrorType.READ_FILE_TYPE -> {
+                                readFile()
+                            }
+                            Constant.ErrorType.GET_INFO_TYPE -> {
+                                BleServiceHelper.BleServiceHelper.er2GetInfo(it.model)
+                            }
+                        }
+                    }
+                }
             }
     }
 
