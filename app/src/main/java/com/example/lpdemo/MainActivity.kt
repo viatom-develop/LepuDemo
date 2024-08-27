@@ -288,7 +288,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
             rawFolders.set(Bluetooth.MODEL_ER1_W, "${getExternalFilesDir(null)?.absolutePath}/er1")
             rawFolders.set(Bluetooth.MODEL_ER1_L, "${getExternalFilesDir(null)?.absolutePath}/er1")
 
-            BleServiceHelper.BleServiceHelper.initLog(true).initRawFolder(rawFolders).initService(application)
+            // initRawFolder必须在initService之前调用
+            BleServiceHelper.BleServiceHelper.initRawFolder(rawFolders).initService(application).initLog(true)
         }
     }
 
