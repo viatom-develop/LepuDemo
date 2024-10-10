@@ -100,7 +100,7 @@ class WaveEcgActivity : AppCompatActivity() {
         val width = layout.width
         val height = layout.height
         if (filterEcgView == null && filterWaveData != null) {
-            filterEcgView = WaveEcgView(this, mills*1000, filterWaveData, filterWaveData!!.size, width*1f, height*1f, currentZoomLevel, false, model)
+            filterEcgView = WaveEcgView(this, mills*1000, filterWaveData, filterWaveData!!.size, width*1f, height*1f, currentZoomLevel, model)
         }
         if(filterEcgView != null) {
             layout.removeAllViews()

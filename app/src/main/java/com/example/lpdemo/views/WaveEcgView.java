@@ -5,16 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.util.AttributeSet;
-import android.view.GestureDetector;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SeekBar;
-import androidx.annotation.Nullable;
 import com.lepu.blepro.objs.Bluetooth;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,11 +18,11 @@ import java.util.concurrent.TimeUnit;
 public class WaveEcgView extends View {
     public static final short NULL_VALUE = Short.MAX_VALUE;
     // Starting position of drawing
-    private final float chartStartX = 0, chartStartY = 0;
+    private final float chartStartX = 0;
     // Sampling step
     private final int sampleStep = 1;
     //view height
-    private float height = 0;
+    private float height;
     private long startTime;
     // line number of wave
     private int lineNum;
@@ -45,21 +40,16 @@ public class WaveEcgView extends View {
     // About ECG Ruler
     private float rulerStandardWidth = 20;
     private float rulerZeroWidth = 13;
-    private final float rulerTotalWidth = rulerStandardWidth + 2 * rulerZeroWidth;
-    //    private final float standard1mV = (32767 / 4033) * 12 * 8; //
-    private float standard1mV = (float) ((1.0035 * 1800) / (4096 * 178.74));
-    //    private final double[] standardNmV = {standard1mV * 8.0, standard1mV * 4,standard1mV * 2,standard1mV};
+    private float standard1mV;
     private final double[] standardNmV = {0.5, 1.0, 2.0};
     private double rulerStandard;
     // The distance between ruler and chart
-    private final float disOfRulerChart = 10;
 
     // About drawing
     private float screenW;
     private short[] chartY;
     private int validValueLength;
     private Paint linePaint, textPaint, recPaint, axisPaint;
-    private double minY, maxY;
 
     private Paint bkg_paint_1;
     private Paint bkg_paint_2;
@@ -67,88 +57,61 @@ public class WaveEcgView extends View {
     private float mSpeed = 6.25f;
     private int mAxisIndex;
 
-    private GestureDetector detector;
-    ViewGroup parent;
-    float x, y, x1, y1;
     private int currentZoomPosition = 0;
-    private boolean enableClick = true;
     private int startPoint = 0;
     public float preTouchY = 0;
     public boolean isTouching = false;
-    public float currentMoveY = 0;
     public float touchY = 0;
     private float yOffSet;
 
-    HashSet<Float> hashSet = new HashSet<>();
-    Float temp = 0f; // 去重画线
+    private HashSet<Float> hashSet = new HashSet<>();
+    private Float temp = 0f; // 去重画线
 
     //point frequency 125Hz
-    static  int HZ = 125;
-    private float SECONDS_PER_LINE = 10;
+    private int HZ;
+    private float SECONDS_PER_LINE;
 
     private static final int ONE_PAGE_LINES = 4;
 
-    private SeekBar seekBar;
-    private long firstLineTime;
-    private boolean touchable = true;
-    public int POINTS_PER_LINE = (int)(SECONDS_PER_LINE * 125);
-    public int ONE_PAGE_POINTS = (int)(SECONDS_PER_LINE * ONE_PAGE_LINES * 125);
-    public int PREPARED_DRAW_POINTS = ONE_PAGE_POINTS + POINTS_PER_LINE;
-    int model;
-    public WaveEcgView(Context context) {
-        this(context, null);
-    }
-
-    public WaveEcgView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public WaveEcgView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
-
-
-    public WaveEcgView(Context context, short[] Y, int ScreenW, int currentZoomPosition) {
-        super(context);
-        this.currentZoomPosition = currentZoomPosition;
-        chartY = Y;
-        if (chartY.length == 0) {
-            return;
-        }
-        this.screenW = ScreenW;
-
-        initPaint();
-        InitFixParams();
-
-        getMinAndMax();
-    }
+    public int POINTS_PER_LINE;
+    public int ONE_PAGE_POINTS;
+    public int PREPARED_DRAW_POINTS;
 
     public WaveEcgView(Context context, long startTime,
                        short[] Y, int validValueLength,
                        float ScreenW, float viewHeight,
-                       int currentZoomPosition, boolean enableClick
-            , int model) {
+                       int currentZoomPosition, int model) {
         super(context);
-        this.model = model;
         mGrid1mmLength = (float) 25.4 / getResources().getDisplayMetrics().xdpi;
         SECONDS_PER_LINE = ScreenW / (1 / mGrid1mmLength) / mSpeed;
 
         if (model == Bluetooth.MODEL_ER1
+                || model == Bluetooth.MODEL_ER1S
+                || model == Bluetooth.MODEL_ER1_S
+                || model == Bluetooth.MODEL_ER1_H
+                || model == Bluetooth.MODEL_ER1_W
+                || model == Bluetooth.MODEL_ER1_L
                 || model == Bluetooth.MODEL_ER1_N
                 || model == Bluetooth.MODEL_HHM1
                 || model == Bluetooth.MODEL_DUOEK
                 || model == Bluetooth.MODEL_HHM2
                 || model == Bluetooth.MODEL_HHM3
                 || model == Bluetooth.MODEL_ER2
+                || model == Bluetooth.MODEL_ER2_S
+                || model == Bluetooth.MODEL_LEPU_ER2
+                || model == Bluetooth.MODEL_CM_TOUCH
                 || model == Bluetooth.MODEL_LP_ER2) {
             standard1mV = (float) ((1.0035 * 1800) / (4096 * 178.74));
+            HZ = 125;
         } else if (model == Bluetooth.MODEL_BP2
-                || model == Bluetooth.MODEL_BP2W
-                || model == Bluetooth.MODEL_LP_BP2W) {
+                || model == Bluetooth.MODEL_CMB590840
+                || model == Bluetooth.MODEL_BP2W) {
             standard1mV = 0.003098f;
+            HZ = 125;
         } else if (model == Bluetooth.MODEL_PULSEBITEX
                 || model == Bluetooth.MODEL_HHM4
                 || model == Bluetooth.MODEL_CHECKME_LE
+                || model == Bluetooth.MODEL_CHECKME_LP
                 || model == Bluetooth.MODEL_CHECKME) {
             standard1mV = 4033 / (32767 * 12 * 8f);
             HZ = 500;
@@ -158,11 +121,14 @@ public class WaveEcgView extends View {
             standard1mV = 1 / 330f;
             HZ = 150;
         } else if (model == Bluetooth.MODEL_ER3
-                || model == Bluetooth.MODEL_LEPOD) {
+                || model == Bluetooth.MODEL_M12
+                || model == Bluetooth.MODEL_LEPOD
+                || model == Bluetooth.MODEL_LEPOD_PRO) {
             standard1mV = 0.00244140625f;
             HZ = 250;
         } else {
             standard1mV = (float) ((1.0035 * 1800) / (4096 * 178.74));
+            HZ = 125;
         }
         POINTS_PER_LINE = (int) (SECONDS_PER_LINE * HZ);
         ONE_PAGE_POINTS = (int) (SECONDS_PER_LINE * ONE_PAGE_LINES * HZ);
@@ -179,36 +145,10 @@ public class WaveEcgView extends View {
         this.startTime = startTime;
         this.validValueLength = validValueLength;
         this.screenW = ScreenW;
-        this.enableClick = enableClick;
 
         initPaint();
         InitFixParams();
-
         getMinAndMax();
-    }
-
-    public WaveEcgView(Context context, long startTime, short[] Y, int validValueLength, int ScreenW, int currentZoomPosition, boolean enableClick) {
-        super(context);
-        this.currentZoomPosition = currentZoomPosition;
-        chartY = Y;
-        if (chartY.length == 0) {
-            return;
-        }
-
-        this.startTime = startTime;
-        this.validValueLength = validValueLength;
-        this.screenW = ScreenW;
-        this.enableClick = enableClick;
-
-        initPaint();
-        InitFixParams();
-
-        getMinAndMax();
-    }
-
-    public void setSeekBar(SeekBar seekBar) {
-        this.seekBar = seekBar;
-        this.seekBar.setProgress(0);
     }
 
     /**
@@ -233,7 +173,6 @@ public class WaveEcgView extends View {
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setStrokeWidth((float) 1.5);
         textPaint.setColor(Color.parseColor("#999999"));
-//        textPaint.setFakeBoldText(true);
 
         recPaint = new Paint();
         recPaint.setAntiAlias(true);
@@ -258,7 +197,7 @@ public class WaveEcgView extends View {
     public void InitFixParams() {
         chartLineLength = screenW;
 
-        xDis = (float) (screenW / (SECONDS_PER_LINE * HZ - 1)) * sampleStep;
+        xDis = (screenW / (SECONDS_PER_LINE * HZ - 1)) * sampleStep;
         rulerZeroWidth = 1 / mGrid1mmLength;
         rulerStandardWidth = rulerZeroWidth * 3;
 
@@ -270,12 +209,12 @@ public class WaveEcgView extends View {
             wholeLineDis = (5 / mGrid1mmLength) * 5;
             lineDis = wholeLineDis - 2 * linePadding * ONE_PAGE_LINES;
         }
-//        lineNum = 16;
         lineNum = (int) Math.ceil(validValueLength * 1.0f / POINTS_PER_LINE);
 
         // 小于等于30s不需要画全屏
+        Log.d("vvaa", "lineNum "+lineNum + " validValueLength "+validValueLength + " POINTS_PER_LINE "+POINTS_PER_LINE);
+        height = wholeLineDis * lineNum;
         if (lineNum <= ONE_PAGE_LINES) {
-            height = wholeLineDis * lineNum;
             mAxisIndex = lineNum + 1;
         } else {
             mAxisIndex = ONE_PAGE_LINES + 1 + 1;
@@ -301,7 +240,6 @@ public class WaveEcgView extends View {
         if (chartY == null || chartY.length == 0) {
             return;
         }
-//        canvas.drawColor(Color.WHITE);
         drawBkg(canvas);
         drawAxis(canvas);
         drawPath(canvas, chartY);
@@ -353,9 +291,6 @@ public class WaveEcgView extends View {
 
             long time;
             time = (startPoint + POINTS_PER_LINE * (i-1)) / HZ + TimeUnit.MILLISECONDS.toSeconds(startTime);
-            if (i == 0) {
-                setFirstLineTime(time);
-            }
             Date date = new Date(TimeUnit.SECONDS.toMillis(time));
             textPaint.setTextSize(50);
             linePaint.setTextSize(50);
@@ -368,11 +303,6 @@ public class WaveEcgView extends View {
             drawRuler(canvas);
         }
     }
-
-    private void setFirstLineTime(long time) {
-        firstLineTime = time;
-    }
-
 
     private void drawRuler(Canvas canvas) {
         float zeroLineY = wholeLineDis / 5.0f * 3.0f + yOffSet;
@@ -418,9 +348,8 @@ public class WaveEcgView extends View {
 
         //小于一页的数据取实际长度
         int length = Math.min(Math.min(PREPARED_DRAW_POINTS, validValueLength), validValueLength - startPoint);
-        for (int i = 0, k = 0; i < length/*Y.length*/; i += sampleStep) {
+        for (int i = 0, k = 0; i < length; i += sampleStep) {
             float tempX;
-
             tempX = chartStartX + k * xDis;
             int index = startPoint + i;
             if (index < 0 || index > Y.length-1) {
@@ -432,7 +361,6 @@ public class WaveEcgView extends View {
                 preTempX = NULL_VALUE;
                 preTempY = NULL_VALUE;
                 preChartY = NULL_VALUE;
-
             }
 
             if (preTempX != NULL_VALUE && Y[index] != NULL_VALUE && preChartY != NULL_VALUE) {
@@ -455,15 +383,9 @@ public class WaveEcgView extends View {
         }
     }
 
-    public int changeZoomPosition() {
-        if (currentZoomPosition == (standardNmV.length - 1)) {
-            currentZoomPosition = 0;
-        } else {
-            currentZoomPosition = currentZoomPosition + 1;
-        }
-        rulerStandard = standardNmV[currentZoomPosition];
+    public void setData(short[] Y) {
+        chartY = Y;
         postInvalidate();
-        return currentZoomPosition;
     }
 
     public void setCurrentZoomPosition(int zoomPosition) {
@@ -481,51 +403,21 @@ public class WaveEcgView extends View {
         postInvalidate();
     }
 
-    public void setParent(ViewGroup viewGroup) {
-        this.parent = viewGroup;
+    public float getmSpeed() {
+        return mSpeed;
     }
-
-    public void setStartPoint(int startPoint) {
-        this.startPoint = startPoint;
+    public int getHZ() {
+        return HZ;
     }
-
-    public float getProgressPercent() {
-        if(validValueLength <= ONE_PAGE_POINTS) {
-            return 0;
-        }
-        return ((float)startPoint)/(validValueLength - ONE_PAGE_POINTS);
+    public double getRulerStandard() {
+        return rulerStandard;
     }
-
-    public void setYOffSetInPoints(float points) {
-        yOffSet = -wholeLineDis * (points / POINTS_PER_LINE);
-    }
-
-    public short[] getCurPageFilterData() {
-        //小于一页的数据取实际长度
-        int length = Math.min(Math.min(PREPARED_DRAW_POINTS, validValueLength), validValueLength - startPoint);
-        short[] drawPoints = Arrays.copyOfRange(chartY, startPoint, startPoint + length);
-        return drawPoints;
-    }
-
-    public long getFirstLineTime() {
-        return firstLineTime;
-    }
-
-    public void setTouchable(boolean touchable) {
-        this.touchable = touchable;
-    }
-
-    public interface OnPageScrolledListener {
-        void scrollLeft();
-
-        void scrollRight();
+    public float getStandard1mV() {
+        return standard1mV;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(!touchable) {
-            return false;
-        }
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             preTouchY = event.getY();
             isTouching = true;
@@ -569,14 +461,6 @@ public class WaveEcgView extends View {
             if (startPoint < 0) {
                 startPoint = 0;
             }
-
-            if(seekBar != null) {
-                int progress = (int) (getProgressPercent() * seekBar.getMax());
-                if(progress != seekBar.getProgress()) {
-                    seekBar.setProgress(progress);
-                }
-            }
-
             invalidate();
         }
         return true;
