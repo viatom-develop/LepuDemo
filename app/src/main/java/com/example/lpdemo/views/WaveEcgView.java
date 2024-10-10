@@ -76,12 +76,14 @@ public class WaveEcgView extends View {
     public int POINTS_PER_LINE;
     public int ONE_PAGE_POINTS;
     public int PREPARED_DRAW_POINTS;
+    private int model;
 
     public WaveEcgView(Context context, long startTime,
                        short[] Y, int validValueLength,
                        float ScreenW, float viewHeight,
                        int currentZoomPosition, int model) {
         super(context);
+        this.model = model;
         mGrid1mmLength = (float) 25.4 / getResources().getDisplayMetrics().xdpi;
         SECONDS_PER_LINE = ScreenW / (1 / mGrid1mmLength) / mSpeed;
 
@@ -355,7 +357,14 @@ public class WaveEcgView extends View {
             if (index < 0 || index > Y.length-1) {
                 break;
             }
-            float yVal = (Y[index])*standard1mV;
+            float yVal;
+            if (model == Bluetooth.MODEL_PC80B
+                || model == Bluetooth.MODEL_PC80B_BLE
+                || model == Bluetooth.MODEL_PC80B_BLE2) {
+                yVal = (Y[index] - 2048)*standard1mV;
+            } else {
+                yVal = (Y[index])*standard1mV;
+            }
             float tempY = yOffSet + (float) (wholeLineDis / 5.0 * 3.0 + line - rulerStandard * (1/mGrid1mmLength*10) * (yVal));
             if (i == 0) { // First point
                 preTempX = NULL_VALUE;
