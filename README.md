@@ -691,6 +691,11 @@ Get filelist complete :
 ### ER1 (Bluetooth.MODEL_ER1)
 ### VBeat (Bluetooth.MODEL_ER1_N)
 ### HHM1 (Bluetooth.MODEL_HHM1)
+### ER1S (Bluetooth.MODEL_ER1S)
+### ER1-S (Bluetooth.MODEL_ER1_S)
+### ER1-H (Bluetooth.MODEL_ER1_H)
+### ER1-W (Bluetooth.MODEL_ER1_W)
+### ER1-L (Bluetooth.MODEL_ER1_L)
 
 Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
 Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
@@ -770,6 +775,7 @@ mV = n * 0.002467
 ### DuoEK (Bluetooth.MODEL_DUOEK)
 ### HHM2 (Bluetooth.MODEL_HHM2)
 ### HHM3 (Bluetooth.MODEL_HHM3)
+### ER2-S (Bluetooth.MODEL_ER2_S)
 
 Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
 Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
@@ -842,6 +848,7 @@ mV = n * 0.002467
 `data` : boolean (true : factory reset success, false : factory reset failed)  
 
 ### ER3 (Bluetooth.MODEL_ER3)
+### M12 (Bluetooth.MODEL_M12)
 
 Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
 Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
