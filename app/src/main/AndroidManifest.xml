@@ -23,52 +23,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LepuDemo">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity android:name=".Pc300Activity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Pc102Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc80bActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc60fwActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Ap20Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc68bActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".PulsebitExActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmeLeActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc303Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmePodActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Aoj20aActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Sp20Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmeMonitorActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Vtm20fActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".OxyActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".BpmActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".BiolandBgmActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".PoctorM3102Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Lpm311Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".LemActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er1Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er2Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er2SActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Bp2Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Bp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".LpBp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er3Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".LepodActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".EcnActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".WaveEcgActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".DataActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".VentilatorActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".FhrActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Ad5Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".VcominActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".AirBpActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pf10Aw1Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".OxyIIActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmeActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
     </application>
 
 </manifest>
