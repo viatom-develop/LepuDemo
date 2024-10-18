@@ -54,9 +54,16 @@ class Pc300Activity : AppCompatActivity(), BleChangeObserver, BleDataObserver {
     private fun initView() {
         binding.tempMode.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId == R.id.ear_mode) {
-                BleServiceHelper.BleServiceHelper.pc300SetTempMode(deviceModel, 0x11)
+                BleServiceHelper.BleServiceHelper.pc300SetTempMode(deviceModel, Ble.Pc300TempMode.EAR_C)
             } else {
-                BleServiceHelper.BleServiceHelper.pc300SetTempMode(deviceModel, 0x21)
+                BleServiceHelper.BleServiceHelper.pc300SetTempMode(deviceModel, Ble.Pc300TempMode.ADULT_HEAD_C)
+            }
+        }
+        binding.gluType.setOnCheckedChangeListener { group, checkedId ->
+            if (checkedId == R.id.aiaole_type) {
+                BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(deviceModel, Ble.Pc300GluType.AI_AO_LE)
+            } else {
+                BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(deviceModel, Ble.Pc300GluType.BAI_JIE)
             }
         }
         binding.shareLog.setOnLongClickListener {
@@ -411,10 +418,19 @@ class Pc300Activity : AppCompatActivity(), BleChangeObserver, BleDataObserver {
 
     }
 
+    override fun onBleGetGluType(model: Int, data: Int) {
+        Log.d(TAG, "onBleGetGluType $data")
+        if (data == Ble.Pc300GluType.AI_AO_LE) {
+            binding.tempMode.check(R.id.aiaole_type)
+        } else {
+            binding.tempMode.check(R.id.baijie_type)
+        }
+    }
+
     override fun onBleGetTempMode(model: Int, data: Int) {
         Log.d(TAG, "onBleGetTempMode $data")
-        if (data == 0x11
-            || data == 0x12) {
+        if (data == Ble.Pc300TempMode.EAR_C
+            || data == Ble.Pc300TempMode.EAR_F) {
             binding.tempMode.check(R.id.ear_mode)
         } else {
             binding.tempMode.check(R.id.head_mode)
@@ -448,6 +464,11 @@ class Pc300Activity : AppCompatActivity(), BleChangeObserver, BleDataObserver {
 
     override fun onBleRtOxyWave(model: Int, data: RtOxyWave) {
 
+    }
+
+    override fun onBleSetGluType(model: Int, data: Boolean) {
+        Log.d(TAG, "onBleSetGluType $data")
+        BleServiceHelper.BleServiceHelper.pc300GetGlucometerType(model)
     }
 
     override fun onBleSetTempMode(model: Int, data: Boolean) {
