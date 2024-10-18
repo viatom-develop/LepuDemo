@@ -17,19 +17,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.lpdemo.databinding.ActivityPc300Binding
 import com.example.lpdemo.utils.*
-import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
-import com.lepu.blepro.event.EventMsgConst
-import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.pc303.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.objs.BluetoothController
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
+import com.lepu.blepro.observer.BleDataObserver
 import com.permissionx.guolindev.PermissionX
 
-class Pc300Activity : AppCompatActivity(), BleChangeObserver {
+class Pc300Activity : AppCompatActivity(), BleChangeObserver, BleDataObserver {
 
     private val TAG = "Pc300Activity"
     // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
@@ -50,7 +48,6 @@ class Pc300Activity : AppCompatActivity(), BleChangeObserver {
         setContentView(binding.root)
         saveDeviceAddress = readStrPreferences(this, "device_address", "")
         initView()
-        initEventBus()
         needPermission()
     }
 
@@ -104,127 +101,34 @@ class Pc300Activity : AppCompatActivity(), BleChangeObserver {
             BleServiceHelper.BleServiceHelper.startScan(models)
             true
         }
-    }
-
-    private fun initEventBus() {
-        LiveEventBus.get<Bluetooth>(EventMsgConst.Discovery.EventDeviceFound)
-            .observe(this) {
-                // scan result
-                for (b in BluetoothController.getDevices()) {
-                    if (saveDeviceAddress != "") {
-                        if (b.macAddr.equals(saveDeviceAddress)) {
-                            BleServiceHelper.BleServiceHelper.disconnect(false)
-                            // stop scan before connect
-                            BleServiceHelper.BleServiceHelper.stopScan()
-                            // set interface before connect
-                            BleServiceHelper.BleServiceHelper.setInterfaces(it.model)
-                            // add observer(ble state)
-                            lifecycle.addObserver(BIOL(this, intArrayOf(it.model)))
-                            // connect
-                            BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
-
-                            deviceModel = it.model
-                            deviceName = it.name
-                            deviceAddress = it.macAddr
-                            savePreferences(this, "device_address", deviceAddress)
-                            BluetoothController.clear()
-                            break
-                        }
-                    } else {
-                        if (b.name.contains("PC_300SNT")) {
-                            BleServiceHelper.BleServiceHelper.disconnect(false)
-                            // stop scan before connect
-                            BleServiceHelper.BleServiceHelper.stopScan()
-                            // set interface before connect
-                            BleServiceHelper.BleServiceHelper.setInterfaces(it.model)
-                            // add observer(ble state)
-                            lifecycle.addObserver(BIOL(this, intArrayOf(it.model)))
-                            // connect
-                            BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
-
-                            deviceModel = it.model
-                            deviceName = it.name
-                            deviceAddress = it.macAddr
-                            savePreferences(this, "device_address", deviceAddress)
-                            BluetoothController.clear()
-                            break
-                        }
-                    }
-                }
-                Log.d(TAG, "EventDeviceFound")
-            }
-        LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
-            .observe(this) {
-                BleServiceHelper.BleServiceHelper.pc300GetInfo(it)
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300DeviceInfo)
-            .observe(this) {
-                val data = it.data as DeviceInfo
-                // 参数仪需要先连接体温枪，查询才会有结果返回
-                BleServiceHelper.BleServiceHelper.pc300GetTempMode(it.model)
-            }
-        // ----------------------bp----------------------
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtBpData)
-            .observe(this) {
-                val data = it.data as Int
-                binding.ps.text = "实时压(mmhg) : $data"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpResult)
-            .observe(this) {
-                val data = it.data as BpResult
-                binding.sys.text = "收缩压(mmhg) : ${data.sys}"
-                binding.dia.text = "舒张压(mmhg) : ${data.dia}"
-                binding.mean.text = "平均压(mmhg) : ${data.map}"
-                binding.bpPr.text = "心率(次/分钟) : ${data.pr}"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpErrorResult)
-            .observe(this) {
-                val data = it.data as BpResultError
-                Toast.makeText(this, "$data", Toast.LENGTH_SHORT).show()
-            }
-        // ----------------------oxy----------------------
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300RtOxyParam)
-            .observe(this) {
-                val data = it.data as RtOxyParam
-                binding.spo2.text = "血氧(%) : ${data.spo2}"
-                binding.oxyPr.text = "脉率(次/分钟) : ${data.pr}"
-                binding.pi.text = "PI(%) : ${data.pi}"
-                // data.spo2：0%-100%（0：invalid）
-                // data.pr：0-511bpm（0：invalid）
-                // data.pi：0%-25.5%（0：invalid）
-            }
-        // ----------------------temp----------------------
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult)
-            .observe(this) {
-                // if receive twice same result, just get one of them
-                // normal temp：32 - 43
-                val data = it.data as Float
-                binding.temp.text = "体温(℃) : $data"
-            }
-        // ----------------------glu----------------------
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GluResult)
-            .observe(this) {
-                val data = it.data as GluResult
-                binding.glu.text = if (data.unit == 0) {
-                    "血糖(mmol/L) : ${data.data}"
-                } else {
-                    "血糖(mg/dL) : ${data.data}"
-                }
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300SetTempMode)
-            .observe(this) {
-                BleServiceHelper.BleServiceHelper.pc300GetTempMode(it.model)
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GetTempMode)
-            .observe(this) {
-                val data = it.data as Int
-                if (data == 0x11
-                    || data == 0x12) {
-                    binding.tempMode.check(R.id.ear_mode)
-                } else {
-                    binding.tempMode.check(R.id.head_mode)
-                }
-            }
+        binding.temp.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.TEMP_TYPE)
+            true
+        }
+        binding.glu.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.AI_AO_LE_GLU_TYPE)
+            true
+        }
+        binding.sys.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.BP_TYPE)
+            true
+        }
+        binding.dia.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.BP_TYPE)
+            true
+        }
+        binding.mean.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.BP_TYPE)
+            true
+        }
+        binding.bpPr.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.BP_TYPE)
+            true
+        }
+        binding.ps.setOnLongClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetRecord(deviceModel, Ble.Pc300RecordType.BP_TYPE)
+            true
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
@@ -426,10 +330,134 @@ class Pc300Activity : AppCompatActivity(), BleChangeObserver {
             // initRawFolder必须在initService之前调用
             BleServiceHelper.BleServiceHelper.initRawFolder(rawFolders).initService(application).initLog(true)
         }
+        BleServiceHelper.BleServiceHelper.setBleDataObserver(this)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         initService()
+    }
+
+    override fun onBleDeviceFound(it: Bluetooth) {
+        Log.d(TAG, "onBleDeviceFound $it")
+        // scan result
+        for (b in BluetoothController.getDevices()) {
+            if (saveDeviceAddress != "") {
+                if (b.macAddr.equals(saveDeviceAddress)) {
+                    BleServiceHelper.BleServiceHelper.disconnect(false)
+                    // stop scan before connect
+                    BleServiceHelper.BleServiceHelper.stopScan()
+                    // set interface before connect
+                    BleServiceHelper.BleServiceHelper.setInterfaces(it.model)
+                    // add observer(ble state)
+                    lifecycle.addObserver(BIOL(this, intArrayOf(it.model)))
+                    // connect
+                    BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
+
+                    deviceModel = it.model
+                    deviceName = it.name
+                    deviceAddress = it.macAddr
+                    savePreferences(this, "device_address", deviceAddress)
+                    BluetoothController.clear()
+                    break
+                }
+            } else {
+                if (b.name.contains("PC_300SNT")) {
+                    BleServiceHelper.BleServiceHelper.disconnect(false)
+                    // stop scan before connect
+                    BleServiceHelper.BleServiceHelper.stopScan()
+                    // set interface before connect
+                    BleServiceHelper.BleServiceHelper.setInterfaces(it.model)
+                    // add observer(ble state)
+                    lifecycle.addObserver(BIOL(this, intArrayOf(it.model)))
+                    // connect
+                    BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
+
+                    deviceModel = it.model
+                    deviceName = it.name
+                    deviceAddress = it.macAddr
+                    savePreferences(this, "device_address", deviceAddress)
+                    BluetoothController.clear()
+                    break
+                }
+            }
+        }
+        Log.d(TAG, "EventDeviceFound")
+    }
+
+    override fun onBleDeviceReady(model: Int) {
+        Log.d(TAG, "onBleDeviceReady $model")
+        BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
+    }
+
+    override fun onBleBpResult(model: Int, data: BpResult) {
+        Log.d(TAG, "onBleBpResult $data")
+        binding.sys.text = "收缩压(mmhg) : ${data.sys}"
+        binding.dia.text = "舒张压(mmhg) : ${data.dia}"
+        binding.mean.text = "平均压(mmhg) : ${data.map}"
+        binding.bpPr.text = "心率(次/分钟) : ${data.pr}"
+    }
+
+    override fun onBleBpResultError(model: Int, data: BpResultError) {
+        Log.d(TAG, "onBleBpResultError $data")
+        Toast.makeText(this, "$data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onBleDeviceInfo(model: Int, data: DeviceInfo) {
+        Log.d(TAG, "onBleDeviceInfo $data")
+        BleServiceHelper.BleServiceHelper.pc300GetTempMode(model)
+    }
+
+    override fun onBleEcgResult(model: Int, data: EcgResult) {
+
+    }
+
+    override fun onBleGetTempMode(model: Int, data: Int) {
+        Log.d(TAG, "onBleGetTempMode $data")
+        if (data == 0x11
+            || data == 0x12) {
+            binding.tempMode.check(R.id.ear_mode)
+        } else {
+            binding.tempMode.check(R.id.head_mode)
+        }
+    }
+
+    override fun onBleGluResult(model: Int, data: GluResult) {
+        Log.d(TAG, "onBleGluResult $data")
+        binding.glu.text = if (data.unit == 0) {
+            "血糖(mmol/L) : ${data.data}"
+        } else {
+            "血糖(mg/dL) : ${data.data}"
+        }
+    }
+
+    override fun onBleRtBp(model: Int, data: Int) {
+        Log.d(TAG, "onBleRtBp $data")
+        binding.ps.text = "实时压(mmhg) : $data"
+    }
+
+    override fun onBleRtEcgWave(model: Int, data: RtEcgWave) {
+
+    }
+
+    override fun onBleRtOxyParam(model: Int, data: RtOxyParam) {
+        Log.d(TAG, "onBleRtOxyParam $data")
+        binding.spo2.text = "血氧(%) : ${data.spo2}"
+        binding.oxyPr.text = "脉率(次/分钟) : ${data.pr}"
+        binding.pi.text = "PI(%) : ${data.pi}"
+    }
+
+    override fun onBleRtOxyWave(model: Int, data: RtOxyWave) {
+
+    }
+
+    override fun onBleSetTempMode(model: Int, data: Boolean) {
+        Log.d(TAG, "onBleSetTempMode $data")
+        BleServiceHelper.BleServiceHelper.pc300GetTempMode(model)
+    }
+
+    override fun onBleTempResult(model: Int, data: Float) {
+        Log.d(TAG, "onBleTempResult $data")
+        binding.temp.text = "体温(℃) : $data"
     }
 
 }

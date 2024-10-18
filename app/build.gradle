@@ -8,7 +8,7 @@ android {
     buildToolsVersion "34.0.0"
 
     defaultConfig {
-        applicationId "com.example.lpdemo"
+        applicationId "com.example.lpdemo.pc300"
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 7
@@ -77,7 +77,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'no.nordicsemi.android:ble:2.2.4'
-    implementation(name: 'blepro-pc300-0.0.1', ext: 'aar')
+    implementation(name: 'blepro-pc300-0.0.2', ext: 'aar')
     implementation 'com.github.michaellee123:LiveEventBus:1.8.14'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
