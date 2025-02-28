@@ -104,6 +104,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,   // Pf10Aw1Activity
         Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,   // OxyIIActivity
         Bluetooth.MODEL_CHECKME,   // CheckmeActivity
+        Bluetooth.MODEL_BP3A, Bluetooth.MODEL_BP3B, Bluetooth.MODEL_BP3C,
+        Bluetooth.MODEL_BP3D, Bluetooth.MODEL_BP3E, Bluetooth.MODEL_BP3F,
+        Bluetooth.MODEL_BP3G, Bluetooth.MODEL_BP3H, Bluetooth.MODEL_BP3K,
+        Bluetooth.MODEL_BP3L, Bluetooth.MODEL_BP3Z,   // Bp3Activity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -639,6 +643,16 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     dialog.dismiss()
                 }
                 val intent = Intent(this, OxyIIActivity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
+            }
+        //------------------BP3----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3SetUtcTime)
+            .observe(this) {
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
+                val intent = Intent(this, Bp3Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
             }

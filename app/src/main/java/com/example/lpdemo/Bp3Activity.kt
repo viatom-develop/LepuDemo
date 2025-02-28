@@ -9,7 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.lpdemo.databinding.ActivityLpBp2wBinding
+import com.example.lpdemo.databinding.ActivityBp3Binding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
 import com.example.lpdemo.views.EcgView
@@ -18,25 +18,22 @@ import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.constants.Constant
 import com.lepu.blepro.event.InterfaceEvent
-import com.lepu.blepro.ext.lpbp2w.*
+import com.lepu.blepro.ext.bp3.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
 import kotlin.math.floor
 
-class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
+class Bp3Activity : AppCompatActivity(), BleChangeObserver {
 
-    private val TAG = "LpBp2wActivity"
-    // Bluetooth.MODEL_LP_BP2W
-    private var model = Bluetooth.MODEL_LP_BP2W
-    private lateinit var binding: ActivityLpBp2wBinding
+    private val TAG = "Bp3Activity"
+    // Bluetooth.MODEL_BP3D
+    private var model = Bluetooth.MODEL_BP3D
+    private lateinit var binding: ActivityBp3Binding
 
-    private var config = LpBp2wConfig()
+    private var config = Bp3Config()
 
     private var fileNames = arrayListOf<String>()
-    private var userList = arrayListOf<UserInfo>()
-    private var bpRecords = arrayListOf<BpRecord>()
-    private var ecgRecords = arrayListOf<EcgRecord>()
     private lateinit var ecgAdapter: EcgAdapter
     var ecgList: ArrayList<EcgData> = arrayListOf()
 
@@ -74,8 +71,9 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLpBp2wBinding.inflate(layoutInflater)
+        binding = ActivityBp3Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
@@ -93,7 +91,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
             if (adapter.data.size > 0) {
                 (adapter.getItem(position) as EcgData).let {
-                    val intent = Intent(this@LpBp2wActivity, WaveEcgActivity::class.java)
+                    val intent = Intent(this@Bp3Activity, WaveEcgActivity::class.java)
                     intent.putExtra("model", model)
                     ecgData.startTime = it.startTime
                     ecgData.shortData = it.shortData
@@ -105,13 +103,13 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lpBp2wGetInfo(model)
+            BleServiceHelper.BleServiceHelper.bp3GetInfo(model)
         }
         binding.factoryReset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lpBp2wFactoryReset(model)
+            BleServiceHelper.BleServiceHelper.bp3FactoryReset(model)
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lpBp2wGetConfig(model)
+            BleServiceHelper.BleServiceHelper.bp3GetConfig(model)
         }
         binding.setConfig.setOnClickListener {
             config.isSoundOn = !config.isSoundOn
@@ -120,7 +118,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             // config.avgMeasureMode: 0(bp x3 off), 1(bp x3 on, interval 30s), 2(bp x3 on, interval 60s),
             //                        3(bp x3 on, interval 90s), 4(bp x3 on, interval 120s)
             // config.volume: 0(off), 1, 2, 3
-            BleServiceHelper.BleServiceHelper.lpBp2wSetConfig(model, config)
+            BleServiceHelper.BleServiceHelper.bp3SetConfig(model, config)
         }
         binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
@@ -133,21 +131,18 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getFileList.setOnClickListener {
             fileNames.clear()
-            userList.clear()
-            bpRecords.clear()
-            ecgRecords.clear()
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            // Constant.LpBp2wListType.USER_TYPE
-            // Constant.LpBp2wListType.BP_TYPE
-            // Constant.LpBp2wListType.ECG_TYPE
-//            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.BP_TYPE)
-            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.ECG_TYPE)
-//            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.USER_TYPE)
+            // Constant.Bp3FileType.USER_TYPE
+            // Constant.Bp3FileType.BP_TYPE
+            // Constant.Bp3FileType.ECG_TYPE
+            BleServiceHelper.BleServiceHelper.bp3GetFileList(model, Constant.Bp3FileType.BP_TYPE)
+//            BleServiceHelper.BleServiceHelper.bp3GetFileList(model, Constant.Bp3FileType.ECG_TYPE)
+//            BleServiceHelper.BleServiceHelper.bp3GetFileList(model, Constant.Bp3FileType.USER_TYPE)
         }
         binding.getCrc.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lpBp2wGetFileListCrc(model, Constant.LpBp2wListType.USER_TYPE)
+            BleServiceHelper.BleServiceHelper.bp3GetFileListCrc(model, Constant.Bp3FileType.USER_TYPE)
         }
         binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
@@ -155,10 +150,11 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             readFile()
         }
         binding.writeUsers.setOnClickListener {
+            val userList = UserList()
+            userList.fileType = 6
             waveHandler.removeCallbacks(ecgWaveTask)
             BleServiceHelper.BleServiceHelper.stopRtTask(model)
-            userList.clear()
-            val user = UserInfo()
+            val user = UserList().UserInfo()
             user.aid = 12345
             user.uid = -1
             user.firstName = "测试"
@@ -167,9 +163,9 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             user.height = 175f
             user.weight = 50f
             user.gender = 0 // 0：男 1：女
-            user.icon = BitmapConvertor(this).createIcon("测试一")
-            userList.add(user)
-            val user2 = UserInfo()
+            user.icon = BitmapConvertor(this).bp3CreateIcon("测试一")
+            userList.userList.add(user)
+            val user2 = UserList().UserInfo()
             user2.aid = 12345
             user2.uid = 11111
             user2.firstName = "测试"
@@ -178,9 +174,9 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             user2.height = 165f
             user2.weight = 40f
             user2.gender = 1 // 0：男 1：女
-            user2.icon = BitmapConvertor(this).createIcon("测试2")
-            userList.add(user2)
-            val user3 = UserInfo()
+            user2.icon = BitmapConvertor(this).bp3CreateIcon("测试2")
+            userList.userList.add(user2)
+            val user3 = UserList().UserInfo()
             user3.aid = 12345
             user3.uid = 22222
             user3.firstName = "测试"
@@ -189,10 +185,10 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             user3.height = 165f
             user3.weight = 40f
             user3.gender = 1 // 0：boy 1：girl
-            user3.icon = BitmapConvertor(this).createIcon("测试three")
-            userList.add(user3)
+            user3.icon = BitmapConvertor(this).bp3CreateIcon("测试three")
+            userList.userList.add(user3)
             // userList.size max : 10
-            BleServiceHelper.BleServiceHelper.lpBp2WriteUserList(model, userList)
+            BleServiceHelper.BleServiceHelper.bp3WriteUserList(model, userList)
         }
         bleState.observe(this) {
             if (it) {
@@ -238,7 +234,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                     2 -> DataController.speed = 4
                 }
                 val dm = resources.displayMetrics
-                val index = floor((binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250) * DataController.speed).toInt()
+                val index = floor((binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 125) * DataController.speed).toInt()
                 DataController.maxIndex = index
                 dataEcgSrc.value = null
             }
@@ -248,10 +244,10 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initEcgView() {
-        DataController.nWave = 2
+        DataController.nWave = 1
         // cal screen
         val dm = resources.displayMetrics
-        val index = floor((binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 250) * DataController.speed).toInt()
+        val index = floor((binding.ecgBkg.width / dm.xdpi * 25.4 / 25 * 125) * DataController.speed).toInt()
         DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
@@ -267,30 +263,30 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun initEventBus() {
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wInfo)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3GetInfo)
             .observe(this) {
                 val data = it.data as DeviceInfo
                 binding.dataLog.text = "$data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wFactoryReset)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3FactoryReset)
             .observe(this) {
                 val data = it.data as Boolean
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wGetConfig)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3GetConfig)
             .observe(this) {
                 // config.soundOn: Heartbeat sound switch
                 // config.avgMeasureMode: 0(bp measure x3 off), 1(bp measure x3 on, interval 30s), 2(bp measure x3 on, interval 60s),
                 //                        3(bp measure x3 on, interval 90s), 4(bp measure x3 on, interval 120s)
                 // config.volume: Voice announcement volume, 0(off), 1, 2, 3
-                config = it.data as LpBp2wConfig
+                config = it.data as Bp3Config
                 binding.dataLog.text = "$config"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wSetConfig)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3SetConfig)
             .observe(this) {
                 val data = it.data as Boolean
-                binding.dataLog.text = "EventLpBp2wSetConfig $data"
+                binding.dataLog.text = "EventBp3SetConfig $data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wRtData)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3RtData)
             .observe(this) {
                 val data = it.data as RtData
                 // data.status: RtStatus
@@ -340,7 +336,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                                     "pool signal：${if (ecgIng.isPoolSignal) "Yes" else "No"}\n" +
                                     "duration: ${ecgIng.curDuration} s"
                         DataController.receive(data.param.ecgFloats)
-                        // sampling rate：250HZ
+                        // sampling rate：125HZ
                         // mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
                     }
                     3 -> {
@@ -365,84 +361,102 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                         // diagnosis.isProlongedQtc：Whether QTc is prolonged
                         // diagnosis.isShortQtc：Whether QTc is short
                     }
+                    4 -> {
+                        val bpEcgIng = RtBpEcgIng(data.param.paramData)
+                        binding.hr.text = "${bpEcgIng.hr}"
+                        binding.tvPs.text = "${bpEcgIng.pressure}"
+                        binding.tvPrBp.text = "${bpEcgIng.pr}"
+                        binding.dataLog.text =
+                            "lead status：${if (bpEcgIng.isLeadOff) "lead off" else "lead on"}\n" +
+                                    "pool signal：${if (bpEcgIng.isPoolSignal) "Yes" else "No"}\n" +
+                                    "duration: ${bpEcgIng.curDuration} s\n" +
+                                    "deflate：${if (bpEcgIng.isDeflate) "yes" else "no"}\n" +
+                                    "pulse wave：${if (bpEcgIng.isPulse) "yes" else "no"}\n" +
+                                    "x3 index: ${data.status.avgCnt}\n" +
+                                    "x3 wait tick: ${data.status.avgWaitTick} s"
+                        DataController.receive(data.param.ecgFloats)
+                        // sampling rate：125HZ
+                        // mV = n * 0.003098 (data.param.ecgFloats = data.param.ecgShorts * 0.003098)
+                    }
                 }
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wUserFileList)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3FileList)
             .observe(this) {
-                userList = it.data as ArrayList<UserInfo>
-                binding.dataLog.text = "$userList"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wBpFileList)
-            .observe(this) {
-                bpRecords = it.data as ArrayList<BpRecord>
-                binding.dataLog.text = "$bpRecords"
+                val bleFile = it.data as BleFile
+                if (bleFile.type == Constant.Bp3FileType.BP_TYPE) {
+                    val file = BpList(bleFile.bytes)
+                    for (record in file.recordList) {
+                        if (record.isWaveFlag) {
+                            fileNames.add("BP${record.fileName.substring(2)}")
+                        }
+                    }
+                    binding.dataLog.text = "$fileNames"
+                } else if (bleFile.type == Constant.Bp3FileType.ECG_TYPE) {
+                    val file = EcgList(bleFile.bytes)
+                    for (record in file.recordList) {
+                        fileNames.add(record.fileName)
+                    }
+                    binding.dataLog.text = "$fileNames"
+                } else if (bleFile.type == Constant.Bp3FileType.USER_TYPE) {
+                    val file = UserList(bleFile.bytes)
+                    binding.dataLog.text = "$file"
+                }
+
                 // record.startTime: unit(s)
                 // record.measureMode: 0(x1), 1(x3)
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wEcgFileList)
-            .observe(this) {
-                ecgRecords = it.data as ArrayList<EcgRecord>
-                for (record in ecgRecords) {
-                    fileNames.add(record.fileName)
-                }
-                binding.dataLog.text = "$fileNames"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileError)
-            .observe(this) {
-                val data = it.data as String
-                binding.dataLog.text = "EventLpBp2wReadFileError $data"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadingFileProgress)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3ReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int  // 0-100
                 if (fileNames.size != 0) {
                     binding.dataLog.text = "${fileNames[0]} $data %"
                 }
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wReadFileComplete)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3ReadFileComplete)
             .observe(this) {
-                val file = it.data as EcgFile
-                val ecgData = EcgData()
-                ecgData.fileName = file.fileName
-                ecgData.duration = file.duration
-                ecgData.shortData = file.waveShortData
-                ecgData.startTime = file.startTime
-                ecgList.add(ecgData)
-                ecgAdapter.setNewInstance(ecgList)
-                ecgAdapter.notifyDataSetChanged()
-                Log.d(TAG, "EcgFile : $file")
-                // sampling rate：125HZ
-                // mV = file.waveShortData * 0.003098
-                // file.startTime: unit(s)
-                // file.duration：unit（s）
+                val bleFile = it.data as BleFile
+                if (bleFile.type == Constant.Bp3FileType.ECG_TYPE) {
+                    val file = EcgFile(bleFile.bytes, bleFile.fileName)
+                    val ecgData = EcgData()
+                    ecgData.fileName = file.fileName
+                    ecgData.duration = file.duration
+                    ecgData.shortData = file.waveShortData
+                    ecgData.startTime = file.startTime
+                    ecgList.add(ecgData)
+                    ecgAdapter.setNewInstance(ecgList)
+                    ecgAdapter.notifyDataSetChanged()
+                    Log.d(TAG, "EcgFile : $file")
+                    // sampling rate：125HZ
+                    // mV = file.waveShortData * 0.003098
+                    // file.startTime: unit(s)
+                    // file.duration：unit（s）
+                } else if (bleFile.type == Constant.Bp3FileType.BP_WAVE_TYPE) {
+                    val file = BpWaveFile()
+                    Log.d(TAG, "BpWaveFile : $file")
+                }
                 fileNames.removeAt(0)
                 readFile()
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WriteFileError)
-            .observe(this) {
-                val data = it.data as String
-                binding.dataLog.text = "EventLpBp2WriteFileError $data"
-            }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WritingFileProgress)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3WritingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                binding.dataLog.text = "EventLpBp2WritingFileProgress $data %"
+                binding.dataLog.text = "EventBp3WritingFileProgress $data %"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2WriteFileComplete)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3WriteFileComplete)
             .observe(this) {
-                val data = it.data as FileListCrc
-                binding.dataLog.text = "EventLpBp2WriteFileComplete $data"
+                val data = it.data as ListCrc
+                binding.dataLog.text = "EventBp3WriteFileComplete $data"
             }
-        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.LpBp2w.EventLpBp2wGetFileListCrc)
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3GetFileListCrc)
             .observe(this) {
-                val data = it.data as FileListCrc
-                binding.dataLog.text = "EventLpBp2wGetFileListCrc $data"
+                val data = it.data as ListCrc
+                binding.dataLog.text = "EventBp3GetFileListCrc $data"
             }
     }
 
     private fun readFile() {
         if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.lpBp2wReadFile(model, fileNames[0])
+        BleServiceHelper.BleServiceHelper.bp3ReadFile(model, fileNames[0])
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

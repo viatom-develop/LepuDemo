@@ -116,4 +116,14 @@ public class BitmapConvertor {
         return icon;
     }
 
+    public com.lepu.blepro.ext.bp3.UserList.Icon bp3CreateIcon(String name) {
+        com.lepu.blepro.ext.bp3.UserList.Icon icon = new com.lepu.blepro.ext.bp3.UserList().new Icon();
+        Bitmap inputBitmap = generateBitmapSource(name);
+        icon.setWidth(inputBitmap.getWidth());
+        icon.setHeight(inputBitmap.getHeight());
+        Bitmap resizedBitmap = Bitmap.createBitmap(inputBitmap, 0, 0, inputBitmap.getWidth(), inputBitmap.getHeight());
+        icon.setIcon(convertBitmapSync(resizedBitmap));
+        return icon;
+    }
+
 }
