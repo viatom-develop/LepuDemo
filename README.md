@@ -17,6 +17,7 @@ Version at least Android 7.0
 > lepu-blepro-1.0.5.aar : add ER3, Lepod  
 > lepu-blepro-1.0.6.aar : add AirBP  
 > lepu-blepro-1.0.7.aar : add PF-10AW-1, O2Ring S  
+> lepu-blepro-1.0.8.aar : add BP3  
 
 ## import SDK
 
@@ -484,6 +485,124 @@ mV = n * 0.003098
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP2W.EventBp2wFactoryReset).post(InterfaceEvent(model, data))`  
 `data` : boolean (true : factory reset success, false : factory reset failed)  
+
+
+### BP3A (Bluetooth.MODEL_BP3A)
+### BP3B (Bluetooth.MODEL_BP3B)
+### BP3C (Bluetooth.MODEL_BP3C)
+### BP3D (Bluetooth.MODEL_BP3D)
+### BP3E (Bluetooth.MODEL_BP3E)
+### BP3F (Bluetooth.MODEL_BP3F)
+### BP3G (Bluetooth.MODEL_BP3G)
+### BP3H (Bluetooth.MODEL_BP3H)
+### BP3K (Bluetooth.MODEL_BP3K)
+### BP3L (Bluetooth.MODEL_BP3L)
+### BP3Z (Bluetooth.MODEL_BP3Z)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
+SDK will send this event when BluetoothDevice connected :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3SetUtcTime).post(InterfaceEvent(model, true))`  
+
++ #### 1.bp3GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3GetInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp3.DeviceInfo  
+
++ #### 2.bp3GetFileList(model, filetype)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3FileList).post(InterfaceEvent(model, data))`  
+`data` : `BleFile`, com.lepu.blepro.ext.bp3.BleFile  
+> fileName : file name  
+> type : Constant.Bp3FileType  
+> bytes : file data  
+
+filetype : Constant.Bp3FileType.BP_TYPE  
+`data` : `BpList(bleFile.bytes)`, com.lepu.blepro.ext.bp3.BpList  
+
+filetype : Constant.Bp3FileType.ECG_TYPE  
+`data` : `EcgList(bleFile.bytes)`, com.lepu.blepro.ext.bp3.EcgList  
+
+filetype : Constant.Bp3FileType.USER_TYPE  
+`data` : `UserList(bleFile.bytes)`, com.lepu.blepro.ext.bp3.UserList  
+
++ #### 3.bp3ReadFile(model, filename)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3ReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3ReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : `BleFile`, com.lepu.blepro.ext.bp3.BleFile  
+> fileName : file name  
+> type : Constant.Bp3FileType  
+> bytes : file data  
+
+filetype : Constant.Bp3FileType.ECG_TYPE  
+`data` : `EcgFile(bleFile.bytes)`, com.lepu.blepro.ext.bp3.EcgFile  
+
+filetype : Constant.Bp3FileType.BP_WAVE_TYPE  
+`data` : `BpWaveFile(bleFile.bytes)`, com.lepu.blepro.ext.bp3.BpWaveFile  
+
+
++ #### 4.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 5.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 6.Real-time Data
+
+sampling rate : 125HZ  
+mV = n * 0.003098  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3RtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp3.RtData  
+> status : RtStatus  
+> - deviceStatus : 0 (STATUS_SLEEP), 1 (STATUS_MEMERY), 2 (STATUS_CHARGE), 3 (STATUS_READY), 4 (STATUS_BP_MEASURING), 5 (STATUS_BP_MEASURE_END), 6 (STATUS_ECG_MEASURING), 7 (STATUS_ECG_MEASURE_END), 15 (STATUS_BP_AVG_MEASURE), 16 (STATUS_BP_AVG_MEASURE_WAIT), 17 (STATUS_BP_AVG_MEASURE_END), 20 (STATUS_VEN)  
+> - batteryStatus : 0 (no charge), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - percent : 0-100  
+> - avgCnt : Valid in bp avg measure x3, measure number index(0, 1, 2)  
+> - avgWaitTick : Valid in bp avg measure x3, measure interval wait tick  
+
+> param : RtParam  
+> - paramDataType : 0 (paramData : RtBpIng), 1 (paramData : RtBpResult), 2 (paramData : RtEcgIng), 3 (paramData : RtEcgResult), 4 (paramData : RtBpEcgIng)  
+> - ecgFloats = ecgShorts * 0.003098  
+
++ #### 7.bp3GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3GetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bp3.Bp3Config  
+> soundOn : Heartbeat sound switch  
+> avgMeasureMode : 0 (bp measure x3 off), 1 (bp measure x3 on, interval 30s), 2 (bp measure x3 on, interval 60s), 3 (bp measure x3 on, interval 90s), 4 (bp measure x3 on, interval 120s)  
+> volume : Voice announcement volume, 0(off), 1, 2, 3  
+
++ #### 8.bp3SetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3SetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 9.bp3FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3FactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
++ #### 10.bp3WriteUserList(model, userlist)
+
+UserInfo.Icon = BitmapConvertor(context).createIcon("username")  
+
+Write file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3WritingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Write file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BP3.EventBp3WriteFileComplete).post(InterfaceEvent(model, data))`  
+`data` : crc, int  
 
 
 ### BPM-188 (Bluetooth.MODEL_BPM)
