@@ -431,7 +431,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
                     // file.startTime: unit(s)
                     // file.duration：unit（s）
                 } else if (bleFile.type == Constant.Bp3FileType.BP_WAVE_TYPE) {
-                    val file = BpWaveFile()
+                    val file = BpWaveFile(bleFile.bytes)
                     Log.d(TAG, "BpWaveFile : $file")
                 }
                 fileNames.removeAt(0)
