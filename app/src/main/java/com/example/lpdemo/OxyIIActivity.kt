@@ -21,6 +21,7 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "OxyIIActivity"
     // Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW
+    // Bluetooth.MODEL_BAND_WU, Bluetooth.MODEL_SHQO2_PRO
     private var model = Bluetooth.MODEL_O2RING_S
     private lateinit var binding: ActivityOxy2Binding
 

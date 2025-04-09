@@ -102,7 +102,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_AIRBP,   // AirBpActivity
         Bluetooth.MODEL_PF_10AW_1, Bluetooth.MODEL_PF_10BWS,
         Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,   // Pf10Aw1Activity
-        Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,   // OxyIIActivity
+        Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,
+        Bluetooth.MODEL_BAND_WU, Bluetooth.MODEL_SHQO2_PRO,   // OxyIIActivity
         Bluetooth.MODEL_CHECKME,   // CheckmeActivity
         Bluetooth.MODEL_BP3A, Bluetooth.MODEL_BP3B, Bluetooth.MODEL_BP3C,
         Bluetooth.MODEL_BP3D, Bluetooth.MODEL_BP3E, Bluetooth.MODEL_BP3F,
