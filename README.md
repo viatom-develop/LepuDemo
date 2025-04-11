@@ -1346,6 +1346,8 @@ Read file complete :
 
 ### O2Ring S (Bluetooth.MODEL_O2RING_S)
 ### S8-AW (Bluetooth.MODEL_S8_AW)
+### Band-WU (Bluetooth.MODEL_BAND_WU)
+### SHQO2Pro (Bluetooth.MODEL_SHQO2_PRO)
 
 Service UUID : E8FB0001-A14B-98F9-831B-4E2941D01248  
 Write UUID : E8FB0002-A14B-98F9-831B-4E2941D01248  
