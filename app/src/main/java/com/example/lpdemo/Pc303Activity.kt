@@ -117,6 +117,10 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 ecgView.invalidate()
             }
         }
+//        BleServiceHelper.BleServiceHelper.pc300StartBp(model)
+//        BleServiceHelper.BleServiceHelper.pc300StopBp(model)
+//        BleServiceHelper.BleServiceHelper.pc300StartEcg(model)
+//        BleServiceHelper.BleServiceHelper.pc300StopEcg(model)
     }
 
     private fun initEcgView() {
