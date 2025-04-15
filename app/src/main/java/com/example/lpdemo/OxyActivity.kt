@@ -186,6 +186,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 binding.tvPr.text = data.pr.toString()
                 binding.tvPi.text = data.pi.toString()
                 binding.dataLog.text = "$data"
+                // data.vector：motion
                 // data.battery：0-100
                 // data.batteryState：0（no charge），1（charging），2（charging complete）
                 // data.state：0（lead off），1（lead on），other（error）
