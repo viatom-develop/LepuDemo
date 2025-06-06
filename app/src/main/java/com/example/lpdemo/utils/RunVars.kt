@@ -63,7 +63,7 @@ val dataEcgSrc12: MutableLiveData<FloatArray> by lazy {
 // sdk save the original file name : userId + fileName + .dat
 fun getOffset(model: Int, fileName: String, userId: String): ByteArray {
     val trimStr = HexString.trimStr(fileName)
-    BleServiceHelper.BleServiceHelper.rawFolder?.get(model)?.let { s ->
+    BleServiceHelper.Companion.BleServiceHelper.rawFolder?.get(model)?.let { s ->
         val mFile = File(s, "$userId$trimStr.dat")
         if (mFile.exists()) {
             FileUtils.readFileToByteArray(mFile)?.let {
