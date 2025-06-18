@@ -96,7 +96,7 @@ class Er2Activity : AppCompatActivity(), BleChangeObserver {
             binding.ecgFileRcv.adapter = this
         }
         ecgAdapter.setOnItemClickListener { adapter, view, position ->
-            if (adapter.data.size > 0) {
+            if (adapter.data.isNotEmpty()) {
                 (adapter.getItem(position) as EcgData).let {
                     val intent = Intent(this@Er2Activity, WaveEcgActivity::class.java)
                     intent.putExtra("model", model)
