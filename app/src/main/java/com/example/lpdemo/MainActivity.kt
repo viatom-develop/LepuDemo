@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_SA10AW_PU, Bluetooth.MODEL_PF10BW_VE,   // Pf10Aw1Activity
         Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,
         Bluetooth.MODEL_BAND_WU, Bluetooth.MODEL_SHQO2_PRO,   // OxyIIActivity
-        Bluetooth.MODEL_CHECKME,   // CheckmeActivity
+        Bluetooth.MODEL_CHECKME, Bluetooth.MODEL_BUZUD_CML,    // CheckmeActivity
         Bluetooth.MODEL_BP3A, Bluetooth.MODEL_BP3B, Bluetooth.MODEL_BP3C,
         Bluetooth.MODEL_BP3D, Bluetooth.MODEL_BP3E, Bluetooth.MODEL_BP3F,
         Bluetooth.MODEL_BP3G, Bluetooth.MODEL_BP3H, Bluetooth.MODEL_BP3K,
@@ -453,8 +453,10 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     Bluetooth.MODEL_VCOMIN -> {
                         startActivity(Intent(this, VcominActivity::class.java))
                     }
-                    Bluetooth.MODEL_CHECKME -> {
-                        startActivity(Intent(this, CheckmeActivity::class.java))
+                    Bluetooth.MODEL_CHECKME, Bluetooth.MODEL_BUZUD_CML -> {
+                        val intent = Intent(this, CheckmeActivity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
                     }
                     else -> {
                         Toast.makeText(this, "connect success", Toast.LENGTH_SHORT).show()

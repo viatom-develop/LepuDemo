@@ -18,6 +18,7 @@ Version at least Android 7.0
 > lepu-blepro-1.0.6.aar : add AirBP  
 > lepu-blepro-1.0.7.aar : add PF-10AW-1, O2Ring S  
 > lepu-blepro-1.0.8.aar : add BP3  
+> lepu-blepro-1.0.11.aar : add BUZUD-CML
 
 ## import SDK
 

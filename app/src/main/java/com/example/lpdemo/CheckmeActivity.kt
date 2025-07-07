@@ -66,6 +66,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckmeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        model = intent.getIntExtra("model", model)
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
