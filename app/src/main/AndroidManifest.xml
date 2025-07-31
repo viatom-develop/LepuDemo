@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.lpdemo">
 
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -16,60 +16,226 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
     <application
-        android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LepuDemo">
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity
+            android:name=".FileContentShowActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"/>
+        <activity
+            android:name=".BBSMBS1Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Pc102Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc80bActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc60fwActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Ap20Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc68bActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".PulsebitExActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmeLeActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pc303Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmePodActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Aoj20aActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Sp20Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmeMonitorActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Vtm20fActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".OxyActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".BpmActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".BiolandBgmActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".PoctorM3102Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Lpm311Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".LemActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er1Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er2Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er2SActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Bp2Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Bp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".LpBp2wActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Er3Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".LepodActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".EcnActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".WaveEcgActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".DataActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".VentilatorActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".FhrActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Ad5Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".VcominActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".AirBpActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Pf10Aw1Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".OxyIIActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".CheckmeActivity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
-        <activity android:name=".Bp3Activity" android:screenOrientation="portrait" android:launchMode="singleInstance"/>
+        <activity
+            android:name=".Pc102Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pc80bActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pc60fwActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Ap20Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pc68bActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PulsebitExActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CheckmeLeActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pc303Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CheckmePodActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Aoj20aActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Sp20Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CheckmeMonitorActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Vtm20fActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OxyActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BpmActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BiolandBgmActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PoctorM3102Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Lpm311Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LemActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Er1Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Er2Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Er2SActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Bp2Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Bp2wActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LpBp2wActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Er3Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LepodActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EcnActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WaveEcgActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DataActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VentilatorActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FhrActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Ad5Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".VcominActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AirBpActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Pf10Aw1Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".OxyIIActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CheckmeActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Bp3Activity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

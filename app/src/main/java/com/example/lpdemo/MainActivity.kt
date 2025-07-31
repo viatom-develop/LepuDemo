@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -109,6 +108,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_BP3D, Bluetooth.MODEL_BP3E, Bluetooth.MODEL_BP3F,
         Bluetooth.MODEL_BP3G, Bluetooth.MODEL_BP3H, Bluetooth.MODEL_BP3K,
         Bluetooth.MODEL_BP3L, Bluetooth.MODEL_BP3Z,   // Bp3Activity
+        Bluetooth.MODEL_BBSM_BS1,  // BBSMS1Activity
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -656,6 +656,16 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     dialog.dismiss()
                 }
                 val intent = Intent(this, Bp3Activity::class.java)
+                intent.putExtra("model", it.model)
+                startActivity(intent)
+            }
+        //------------------BBSM BS1----------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1SetTime)
+            .observe(this) {
+                if (this::dialog.isInitialized) {
+                    dialog.dismiss()
+                }
+                val intent = Intent(this, BBSMBS1Activity::class.java)
                 intent.putExtra("model", it.model)
                 startActivity(intent)
             }
