@@ -4,12 +4,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.2.1"
@@ -37,12 +31,6 @@ allprojects {
                 header(HttpHeaderAuthentication)
             }
         }
-
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
     }
 }
 
