@@ -1370,10 +1370,13 @@ Read file complete :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamAuto).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.oxy.s3.S3RtParam
+
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtWaveAuto).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.oxy.s3.S3RtWave
+
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtPpgAuto).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.oxy.s3.S3RtPpg
+
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtAccAuto).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.oxy.s3.S3RtAcc
 
@@ -1588,7 +1591,6 @@ Read file complete :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Pf10Aw1.EventPf10Aw1WorkingStatus).post(InterfaceEvent(model, data))`  
 `data` ： com.lepu.blepro.ext.pf10aw1.WorkingStatus  
 > data.mode : 1（Spot mode, Not currently supported）  
-> 
 > data.mode : 2（Continuous mode）, data.mode : 3（menu）  
 > data.step : 0(prepare) 1(measuring) 2(completed, saved) 3(less than 2 min, not save)  
 > data.para1 : duration(unit s)  
