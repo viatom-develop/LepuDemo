@@ -19,13 +19,14 @@ Version at least Android 7.0
 > lepu-blepro-1.0.7.aar : add PF-10AW-1, O2Ring S  
 > lepu-blepro-1.0.8.aar : add BP3  
 > lepu-blepro-1.0.11.aar : add BUZUD-CML
+> lepu-blepro-1.0.14.aar : add BBSM BS1, Baby S3
 
 ## import SDK
 
 ### dependencies
  
 Add the dependencies for the artifacts you need in the `build.gradle` file for your app or module :
-> implementation 'no.nordicsemi.android:ble:2.2.4'  
+> implementation 'no.nordicsemi.android:ble:2.10.0'  
 > implementation(name: 'lepu-blepro-x.x.x', ext: 'aar')  
 
 ### permission
@@ -1264,6 +1265,7 @@ SDK will send this event when BluetoothDevice connected :
 ### CMRing (Bluetooth.MODEL_CMRING)
 ### Oxyfit-WPS (Bluetooth.MODEL_OXYFIT_WPS)
 ### KidsO2-WPS (Bluetooth.MODEL_KIDSO2_WPS)
+### BBSM S3 (Bluetooth.MODEL_BBSM_S3)
 
 Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
 Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
@@ -1318,7 +1320,27 @@ Read file complete :
 > durationTime90Percent : Duration time when SpO2 lower than 90%  
 > dropsTimes90Percent : Reserved for drop times when SpO2 lower than 90%  
 > o2Score : Range: 0-100（For range 0-10, should be (O2 Score) / 10）  
-> stepCounter : Total steps  
+> stepCounter : Total steps
+
+`data` : com.lepu.blepro.ext.oxy.OxyBBSMS3File
+> operationMode : 0 (Sleep Mode), 1 (Minitor Mode)  
+> size : Total bytes of this data file package  
+> asleepTime : Reserved for total asleep time future  
+> avgSpo2 : Average blood oxygen saturation  
+> minSpo2 : Minimum blood oxygen saturation  
+> dropsTimes3Percent : drops below baseline - 3  
+> dropsTimes4Percent : drops below baseline - 4
+> asleepTimePercent : T90 = (<90% duration time) / (total recording time) *100%  
+> durationTime90Percent : Duration time when SpO2 lower than 90%  
+> dropsTimes90Percent : Reserved for drop times when SpO2 lower than 90%  
+> o2Score : Range: 0-100（For range 0-10, should be (O2 Score) / 10）  
+> stepCounter : Total steps
+> startTimestamp : The time of first falling asleep is 0 if you haven't fallen asleep yet
+> endTimestamp : The last time I went to sleep, the time during sleep is the current time
+> awakeDuration : Duration of wakefulness
+> deepDuration : Duration of deep sleep
+> lightDuration : Duration of light sleep
+> totalDuration : Total sleep duration
 
 + #### 3.oxyGetRtParam(model)
 
@@ -1344,6 +1366,16 @@ Read file complete :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset).post(InterfaceEvent(model, data))`  
 `data` : boolean (true : factory reset success, false : factory reset failed)  
 
++ #### 7.oxyAutoSwitch(model, autoParam, autoWave, autoPpg, autoAcc)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamAuto).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.oxy.s3.S3RtParam
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtWaveAuto).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.oxy.s3.S3RtWave
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtPpgAuto).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.oxy.s3.S3RtPpg
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtAccAuto).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.oxy.s3.S3RtAcc
 
 ### O2Ring S (Bluetooth.MODEL_O2RING_S)
 ### S8-AW (Bluetooth.MODEL_S8_AW)
@@ -1429,6 +1461,78 @@ Read file complete :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIFactoryReset).post(InterfaceEvent(model, data))`  
 `data` ： boolean  
 
+### BBSM BS1 (Bluetooth.MODEL_BBSM_BS1)
+
+Service UUID : E8FB0001-A14B-98F9-831B-4E2941D01248  
+Write UUID : E8FB0002-A14B-98F9-831B-4E2941D01248  
+Notify UUID : E8FB0003-A14B-98F9-831B-4E2941D01248
+
+SDK will send this event when BluetoothDevice connected :
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1SetTime).post(InterfaceEvent(model, true))`
+
++ #### 1.bbsmp1GetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1Info).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bbsm.DeviceInfo
+
++ #### 2.bbsmp1FactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1FactoryReset).post(InterfaceEvent(model, true))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)
+
++ #### 3.bbsmp1GetConfig(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1GetConfig).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bbsm.BbsmP1Config
+> lampSwitch : Indicator light reminder switch
+> beepSwitch : Sound reminder switch
+> remindSwitch : Notification reminder switch
+> tempLow : Low temperature threshold
+> tempHigh : High temperature threshold
+> rrLow : The respiratory rate reminder is at a low threshold 
+> rrHigh : The respiratory rate reminder is at a high threshold 
+> warningSensitive : The alarm sensitivity for prone sleep is 1-3
+> lampWorkTime : The working time of the indicator light is 0: constantly on, 255: off, 1-254: off after n minutes
+> dropTemp : The unit of temperature reduction is ℃
+
++ #### 4.bbsmp1SetConfig(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1SetConfig).post(InterfaceEvent(model, true))`
+`data` : boolean 
+
++ #### 5.bbsmp1GetRtData(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1RtData).post(InterfaceEvent(model, data))`
+`data` : com.lepu.blepro.ext.bbsm.RtParam
+> duration : Record duration (unit: seconds)
+> deviceStatus : Operating status 0: Not worn 1: Worn 2: Charging 0x70: Test mode 0x80: Device abnormality (self-check abnormality of software and hardware devices)
+> attitude : Posture 0: Supine position 1: Right side position 2: Left side position 3: Prone position (reminder for prone position) 4: Sit up
+> attitudeAlarm : Turn over and alarm
+> leadOff : Fall off
+> respiratoryRate : Current respiratory rate
+> breathAlarm : Breathing alarm 0: Normal 1: too low 2: too high
+> temp : Current temperature (in degrees Celsius) (-32767 to 32767), the value is magnified tenfold
+> tempAlarm : Temperature alarm 0: Normal, 1: too low, 2: too high (bit0: too low temperature, bit1: too high temperature, bit2: Temperature drop exceeding 3℃ within 15 minutes)
+> kickQuiltAlarm : Kicked and called the police
+> battery : Battery information
+
++ #### 6.bbsmp1GetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1FileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`
+
++ #### 7.bbsmp1ReadFile(model, fileName)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1ReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1ReadFileError).post(InterfaceEvent(model, true))`
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1ReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bbsm.FileContent
 
 ### PF-10AW-1 (Bluetooth.MODEL_PF_10AW_1)
 ### PF-10BWS (Bluetooth.MODEL_PF_10BWS)

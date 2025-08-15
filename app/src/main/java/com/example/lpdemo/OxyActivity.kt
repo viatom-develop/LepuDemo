@@ -14,6 +14,10 @@ import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
 import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.oxy.*
+import com.lepu.blepro.ext.oxy.s3.S3RtAcc
+import com.lepu.blepro.ext.oxy.s3.S3RtParam
+import com.lepu.blepro.ext.oxy.s3.S3RtPpg
+import com.lepu.blepro.ext.oxy.s3.S3RtWave
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
@@ -117,6 +121,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
             rtHandler.removeCallbacks(rtTask)
             BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
         }
+        if (model == Bluetooth.MODEL_BBSM_S3) {
+            rtHandler.postDelayed({
+                BleServiceHelper.BleServiceHelper.oxyAutoSwitch(model, true, false, false, false)
+            }, 1000L)
+        }
     }
 
     private fun initEventBus() {
@@ -158,12 +167,15 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadingFileProgress)
             .observe(this) {
                 val data = it.data as Int
-                binding.dataLog.text = "进度 $data%"
+                binding.dataLog.text = "Progress $data%"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyReadFileComplete)
             .observe(this) {
-                val data = it.data as OxyFile
-                binding.dataLog.text = "$data"
+                if (it.data is OxyFile) {
+                    binding.dataLog.text = "${it.data}"
+                } else if (it.data is OxyBBSMS3File) {
+                    binding.dataLog.text = it.data.toString()
+                }
                 fileNames.removeAt(0)
                 readFile()
                 // data.operationMode：0（Sleep Mode），1（Minitor Mode）
@@ -209,10 +221,34 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 val data = it.data as RtPpg
                 binding.dataLog.text = "$data"
             }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamAuto)
+            .observe(this) {
+                // BleServiceHelper.BleServiceHelper.oxyAutoSwitch(model)
+                val data = it.data as S3RtParam
+                binding.dataLog.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtWaveAuto)
+            .observe(this) {
+                // BleServiceHelper.BleServiceHelper.oxyAutoSwitch(model)
+                val data = it.data as S3RtWave
+                binding.dataLog.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtPpgAuto)
+            .observe(this) {
+                // BleServiceHelper.BleServiceHelper.oxyAutoSwitch(model)
+                val data = it.data as S3RtPpg
+                binding.dataLog.text = "$data"
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtAccAuto)
+            .observe(this) {
+//                 BleServiceHelper.BleServiceHelper.oxyAutoSwitch(model)
+                val data = it.data as S3RtAcc
+                binding.dataLog.text = "$data"
+            }
     }
 
     private fun readFile() {
-        if (fileNames.size == 0) return
+        if (fileNames.isEmpty()) return
         BleServiceHelper.BleServiceHelper.oxyReadFile(model, fileNames[0])
     }
 
