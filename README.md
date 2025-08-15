@@ -18,7 +18,7 @@ Version at least Android 7.0
 > lepu-blepro-1.0.6.aar : add AirBP  
 > lepu-blepro-1.0.7.aar : add PF-10AW-1, O2Ring S  
 > lepu-blepro-1.0.8.aar : add BP3  
-> lepu-blepro-1.0.11.aar : add BUZUD-CML
+> lepu-blepro-1.0.11.aar : add BUZUD-CML  
 > lepu-blepro-1.0.14.aar : add BBSM BS1, Baby S3
 
 ## import SDK
@@ -1487,37 +1487,37 @@ SDK will send this event when BluetoothDevice connected :
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1GetConfig).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.bbsm.BbsmP1Config
-> lampSwitch : Indicator light reminder switch
-> beepSwitch : Sound reminder switch
-> remindSwitch : Notification reminder switch
-> tempLow : Low temperature threshold
-> tempHigh : High temperature threshold
-> rrLow : The respiratory rate reminder is at a low threshold 
-> rrHigh : The respiratory rate reminder is at a high threshold 
-> warningSensitive : The alarm sensitivity for prone sleep is 1-3
-> lampWorkTime : The working time of the indicator light is 0: constantly on, 255: off, 1-254: off after n minutes
-> dropTemp : The unit of temperature reduction is ℃
+> lampSwitch : Indicator light reminder switch  
+> beepSwitch : Sound reminder switch  
+> remindSwitch : Notification reminder switch  
+> tempLow : Low temperature threshold  
+> tempHigh : High temperature threshold  
+> rrLow : The respiratory rate reminder is at a low threshold  
+> rrHigh : The respiratory rate reminder is at a high threshold  
+> warningSensitive : The alarm sensitivity for prone sleep is 1-3  
+> lampWorkTime : The working time of the indicator light is 0: constantly on, 255: off, 1-254: off after n minutes  
+> dropTemp : The unit of temperature reduction is ℃  
 
 + #### 4.bbsmp1SetConfig(model, config)
 
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1SetConfig).post(InterfaceEvent(model, true))`
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1SetConfig).post(InterfaceEvent(model, true))`  
 `data` : boolean 
 
 + #### 5.bbsmp1GetRtData(model)
 
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1RtData).post(InterfaceEvent(model, data))`
-`data` : com.lepu.blepro.ext.bbsm.RtParam
-> duration : Record duration (unit: seconds)
-> deviceStatus : Operating status 0: Not worn 1: Worn 2: Charging 0x70: Test mode 0x80: Device abnormality (self-check abnormality of software and hardware devices)
-> attitude : Posture 0: Supine position 1: Right side position 2: Left side position 3: Prone position (reminder for prone position) 4: Sit up
-> attitudeAlarm : Turn over and alarm
-> leadOff : Fall off
-> respiratoryRate : Current respiratory rate
-> breathAlarm : Breathing alarm 0: Normal 1: too low 2: too high
-> temp : Current temperature (in degrees Celsius) (-32767 to 32767), the value is magnified tenfold
-> tempAlarm : Temperature alarm 0: Normal, 1: too low, 2: too high (bit0: too low temperature, bit1: too high temperature, bit2: Temperature drop exceeding 3℃ within 15 minutes)
-> kickQuiltAlarm : Kicked and called the police
-> battery : Battery information
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.BBSMP1.EventBbsmP1RtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.bbsm.RtParam  
+> duration : Record duration (unit: seconds)  
+> deviceStatus : Operating status 0: Not worn 1: Worn 2: Charging 0x70: Test mode 0x80: Device abnormality (self-check abnormality of software and hardware devices)  
+> attitude : Posture 0: Supine position 1: Right side position 2: Left side position 3: Prone position (reminder for prone position) 4: Sit up  
+> attitudeAlarm : Turn over and alarm  
+> leadOff : Fall off  
+> respiratoryRate : Current respiratory rate  
+> breathAlarm : Breathing alarm 0: Normal 1: too low 2: too high  
+> temp : Current temperature (in degrees Celsius) (-32767 to 32767), the value is magnified tenfold  
+> tempAlarm : Temperature alarm 0: Normal, 1: too low, 2: too high (bit0: too low temperature, bit1: too high temperature, bit2: Temperature drop exceeding 3℃ within 15 minutes)  
+> kickQuiltAlarm : Kicked and called the police  
+> battery : Battery information  
 
 + #### 6.bbsmp1GetFileList(model)
 
