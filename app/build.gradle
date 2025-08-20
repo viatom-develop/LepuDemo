@@ -7,6 +7,8 @@ android {
     compileSdkVersion 34
     buildToolsVersion "34.0.0"
 
+    namespace "com.example.lpdemo"
+
     defaultConfig {
         applicationId "com.example.lpdemo"
         minSdkVersion 24

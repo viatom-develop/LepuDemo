@@ -1,0 +1,10 @@
+file name: lepudemo
+password: ihgahsgsa
+alias: fss
+validity years: 25
+name: dfsn
+OU: lpd
+organization: lepud
+city: ny
+state: sdsag
+country code: KN
