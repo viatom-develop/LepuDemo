@@ -377,12 +377,39 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/get_info"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="get info"
-                android:layout_marginStart="@dimen/dp_10"/>
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/get_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_info"
+                    android:layout_marginStart="@dimen/dp_10"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <Button
+                    android:id="@+id/get_bp_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pc303_get_bp_mode"
+                    android:layout_marginStart="@dimen/dp_10"
+                    app:layout_constraintStart_toEndOf="@+id/get_info"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <Button
+                    android:id="@+id/get_temp_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pc303_get_temp_mode"
+                    android:layout_marginStart="@dimen/dp_10"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/get_info"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -393,9 +420,41 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:text="血糖仪类型："/>
+                    android:text="@string/pc303_type_gl"/>
                 <Spinner
                     android:id="@+id/glu_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_10">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="@string/pc303_type_bp"/>
+                <Spinner
+                    android:id="@+id/bp_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_10">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:text="@string/pc303_mode_tm"/>
+                <Spinner
+                    android:id="@+id/tm_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>

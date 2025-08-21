@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">LepuDemo</string>
+
+    <string name="get_info">get info</string>
+
+    <string name="pc303_type_gl">Type of blood glucose meter:</string>
+    <string name="pc303_type_bp">Blood pressure type:</string>
+    <string name="pc303_mode_tm">Temperature mode:</string>
+    <string name="pc303_get_bp_mode">get bp mode</string>
+    <string name="pc303_get_temp_mode">get temp mode</string>
 </resources>

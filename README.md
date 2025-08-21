@@ -2041,7 +2041,34 @@ Error result :
 + #### 9.Temp Result
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300TempResult).post(InterfaceEvent(model, data))`  
-`data` : 30.00-43.00 ℃, normal range is 32.00-43.00 ℃
+`data` : 30.00-43.00 ℃, normal range is 32.00-43.00 ℃ 
+
++ #### 10.pc300GetBpMode(model)
++ #### 11.pc300SetBpMode(model, BpMode)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpMode).post(InterfaceEvent(model, data))`  
+`data` : BpMode.ADULT_MODE, BpMode.BABY_MODE, BpMode.CHILD_MODE 
+> BpMode.ADULT_MODE : Adult mode 
+> BpMode.BABY_MODE : Newborn mode
+> BpMode.CHILD_MODE : Children's mode
+
++ #### 12.pc300GetTempMode(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GetTempMode).post(InterfaceEvent(model, data))`  
+`data` : TempMode.EAR_C, TempMode.ADULT_HEAD_C, TempMode.CHILD_HEAD_C, TempMode.OBJECT_C, TempMode.EAR_F, TempMode.ADULT_HEAD_F, TempMode.CHILD_HEAD_F, TempMode.OBJECT_F  
+> TempMode.EAR_C : Ear temperature in Celsius 
+> TempMode.ADULT_HEAD_C : adult forehead temperature in Celsius 
+> TempMode.CHILD_HEAD_C : child forehead temperature in Celsius 
+> TempMode.OBJECT_C : object temperature in Celsius 
+> TempMode.EAR_F : ear temperature in Fahrenheit  
+> TempMode.ADULT_HEAD_F : adult forehead temperature in Fahrenheit  
+> TempMode.CHILD_HEAD_F : child forehead temperature in Fahrenheit  
+> TempMode.OBJECT_F : object temperature in Fahrenheit 
+
++ #### 13.pc300SetTempMode(model, TempMode) 
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300SetTempMode).post(InterfaceEvent(model, true))` 
+`data` : boolean 
+
 
 
 ### PoctorM3102 (Bluetooth.MODEL_POCTOR_M3102)

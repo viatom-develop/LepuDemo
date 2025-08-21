@@ -24,6 +24,7 @@ import kotlin.math.floor
 class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private val TAG = "Pc303Activity"
+
     // Bluetooth.MODEL_PC300, Bluetooth.MODEL_PC300_BLE,
     // Bluetooth.MODEL_GM_300SNT, Bluetooth.MODEL_GM_300SNT_BLE,
     // Bluetooth.MODEL_CMI_303
@@ -32,6 +33,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
 
     private lateinit var ecgBkg: EcgBkg
     private lateinit var ecgView: EcgView
+
     /**
      * rt wave
      */
@@ -44,12 +46,15 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 DataController.dataRec.size > 250 -> {
                     30
                 }
+
                 DataController.dataRec.size > 150 -> {
                     35
                 }
+
                 DataController.dataRec.size > 75 -> {
                     40
                 }
+
                 else -> {
                     45
                 }
@@ -81,19 +86,107 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         binding.getInfo.setOnClickListener {
             BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
         }
-        ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayListOf("爱奥乐", "百捷", "CE")).apply {
+        binding.getBpMode.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetBpMode(model)
+        }
+        binding.getTempMode.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.pc300GetTempMode(model)
+        }
+        ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            arrayListOf("爱奥乐", "百捷", "CE")
+        ).apply {
             binding.gluType.adapter = this
         }
         binding.gluType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 // 1:爱奥乐 2:百捷 4:CE
                 if (position == 2) {
-                    BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(model, position+2)
+                    BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(model, position + 2)
                 } else {
-                    BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(model, position+1)
+                    BleServiceHelper.BleServiceHelper.pc300SetGlucometerType(model, position + 1)
                 }
 
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            arrayListOf("Adult mode", "Newborn mode", "Children's mode")
+        ).apply {
+            binding.bpType.adapter = this
+        }
+        binding.bpType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position == 0) {
+                    BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.ADULT_MODE)
+                } else if (position == 1) {
+                    BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.BABY_MODE)
+                } else if (position == 2) {
+                    BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.CHILD_MODE)
+                }
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            arrayListOf(
+                "Ear temperature in Celsius",
+                "adult forehead temperature in Celsius",
+                "child forehead temperature in Celsius",
+                "object temperature in Celsius",
+                "ear temperature in Fahrenheit",
+                "adult forehead temperature in Fahrenheit",
+                "child forehead temperature in Fahrenheit",
+                "object temperature in Fahrenheit"
+            )
+        ).apply {
+            binding.tmMode.adapter = this
+        }
+        binding.tmMode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position == 0) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.EAR_C)
+                } else if (position == 1) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.ADULT_HEAD_C)
+                } else if (position == 2) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.CHILD_HEAD_C)
+                } else if (position == 3) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.OBJECT_C)
+                } else if (position == 4) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.EAR_F)
+                } else if (position == 5) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.ADULT_HEAD_F)
+                } else if (position == 6) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.CHILD_HEAD_F)
+                } else if (position == 7) {
+                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.OBJECT_F)
+                }
+            }
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
@@ -263,9 +356,9 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as Int
                 if (data == 4) {
-                    binding.gluType.setSelection(data-2)
+                    binding.gluType.setSelection(data - 2)
                 } else {
-                    binding.gluType.setSelection(data-1)
+                    binding.gluType.setSelection(data - 1)
                 }
                 binding.dataLog.text = "get glu type $data"
             }
@@ -280,6 +373,18 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 val data = it.data as Int
                 binding.dataLog.text = "$data mg/dL"
+            }
+        // ----------------------bpmode----------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300BpMode)
+            .observe(this) {
+                val data = it.data as BpMode
+                binding.dataLog.text = "$data"
+            }
+        // ----------------------tempmode----------------------
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.PC300.EventPc300GetTempMode)
+            .observe(this) {
+                val data = it.data as TempMode
+                binding.dataLog.text = "$data"
             }
     }
 

@@ -13,8 +13,8 @@ android {
         applicationId "com.example.lpdemo"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 7
-        versionName "1.0.7"
+        versionCode 8
+        versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -79,7 +79,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'no.nordicsemi.android:ble:2.10.0'
-    implementation(name: 'lepu-blepro-1.0.14', ext: 'aar')
+    implementation(name: 'lepu-blepro-1.1.0', ext: 'aar')
     implementation 'com.github.michaellee123:LiveEventBus:1.8.14'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
