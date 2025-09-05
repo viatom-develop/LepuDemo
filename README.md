@@ -1464,6 +1464,11 @@ Read file complete :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIFactoryReset).post(InterfaceEvent(model, data))`  
 `data` ： boolean  
 
++ #### 10.oxyGetRtWave(model)   
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtData).post(InterfaceEvent(model, data))`   
+`data` ： com.lepu.blepro.ext.oxy.RtWave  
+
 ### BBSM BS1 (Bluetooth.MODEL_BBSM_BS1)
 
 Service UUID : E8FB0001-A14B-98F9-831B-4E2941D01248  
