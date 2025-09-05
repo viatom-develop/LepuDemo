@@ -85,6 +85,9 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
             rtHandler.removeCallbacks(rtTask)
             readFile()
         }
+        binding.getRtWave.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.oxyGetRtWave(model)
+        }
         /**
          * type: "SetOxiThr", value: 80~95
          *       "SetOxiSwitch", value: (1) just sound or vibration: 0(0ff), 1(on)
@@ -202,6 +205,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
                 // data.battery：0-100
                 // data.batteryState：0（no charge），1（charging），2（charging complete）
                 // data.state：0（lead off），1（lead on），other（error）
+            }
+        LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtData)
+            .observe(this) {
+                val data = it.data as RtWave
+                binding.dataLog.text = "RtWave $data"
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyFactoryReset)
             .observe(this) {
