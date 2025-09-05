@@ -1380,6 +1380,12 @@ Read file complete :
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtAccAuto).post(InterfaceEvent(model, data))`  
 `data` : com.lepu.blepro.ext.oxy.s3.S3RtAcc
 
++ #### 8.oxyGetRtWave(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtData).post(InterfaceEvent(model, data))`   
+`data` : com.lepu.blepro.ext.oxy.RtWave   
+
+
 ### O2Ring S (Bluetooth.MODEL_O2RING_S)
 ### S8-AW (Bluetooth.MODEL_S8_AW)
 ### Band-WU (Bluetooth.MODEL_BAND_WU)
@@ -1462,12 +1468,8 @@ Read file complete :
 + #### 9.oxyIIFactoryReset(model)
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.OxyII.EventOxyIIFactoryReset).post(InterfaceEvent(model, data))`  
-`data` ： boolean  
+`data` ： boolean
 
-+ #### 10.oxyGetRtWave(model)   
-
-`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtData).post(InterfaceEvent(model, data))`   
-`data` ： com.lepu.blepro.ext.oxy.RtWave  
 
 ### BBSM BS1 (Bluetooth.MODEL_BBSM_BS1)
 
