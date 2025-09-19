@@ -88,6 +88,9 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         binding.getRtWave.setOnClickListener {
             BleServiceHelper.BleServiceHelper.oxyGetRtWave(model)
         }
+        binding.getRtPpgParam.setOnClickListener {
+            BleServiceHelper.BleServiceHelper.oxyGetPpgRt(model)
+        }
         /**
          * type: "SetOxiThr", value: 80~95
          *       "SetOxiSwitch", value: (1) just sound or vibration: 0(0ff), 1(on)
@@ -227,7 +230,12 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
             .observe(this) {
                 // BleServiceHelper.BleServiceHelper.oxyGetPpgRt(model)
                 val data = it.data as RtPpg
-                binding.dataLog.text = "$data"
+                val str = StringBuilder()
+                str.append("ir size:").append(data.ir.size).append("\n")
+                str.append("ir:").append(data.ir.contentToString()).append("\n")
+                str.append("red:").append(data.red.contentToString()).append("\n")
+                str.append("motion:").append(data.motion.contentToString()).append("\n")
+                binding.dataLog.text = str.toString()
             }
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Oxy.EventOxyRtParamAuto)
             .observe(this) {
