@@ -76,6 +76,11 @@ autoReconnect : Whether auto connect BluetoothDevice after disconnect
 
 Disconnect model BluetoothDevice
 
++ ### setEncryptKey(key, token)
+If it is a custom key and token, this method needs to be called before connecting the Bluetooth device.
+
++ ### cleanEncryptKey()
+After the Bluetooth is disconnected, it should be emptied.
 
 ### AirBP (Bluetooth.MODEL_AIRBP)
 

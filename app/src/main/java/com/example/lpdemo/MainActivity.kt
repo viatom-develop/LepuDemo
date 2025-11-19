@@ -60,7 +60,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_BBSM_S2, Bluetooth.MODEL_OXYU,
         Bluetooth.MODEL_AI_S100, Bluetooth.MODEL_O2M_WPS,
         Bluetooth.MODEL_CMRING, Bluetooth.MODEL_OXYFIT_WPS,
-        Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_BBSM_S3, // OxyActivity
+        Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_BBSM_S3,
+        Bluetooth.MODEL_O2RING_RE,     // OxyActivity
         Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
         Bluetooth.MODEL_PC80B_BLE2,  // Pc80bActivity
         Bluetooth.MODEL_PC100,  // Pc102Activity
@@ -124,6 +125,12 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         initView()
         initEventBus()
         needPermission()
+
+       // If it is a custom key and token, this method needs to be called before connecting the Bluetooth device.
+       // BleServiceHelper.BleServiceHelper.setEncryptKey(key, token)
+
+       // After the Bluetooth is disconnected, it should be emptied.
+       // BleServiceHelper.BleServiceHelper.cleanEncryptKey()
     }
 
     private fun needService() {
@@ -370,6 +377,28 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 Toast.makeText(this, reason, Toast.LENGTH_SHORT).show()
             }
         //--------------------pc80b,pc102,pc60fw,pc68b,pod1w,pc300--------------------
+        LiveEventBus.get<InterfaceEvent>(EventMsgConst.Ble.EventBleDeviceEncryptVerificationCompleted)
+            .observe(this) {
+                val data = it.data as Boolean
+                Log.d(TAG, "initEventBus: EventBleDeviceEncryptVerificationCompleted: $data")
+                when (it.model) {
+                    Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1,
+                    Bluetooth.MODEL_PC66B, Bluetooth.MODEL_PF_10, Bluetooth.MODEL_PF_20,
+                    Bluetooth.MODEL_OXYSMART, Bluetooth.MODEL_POD2B,
+                    Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_S5W,
+                    Bluetooth.MODEL_PF_10AW, Bluetooth.MODEL_PF_10AW1,
+                    Bluetooth.MODEL_PF_10BW, Bluetooth.MODEL_PF_10BW1,
+                    Bluetooth.MODEL_PF_20AW, Bluetooth.MODEL_PF_20B,
+                    Bluetooth.MODEL_S7W, Bluetooth.MODEL_S7BW,
+                    Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1,
+                    Bluetooth.MODEL_PC60NW_BLE, Bluetooth.MODEL_PC60NW_WPS,
+                    Bluetooth.MODEL_PC_60NW_NO_SN -> {
+                        val intent = Intent(this, Pc60fwActivity::class.java)
+                        intent.putExtra("model", it)
+                        startActivity(intent)
+                    }
+                }
+            }
         LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady)
             .observe(this) {
                 if (this::dialog.isInitialized) {
@@ -384,21 +413,6 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                     Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
                     Bluetooth.MODEL_PC80B_BLE2 -> {
                         val intent = Intent(this, Pc80bActivity::class.java)
-                        intent.putExtra("model", it)
-                        startActivity(intent)
-                    }
-                    Bluetooth.MODEL_PC60FW, Bluetooth.MODEL_PC_60NW, Bluetooth.MODEL_PC_60NW_1,
-                    Bluetooth.MODEL_PC66B, Bluetooth.MODEL_PF_10, Bluetooth.MODEL_PF_20,
-                    Bluetooth.MODEL_OXYSMART, Bluetooth.MODEL_POD2B,
-                    Bluetooth.MODEL_POD_1W, Bluetooth.MODEL_S5W,
-                    Bluetooth.MODEL_PF_10AW, Bluetooth.MODEL_PF_10AW1,
-                    Bluetooth.MODEL_PF_10BW, Bluetooth.MODEL_PF_10BW1,
-                    Bluetooth.MODEL_PF_20AW, Bluetooth.MODEL_PF_20B,
-                    Bluetooth.MODEL_S7W, Bluetooth.MODEL_S7BW,
-                    Bluetooth.MODEL_S6W, Bluetooth.MODEL_S6W1,
-                    Bluetooth.MODEL_PC60NW_BLE, Bluetooth.MODEL_PC60NW_WPS,
-                    Bluetooth.MODEL_PC_60NW_NO_SN -> {
-                        val intent = Intent(this, Pc60fwActivity::class.java)
                         intent.putExtra("model", it)
                         startActivity(intent)
                     }
