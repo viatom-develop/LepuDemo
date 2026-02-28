@@ -330,7 +330,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 // stop scan before connect
                 BleServiceHelper.BleServiceHelper.stopScan()
                 // connect
-                BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device)
+                BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device, bluetooth = it)
 
                 deviceModel = it.model
                 deviceName = it.name
