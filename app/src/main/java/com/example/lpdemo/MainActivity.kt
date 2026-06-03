@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_AI_S100, Bluetooth.MODEL_O2M_WPS,
         Bluetooth.MODEL_CMRING, Bluetooth.MODEL_OXYFIT_WPS,
         Bluetooth.MODEL_KIDSO2_WPS, Bluetooth.MODEL_BBSM_S3,
-        Bluetooth.MODEL_O2RING_RE, Bluetooth.MODEL_O2RINGF,    // OxyActivity
+        Bluetooth.MODEL_O2RING_RE, Bluetooth.MODEL_O2RINGF, Bluetooth.MODEL_SHQFLEX,    // OxyActivity
         Bluetooth.MODEL_PC80B, Bluetooth.MODEL_PC80B_BLE,
         Bluetooth.MODEL_PC80B_BLE2,  // Pc80bActivity
         Bluetooth.MODEL_PC100,  // Pc102Activity
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_O2RING_S, Bluetooth.MODEL_S8_AW,
         Bluetooth.MODEL_BAND_WU, Bluetooth.MODEL_SHQO2_PRO,
         Bluetooth.MODEL_O2RMED_S, Bluetooth.MODEL_O2RING_SF, Bluetooth.MODEL_O2MP,
-        Bluetooth.MODEL_O2RING_SP, Bluetooth.MODEL_O2RING_SC   // OxyIIActivity
+        Bluetooth.MODEL_O2RING_SP, Bluetooth.MODEL_O2RING_SC,   // OxyIIActivity
         Bluetooth.MODEL_CHECKME,   // CheckmeActivity
         Bluetooth.MODEL_BP3A, Bluetooth.MODEL_BP3B, Bluetooth.MODEL_BP3C,
         Bluetooth.MODEL_BP3D, Bluetooth.MODEL_BP3E, Bluetooth.MODEL_BP3F,
