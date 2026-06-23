@@ -65,7 +65,7 @@ Stop scan before connect BluetoothDevice
 
 Set interface before connect BluetoothDevice
 
-+ ### connect(context, model, bluetoothDevice)
++ ### connect(context, model, bluetoothDevice, bluetooth)
 
 + ### disconnect(autoReconnect)
 
