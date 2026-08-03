@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_ER1S, Bluetooth.MODEL_ER1_S, Bluetooth.MODEL_ER1_H,
         Bluetooth.MODEL_ER1_W, Bluetooth.MODEL_ER1_L,  // Er1Activity
         Bluetooth.MODEL_ER2, Bluetooth.MODEL_LP_ER2, Bluetooth.MODEL_DUOEK, Bluetooth.MODEL_LEPU_ER2,
-        Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3, Bluetooth.MODEL_ER2_S,  // Er2Activity
-        Bluetooth.MODEL_BP2, Bluetooth.MODEL_BP2A, Bluetooth.MODEL_BP2T,  // Bp2Activity
+        Bluetooth.MODEL_HHM2, Bluetooth.MODEL_HHM3, Bluetooth.MODEL_ER2_S, Bluetooth.MODEL_EZY_HB_01,  // Er2Activity
+        Bluetooth.MODEL_BP2, Bluetooth.MODEL_BP2A, Bluetooth.MODEL_BP2T, Bluetooth.MODEL_EZY_HBB_02, // Bp2Activity
         Bluetooth.MODEL_BP2W,  // Bp2wActivity
         Bluetooth.MODEL_LP_BP2W,  // LpBp2wActivity
         Bluetooth.MODEL_ER3, Bluetooth.MODEL_M12,  // Er3Activity
