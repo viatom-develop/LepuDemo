@@ -19,7 +19,9 @@ Version at least Android 7.0
 > lepu-blepro-1.0.7.aar : add PF-10AW-1, O2Ring S  
 > lepu-blepro-1.0.8.aar : add BP3  
 > lepu-blepro-1.0.11.aar : add BUZUD-CML  
-> lepu-blepro-1.0.14.aar : add BBSM BS1, Baby S3
+> lepu-blepro-1.0.14.aar : add BBSM BS1, Baby S3  
+
+> Note : the aar bundled in this project is `lepu-blepro-1.3.7.aar`. The changelog above is only maintained up to `1.0.14`; versions between `1.0.14` and `1.3.7` add further devices (e.g. ECN, BBSM S3, PF-10BWS, and other new models documented in the device sections below).
 
 ## import SDK
 
@@ -667,6 +669,138 @@ SDK will send this event when BluetoothDevice connected :
 > 8 : Calibration data is abnormal or uncalibrated  
 
 
+### Checkme (Bluetooth.MODEL_CHECKME)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
+After connected, call `syncTime(model)` to sync device time.  
+
++ #### 1.checkmeGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeDeviceInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkme.DeviceInfo  
+
++ #### 2.checkmeGetFileList(model, type) / checkmeGetFileList(model, type, userId)
+
+> type : Constant.CheckmeListType (USER_TYPE, TEMP_TYPE, OXY_TYPE, GLU_TYPE, DLC_TYPE, PED_TYPE, BP_TYPE, ECG_TYPE, SLM_TYPE)  
+
+Get filelist progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetFileListProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Get filelist error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetFileListError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.CheckmeListType)  
+
+Get filelist complete (by type) :  
+
+(1) User List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetUserList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<UserInfo>`, com.lepu.blepro.ext.checkme.UserInfo  
+> sex : 0 (boy), 1 (girl)  
+> weight : unit (kg)  
+> height : unit (cm)  
+
+(2) Temp List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetTempList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<TempRecord>`, com.lepu.blepro.ext.checkme.TempRecord  
+> measureMode : 0 (body temperature), 1 (object temperature)  
+> temp : unit (℃)  
+> result : 0 (normal), 1 (abnormal)  
+
+(3) Oxy List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetOxyList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<OxyRecord>`, com.lepu.blepro.ext.checkme.OxyRecord  
+> measureMode : 0 (Internal leads), 1 (External leads)  
+> result : 0 (normal), 1 (abnormal)  
+
+(4) Glu List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetGluList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<GluRecord>`, com.lepu.blepro.ext.checkme.GluRecord  
+> glu : unit (mg/dL)  
+
+(5) Daily Check List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetDlcList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<DlcRecord>`, com.lepu.blepro.ext.checkme.DlcRecord  
+> ecgResult : 0 (normal), 1 (abnormal)  
+> spo2Result : 0 (normal), 1 (abnormal)  
+> bpiResult : 0 (normal), 1 (abnormal)  
+
+(6) Ped List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetPedList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<PedRecord>`, com.lepu.blepro.ext.checkme.PedRecord  
+> distance : unit (km)  
+> avgSpeed : unit (km/s)  
+> calorie : unit (kcal)  
+> fat : unit (g)  
+> duration : unit (s)  
+
+(7) Bp List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetBpList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<BpRecord>`, com.lepu.blepro.ext.checkme.BpRecord  
+
+(8) ECG List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetEcgList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<EcgRecord>`, com.lepu.blepro.ext.checkme.EcgRecord  
+> measureMode : 1 (Hand-Hand), 2 (Hand-Chest), 3 (1-Lead), 4 (2-Lead)  
+> result : 0 (normal), 1 (abnormal)  
+
+(9) Sleep Monitor List :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeGetSlmList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<SlmRecord>`, com.lepu.blepro.ext.checkme.SlmRecord  
+> lowSpo2Time : unit (s)  
+> result : 0 (normal), 1 (abnormal)  
+
++ #### 3.checkmeReadFile(model, fileName, fileType)
+
+> fileType : Constant.CheckmeFileType (ECG_TYPE, SLM_TYPE)  
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadFileError).post(InterfaceEvent(model, data))`  
+`data` : int (Constant.CheckmeFileType)  
+
+Read ECG file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadEcgFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkme.EcgFile  
+> sampling rate : 500HZ  
+> wFs = waveShortData * 0.0012820952991323  
+> result : CheckmeEcgDiagnosis  
+> - isRegular : Whether Regular ECG Rhythm  
+> - isPoorSignal : Whether Unable to analyze  
+> - isHighHr : Whether High Heart Rate  
+> - isLowHr : Whether Low Heart Rate  
+> - isIrregular : Whether Irregular ECG Rhythm  
+> - isHighQrs : Whether High QRS Value  
+> - isHighSt : Whether High ST Value  
+> - isLowSt : Whether Low ST Value  
+> - isPrematureBeat : Whether Suspected Premature Beat  
+
+Read Sleep Monitor file complete (store a point every two seconds) :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeReadSlmFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkme.SlmFile  
+
++ #### 4.Real-time Data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Checkme.EventCheckmeRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.checkme.RtData  
+> sampling rate : 125HZ  
+> ecgFloatData = ecgShortData * 0.010769600512711  
+> spo2 : blood oxygen (%)  
+> pr : pulse rate  
+> pi : perfusion index (%)  
+> hr : heart rate  
+> battery : 0-100  
+
+
 ### CheckmeLE (Bluetooth.MODEL_CHECKME_LE)
 
 Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
@@ -1027,6 +1161,162 @@ mV = n * 0.00244
 
 `LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ER3.EventEr3FactoryReset).post(InterfaceEvent(model, data))`  
 `data` : boolean (true : factory reset success, false : factory reset failed)  
+
+
+### Lepod (Bluetooth.MODEL_LEPOD)
+### Lepod Pro (Bluetooth.MODEL_LEPOD_PRO)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.lepodGetInfo(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodInfo).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.lepod.DeviceInfo  
+
++ #### 2.lepodGetMode(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodGetConfig).post(InterfaceEvent(model, data))`  
+`data` : int (0 : Monitoring mode 0.5-40, 1 : Surgical mode 1-20, 2 : ST mode 0.05-40)  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodGetConfigError).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : get config error)  
+
++ #### 3.lepodSetMode(model, config)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodSetConfig).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : set config success, false : set config failed)  
+
++ #### 4.lepodStartEcg(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodEcgStart).post(InterfaceEvent(model, data))`  
+`data` : boolean  
+
++ #### 5.lepodStopEcg(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodEcgStop).post(InterfaceEvent(model, data))`  
+`data` : boolean  
+
++ #### 6.startRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStart).post(model)`  
+
++ #### 7.stopRtTask(model)
+
+`LiveEventBus.get<Int>(EventMsgConst.RealTime.EventRealTimeStop).post(model)`  
+
++ #### 8.Real-time Data
+
+sampling rate : 250HZ  
+mV = n * 0.00244  
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.lepod.RtData  
+> param : RtParam  
+> - battery : 0-100  
+> - batteryStatus : 0 (normal), 1 (charging), 2 (charging complete), 3 (low battery)  
+> - hr : heart rate  
+> - pr : pulse rate  
+> - temp : unit (℃)  
+> - spo2 : blood oxygen (%)  
+> - pi : perfusion index (%)  
+> - respRate : respiratory rate  
+> - isInsertEcgLeadWire : Whether the ECG lead wire is inserted  
+> - oxyStatus : 0 (no oxygen module), 1 (normal), 2 (finger off), 3 (probe fault)  
+> - isInsertTemp : Whether the temperature cable is inserted  
+> - measureStatus : 0 (idle), 1 (detecting lead), 2 (preparing), 3 (measuring)  
+> - recordTime : recorded duration  
+> - year, month, day, hour, minute, second : measure start time  
+> - leadType : 0 (LEAD_12), 1 (LEAD_6), 2 (LEAD_5), 3 (LEAD_3), 4 (LEAD_3_TEMP), 5 (LEAD_3_LEG), 6 (LEAD_5_LEG), 7 (LEAD_6_LEG), 0xFF (LEAD_NONSUP)  
+> - isLeadOffRA, isLeadOffRL, isLeadOffLA, isLeadOffLL, isLeadOffV1, isLeadOffV2, isLeadOffV3, isLeadOffV4, isLeadOffV5, isLeadOffV6 : lead off status of each lead  
+
+> wave : RtWave  
+> - waveFloats = waveShorts * 0.00244  
+> - For specific usage, please refer to Lepod Activity file  
+
++ #### 9.lepodFactoryReset(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Lepod.EventLepodFactoryReset).post(InterfaceEvent(model, data))`  
+`data` : boolean (true : factory reset success, false : factory reset failed)  
+
++ #### 10.Offline file decompress
+
+Use `com.lepu.blepro.utils.DecompressUtil.uncompressEcgDataByType(leadType, filePath)` to decompress a downloaded data file.  
+The 3rd byte of the file (bytes[2]) is the leadType.  
+> leadType = 0 : 12 channel data (_I, _II, _III, _aVF, _aVL, _aVR, _V1, _V2, _V3, _V4, _V5, _V6)  
+> leadType != 0 : 8 channel data (_I, _II, _III, _aVF, _aVL, _aVR, _V1, _V5)  
+
+Each decompressed channel file stores two bytes per sampling point in little-endian.  
+> sampling rate : 250HZ  
+> mV = n * 0.00244  
+
+
+### ECN (Bluetooth.MODEL_ECN)
+
+Service UUID : 14839AC4-7D7E-415C-9A42-167340CF2339  
+Write UUID : 8B00ACE7-EB0B-49B0-BBE9-9AEE0A26E1A3  
+Notify UUID : 0734594A-A8E7-4B1A-A6B1-CD5243059A57  
+
+SDK will send this event when BluetoothDevice connected :   
+`LiveEventBus.get<Int>(EventMsgConst.Ble.EventBleDeviceReady).post(model)`  
+
++ #### 1.ecnStartRtData(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnStartRtData).post(InterfaceEvent(model, data))`  
+
++ #### 2.ecnStopRtData(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnStopRtData).post(InterfaceEvent(model, data))`  
+
++ #### 3.ecnStartCollect(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnStartCollect).post(InterfaceEvent(model, data))`  
+
++ #### 4.ecnStopCollect(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnStopCollect).post(InterfaceEvent(model, data))`  
+
++ #### 5.Real-time Data
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnRtData).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ecn.RtData  
+> wave.len1 : number of channels  
+> wave.len2 : number of sampling points per channel  
+> wave.wave : waveform data, use `wave.wave.copyOfRange(i*len2, (i+1)*len2)` to get each channel data  
+
++ #### 6.ecnGetRtState(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnGetRtState).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ecn.RtState  
+
++ #### 7.ecnGetDiagnosisResult(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnDiagnosisResult).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`  
+
++ #### 8.ecnGetFileList(model)
+
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnGetFileList).post(InterfaceEvent(model, data))`  
+`data` : `ArrayList<String>`  
+
++ #### 9.ecnReadFile(model, fileName)
+
+Read file progress :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnReadingFileProgress).post(InterfaceEvent(model, data))`  
+`data` : int (0-100)  
+
+Read file error :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnReadFileError).post(InterfaceEvent(model, data))`  
+`data` : boolean  
+
+Read file complete :  
+`LiveEventBus.get<InterfaceEvent>(InterfaceEvent.ECN.EventEcnReadFileComplete).post(InterfaceEvent(model, data))`  
+`data` : com.lepu.blepro.ext.ecn.File  
+> fileName : file name  
+> content : file data  
 
 
 ### FHR-666(BLE) (Bluetooth.MODEL_FHR)
