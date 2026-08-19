@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivitySp20Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -45,18 +46,34 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.sp20GetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.sp20Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.sp20GetInfo(model)
+            }
         }
         binding.getBattery.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.sp20GetBattery(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.sp20Handler.getBattery()
+            } else {
+                BleServiceHelper.BleServiceHelper.sp20GetBattery(model)
+            }
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.sp20Handler.getConfig(Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
+            } else {
+                BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
+            }
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_HR_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD)
         }
         binding.setConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.sp20Handler.setConfig(Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
+            } else {
+                BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
+            }
 //            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_HR_THRESHOLD, 99/*(30-99)*/)
 //            BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD, 250/*(100-250)*/)
         }

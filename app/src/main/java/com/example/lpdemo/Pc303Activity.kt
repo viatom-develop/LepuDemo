@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityPc303Binding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
@@ -75,7 +76,11 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
-        BleServiceHelper.BleServiceHelper.pc300GetGlucometerType(model)
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.pc300Handler.getGlucometerType()
+        } else {
+            BleServiceHelper.BleServiceHelper.pc300GetGlucometerType(model)
+        }
     }
 
     private fun initView() {
@@ -84,13 +89,25 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pc300Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
+            }
         }
         binding.getBpMode.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc300GetBpMode(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pc300Handler.getBpMode()
+            } else {
+                BleServiceHelper.BleServiceHelper.pc300GetBpMode(model)
+            }
         }
         binding.getTempMode.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc300GetTempMode(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pc300Handler.getTempMode()
+            } else {
+                BleServiceHelper.BleServiceHelper.pc300GetTempMode(model)
+            }
         }
         ArrayAdapter(
             this,
@@ -132,14 +149,24 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 position: Int,
                 id: Long
             ) {
-                if (position == 0) {
-                    BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.ADULT_MODE)
-                } else if (position == 1) {
-                    BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.BABY_MODE)
-                } else if (position == 2) {
-                    BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.CHILD_MODE)
+                if (model == SDKMap.mtpo4.second) {
+                    if (position == 0) {
+                        SDKMap.pc300Handler.setBpMode(BpMode.ADULT_MODE)
+                    } else if (position == 1) {
+                        SDKMap.pc300Handler.setBpMode(BpMode.BABY_MODE)
+                    } else if (position == 2) {
+                        SDKMap.pc300Handler.setBpMode(BpMode.CHILD_MODE)
+                    }
+                    SDKMap.pc300Handler.getGlucometerType()
+                } else {
+                    if (position == 0) {
+                        BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.ADULT_MODE)
+                    } else if (position == 1) {
+                        BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.BABY_MODE)
+                    } else if (position == 2) {
+                        BleServiceHelper.BleServiceHelper.pc300SetBpMode(model, BpMode.CHILD_MODE)
+                    }
                 }
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -168,22 +195,42 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 position: Int,
                 id: Long
             ) {
-                if (position == 0) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.EAR_C)
-                } else if (position == 1) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.ADULT_HEAD_C)
-                } else if (position == 2) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.CHILD_HEAD_C)
-                } else if (position == 3) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.OBJECT_C)
-                } else if (position == 4) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.EAR_F)
-                } else if (position == 5) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.ADULT_HEAD_F)
-                } else if (position == 6) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.CHILD_HEAD_F)
-                } else if (position == 7) {
-                    BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.OBJECT_F)
+                if (model == SDKMap.mtpo4.second) {
+                    if (position == 0) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.EAR_C)
+                    } else if (position == 1) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.ADULT_HEAD_C)
+                    } else if (position == 2) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.CHILD_HEAD_C)
+                    } else if (position == 3) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.OBJECT_C)
+                    } else if (position == 4) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.EAR_F)
+                    } else if (position == 5) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.ADULT_HEAD_F)
+                    } else if (position == 6) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.CHILD_HEAD_F)
+                    } else if (position == 7) {
+                        SDKMap.pc300Handler.setTempMode(TempMode.OBJECT_F)
+                    }
+                } else {
+                    if (position == 0) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.EAR_C)
+                    } else if (position == 1) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.ADULT_HEAD_C)
+                    } else if (position == 2) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.CHILD_HEAD_C)
+                    } else if (position == 3) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.OBJECT_C)
+                    } else if (position == 4) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.EAR_F)
+                    } else if (position == 5) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.ADULT_HEAD_F)
+                    } else if (position == 6) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.CHILD_HEAD_F)
+                    } else if (position == 7) {
+                        BleServiceHelper.BleServiceHelper.pc300SetTempMode(model, TempMode.OBJECT_F)
+                    }
                 }
             }
 

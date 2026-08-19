@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityOxyBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -52,7 +53,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
     inner class RtTask: Runnable {
         override fun run() {
             rtHandler.postDelayed(rtTask, 1000)
-            BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.getRtParam()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
+            }
         }
     }
 
@@ -79,17 +84,29 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         binding.getInfo.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             fileNames.clear()
-            BleServiceHelper.BleServiceHelper.oxyGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyGetInfo(model)
+            }
         }
         binding.readFile.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             readFile()
         }
         binding.getRtWave.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyGetRtWave(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.getRtWave()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyGetRtWave(model)
+            }
         }
         binding.getRtPpgParam.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyGetPpgRt(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.getPpgRT()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyGetPpgRt(model)
+            }
         }
         /**
          * type: "SetOxiThr", value: 80~95
@@ -106,18 +123,30 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
          */
         binding.setTime.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
-            BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetTIME", makeTimeStr())
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.updateSetting("SetTIME", makeTimeStr())
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetTIME", makeTimeStr())
+            }
         }
         binding.setMotor.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX，0 is off）
             // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
-            BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetMotor", 20)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.updateSetting("SetMotor", 20)
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetMotor", 20)
+            }
         }
         binding.setBuzzer.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             // checkO2Plus（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
-            BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetBuzzer", 20)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.updateSetting("SetBuzzer", 20)
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetBuzzer", 20)
+            }
         }
         binding.getRtParam.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
@@ -125,7 +154,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.factoryReset.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
-            BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyCommonHandler.factoryReset()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
+            }
         }
         if (model == Bluetooth.MODEL_BBSM_S3) {
             rtHandler.postDelayed({
@@ -265,7 +298,11 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        BleServiceHelper.BleServiceHelper.oxyReadFile(model, fileNames[0])
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.oxyCommonHandler.readFile(fileNames[0])
+        } else {
+            BleServiceHelper.BleServiceHelper.oxyReadFile(model, fileNames[0])
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityBbsms1Binding
 import com.example.lpdemo.utils.EcgAdapter
 import com.example.lpdemo.utils.EcgData
@@ -72,13 +73,25 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
             }
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bbsmp1GetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bbsmP1Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.bbsmp1GetInfo(model)
+            }
         }
         binding.factoryReset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bbsmp1FactoryReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bbsmP1Handler.factoryReset()
+            } else {
+                BleServiceHelper.BleServiceHelper.bbsmp1FactoryReset(model)
+            }
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bbsmp1GetConfig(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bbsmP1Handler.getConfig()
+            } else {
+                BleServiceHelper.BleServiceHelper.bbsmp1GetConfig(model)
+            }
         }
         var configClickExample = 0
         binding.setConfig.setOnClickListener {
@@ -143,7 +156,11 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
                     )
                 }
             }
-            BleServiceHelper.BleServiceHelper.bbsmp1SetConfig(model, config)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bbsmP1Handler.setConfig(config)
+            } else {
+                BleServiceHelper.BleServiceHelper.bbsmp1SetConfig(model, config)
+            }
             if (configClickExample == 10) {
                 configClickExample = 0
             } else {
@@ -152,14 +169,22 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
             "2.set config ($configClickExample)".let { binding.setConfig.text = it }
         }
         binding.getRtData.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bbsmp1GetRtData(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bbsmP1Handler.getRtData()
+            } else {
+                BleServiceHelper.BleServiceHelper.bbsmp1GetRtData(model)
+            }
         }
         binding.getFileList.setOnClickListener {
             fileNames.clear()
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            BleServiceHelper.BleServiceHelper.bbsmp1GetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bbsmP1Handler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.bbsmp1GetFileList(model)
+            }
         }
         binding.readFile.setOnClickListener {
             readFile()
@@ -229,7 +254,11 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        BleServiceHelper.BleServiceHelper.bbsmp1ReadFile(model, fileNames[0])
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.bbsmP1Handler.readFile(fileNames[0])
+        } else {
+            BleServiceHelper.BleServiceHelper.bbsmp1ReadFile(model, fileNames[0])
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

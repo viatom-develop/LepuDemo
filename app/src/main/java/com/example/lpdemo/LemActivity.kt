@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityLemBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -35,26 +36,50 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lemGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lemHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.lemGetInfo(model)
+            }
         }
         binding.getBattery.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lemGetBattery(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lemHandler.getBattery()
+            } else {
+                BleServiceHelper.BleServiceHelper.lemGetBattery(model)
+            }
         }
         binding.heatSwitch.setOnClickListener {
             // true：Heating mode on，false：Heating mode off
-            BleServiceHelper.BleServiceHelper.lemHeatMode(model, true)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lemHandler.heatMode(true)
+            } else {
+                BleServiceHelper.BleServiceHelper.lemHeatMode(model, true)
+            }
         }
         binding.setTime.setOnClickListener {
             // Constant.LemMassageTime
-            BleServiceHelper.BleServiceHelper.lemMassageTime(model, Constant.LemMassageTime.MIN_10)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lemHandler.massageTime(Constant.LemMassageTime.MIN_10)
+            } else {
+                BleServiceHelper.BleServiceHelper.lemMassageTime(model, Constant.LemMassageTime.MIN_10)
+            }
         }
         binding.setMode.setOnClickListener {
             // Constant.LemMassageMode
-            BleServiceHelper.BleServiceHelper.lemMassageMode(model, Constant.LemMassageMode.SOOTHING)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lemHandler.massageMode(Constant.LemMassageMode.SOOTHING)
+            } else {
+                BleServiceHelper.BleServiceHelper.lemMassageMode(model, Constant.LemMassageMode.SOOTHING)
+            }
         }
         binding.setLevel.setOnClickListener {
             // 0-15
-            BleServiceHelper.BleServiceHelper.lemMassageLevel(model, 10)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lemHandler.massageLevel(10)
+            } else {
+                BleServiceHelper.BleServiceHelper.lemMassageLevel(model, 10)
+            }
         }
         bleState.observe(this) {
             if (it) {

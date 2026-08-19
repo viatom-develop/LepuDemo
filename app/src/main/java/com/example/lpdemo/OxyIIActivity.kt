@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityOxy2Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -36,7 +37,11 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
-        BleServiceHelper.BleServiceHelper.oxyIIGetConfig(model)
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.oxyIIHandler.getConfig()
+        } else {
+            BleServiceHelper.BleServiceHelper.oxyIIGetConfig(model)
+        }
     }
 
     private fun initView() {
@@ -50,41 +55,85 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getBattery.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyIIGetBattery(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.getBattery()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIIGetBattery(model)
+            }
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyIIGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIIGetInfo(model)
+            }
         }
         binding.getFileList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
             fileNames.clear()
 //            BleServiceHelper.BleServiceHelper.oxyIIGetFileList(model, Constant.OxyIIFileType.PPG)
-            BleServiceHelper.BleServiceHelper.oxyIIGetFileList(model, Constant.OxyIIFileType.OXY)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.getFileList(Constant.OxyIIFileType.OXY)
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIIGetFileList(model, Constant.OxyIIFileType.OXY)
+            }
         }
         binding.readFile.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
             readFile()
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyIIGetConfig(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.getConfig()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIIGetConfig(model)
+            }
         }
         binding.setMotor.setOnClickListener {
             // （0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
             config.type = Constant.OxyIIConfigType.MOTOR
             config.motor.motor = 20
-            BleServiceHelper.BleServiceHelper.oxyIISetConfig(model, config)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.setConfig(config)
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIISetConfig(model, config)
+            }
         }
         binding.reset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyIIReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.reset()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIIReset(model)
+            }
         }
         binding.factoryReset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.oxyIIFactoryReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.factoryReset()
+            } else {
+                BleServiceHelper.BleServiceHelper.oxyIIFactoryReset(model)
+            }
         }
         binding.startRtTask.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.startRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.startRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.startRtTask(model)
+            }
         }
         binding.stopRtTask.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.oxyIIHandler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
         }
     }
 
@@ -182,9 +231,13 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun readFile() {
-        if (fileNames.size == 0) return
+        if (fileNames.isEmpty()) return
 //        BleServiceHelper.BleServiceHelper.oxyIIReadFile(model, fileNames[0], Constant.OxyIIFileType.PPG)
-        BleServiceHelper.BleServiceHelper.oxyIIReadFile(model, fileNames[0], Constant.OxyIIFileType.OXY)
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.oxyIIHandler.readFile(fileNames[0], Constant.OxyIIFileType.OXY)
+        } else {
+            BleServiceHelper.BleServiceHelper.oxyIIReadFile(model, fileNames[0], Constant.OxyIIFileType.OXY)
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
@@ -196,7 +249,11 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
-        BleServiceHelper.BleServiceHelper.stopRtTask(model)
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.oxyIIHandler.stopRtTask()
+        } else {
+            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+        }
         BleServiceHelper.BleServiceHelper.disconnect(false)
         super.onDestroy()
     }

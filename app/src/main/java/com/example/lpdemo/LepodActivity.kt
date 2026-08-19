@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityLepodBinding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.Er3EcgBkg
@@ -120,37 +121,72 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lepodGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.lepodGetInfo(model)
+            }
         }
         binding.factoryReset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lepodFactoryReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.factoryReset()
+            } else {
+                BleServiceHelper.BleServiceHelper.lepodFactoryReset(model)
+            }
         }
         binding.getMode.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lepodGetMode(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.getMode()
+            } else {
+                BleServiceHelper.BleServiceHelper.lepodGetMode(model)
+            }
         }
         binding.setMode.setOnClickListener {
             // 0: 监护模式0.5-40
             // 1: 手术模式1-20
             // 2: ST模式0.05-40
-            BleServiceHelper.BleServiceHelper.lepodSetMode(model, 0)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.setMode(0)
+            } else {
+                BleServiceHelper.BleServiceHelper.lepodSetMode(model, 0)
+            }
         }
         binding.startEcg.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lepodStartEcg(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.startEcg()
+            } else {
+                BleServiceHelper.BleServiceHelper.lepodStartEcg(model)
+            }
         }
         binding.stopEcg.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.lepodStopEcg(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.stopEcg()
+            } else {
+                BleServiceHelper.BleServiceHelper.lepodStopEcg(model)
+            }
         }
         binding.startRtTask.setOnClickListener {
             isStartRtTask = true
-            if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                waveHandler.post(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.startRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                if (SDKMap.lepodHandler.isRtStop) {
+                    waveHandler.post(ecgWaveTask)
+                    SDKMap.lepodHandler.startRtTask()
+                }
+            } else {
+                if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
+                    waveHandler.post(ecgWaveTask)
+                    BleServiceHelper.BleServiceHelper.startRtTask(model)
+                }
             }
         }
         binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.lepodHandler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
         }
         // File data decompress
         binding.decompressTest.setOnClickListener {

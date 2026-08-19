@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityEr1Binding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
@@ -105,48 +106,88 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1GetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.er1GetInfo(model)
+            }
         }
         binding.factoryReset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1FactoryReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.factoryReset()
+            } else {
+                BleServiceHelper.BleServiceHelper.er1FactoryReset(model)
+            }
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1GetConfig(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.getConfig()
+            } else {
+                BleServiceHelper.BleServiceHelper.er1GetConfig(model)
+            }
         }
         binding.setConfig.setOnClickListener {
             config.isVibration = !config.isVibration
-            BleServiceHelper.BleServiceHelper.er1SetConfig(model, config)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.setConfig(config)
+            } else {
+                BleServiceHelper.BleServiceHelper.er1SetConfig(model, config)
+            }
         }
         binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
-            BleServiceHelper.BleServiceHelper.startRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.startRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.startRtTask(model)
+            }
         }
         binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
         }
         binding.getFileList.setOnClickListener {
             fileNames.clear()
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            BleServiceHelper.BleServiceHelper.er1GetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.er1GetFileList(model)
+            }
         }
         binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
             readFile()
         }
         binding.cancelReadFile.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.er1CancelReadFile(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.er1Handler.cancelReadFile()
+            } else {
+                BleServiceHelper.BleServiceHelper.er1CancelReadFile(model)
+            }
         }
         bleState.observe(this) {
             if (it) {
                 binding.bleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+                if (model == SDKMap.mtpo4.second) {
+                    SDKMap.er1Handler.stopRtTask()
+                } else {
+                    BleServiceHelper.BleServiceHelper.stopRtTask(model)
+                }
                 binding.bleState.setImageResource(R.mipmap.bluetooth_error)
             }
         }
@@ -303,9 +344,13 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun readFile() {
-        if (fileNames.size == 0) return
+        if (fileNames.isEmpty()) return
         val offset = getOffset(model, fileNames[0], "")
-        BleServiceHelper.BleServiceHelper.er1ReadFile(model, fileNames[0], "", offset.size)
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.er1Handler.readFile(fileNames[0], offset.size)
+        } else {
+            BleServiceHelper.BleServiceHelper.er1ReadFile(model, fileNames[0], "", offset.size)
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
@@ -318,7 +363,11 @@ class Er1Activity : AppCompatActivity(), BleChangeObserver {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         waveHandler.removeCallbacks(ecgWaveTask)
-        BleServiceHelper.BleServiceHelper.stopRtTask(model)
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.er1Handler.stopRtTask()
+        } else {
+            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+        }
         DataController.clear()
         dataEcgSrc.value = null
         BleServiceHelper.BleServiceHelper.disconnect(false)

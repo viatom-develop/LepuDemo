@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityCheckmePodBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -11,6 +12,7 @@ import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
+import com.lepu.blepro.constants.Constant
 import com.lepu.blepro.event.EventMsgConst
 import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.checkmepod.*
@@ -41,26 +43,50 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         binding.getInfo.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+                if (model == SDKMap.mtpo4.second) {
+                    SDKMap.checkmePodHandler.stopRtTask()
+                } else {
+                    BleServiceHelper.BleServiceHelper.stopRtTask(model)
+                }
             }
-            BleServiceHelper.BleServiceHelper.checkmePodGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmePodHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.checkmePodGetInfo(model)
+            }
         }
         binding.getList.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
-                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+                if (model == SDKMap.mtpo4.second) {
+                    SDKMap.checkmePodHandler.stopRtTask()
+                } else {
+                    BleServiceHelper.BleServiceHelper.stopRtTask(model)
+                }
             }
-            BleServiceHelper.BleServiceHelper.checkmePodGetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmePodHandler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.checkmePodGetFileList(model)
+            }
         }
         binding.startRtTask.setOnClickListener {
             isStartRtTask = true
             if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                BleServiceHelper.BleServiceHelper.startRtTask(model)
+                if (model == SDKMap.mtpo4.second) {
+                    SDKMap.checkmePodHandler.startRtTask()
+                } else {
+                    BleServiceHelper.BleServiceHelper.startRtTask(model)
+                }
             }
         }
         binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
-            BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmePodHandler.stopRtTask()
+            } else {
+                BleServiceHelper.BleServiceHelper.stopRtTask(model)
+            }
         }
         bleState.observe(this) {
             if (it) {

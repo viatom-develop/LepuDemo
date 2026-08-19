@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityBpmBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -34,13 +35,25 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bpmGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bpmHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.bpmGetInfo(model)
+            }
         }
         binding.getRtState.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bpmGetRtState(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bpmHandler.getRtState()
+            } else {
+                BleServiceHelper.BleServiceHelper.bpmGetRtState(model)
+            }
         }
         binding.getFileList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.bpmGetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.bpmHandler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.bpmGetFileList(model)
+            }
         }
         bleState.observe(this) {
             if (it) {

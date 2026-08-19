@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityPf10aw1Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -47,43 +48,83 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pf10Aw1GetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1GetInfo(model)
+            }
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pf10Aw1GetConfig(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.getConfig()
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1GetConfig(model)
+            }
         }
         binding.getFileList.setOnClickListener {
             fileNames.clear()
-            BleServiceHelper.BleServiceHelper.pf10Aw1GetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1GetFileList(model)
+            }
         }
         binding.readFile.setOnClickListener {
             readFile()
         }
         binding.setSpo2Low.setOnClickListener {
             // 85%-99%, 1%
-            BleServiceHelper.BleServiceHelper.pf10Aw1SetSpo2Low(model, 90)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.setSpo2Low(90)
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1SetSpo2Low(model, 90)
+            }
         }
         binding.setPrLow.setOnClickListener {
             // 30bpm-60bpm, 5bpm
-            BleServiceHelper.BleServiceHelper.pf10Aw1SetPrLow(model, 60)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.setPrLow(60)
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1SetPrLow(model, 60)
+            }
         }
         binding.setPrHigh.setOnClickListener {
             // 100bpm-240bpm, 5bpm
-            BleServiceHelper.BleServiceHelper.pf10Aw1SetPrHigh(model, 120)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.setPrHi(120)
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1SetPrHigh(model, 120)
+            }
         }
         binding.setEsMode.setOnClickListener {
             // 0：keep screen on，1：1 min screen off，2：3 min screen off，3：5 min screen off
-            BleServiceHelper.BleServiceHelper.pf10Aw1SetEsMode(model, 0)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.setEsMode(0)
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1SetEsMode(model, 0)
+            }
         }
         binding.setAlarm.setOnCheckedChangeListener { buttonView, isChecked ->
             // Threshold reminder switch
-            BleServiceHelper.BleServiceHelper.pf10Aw1SetAlarmSwitch(model, isChecked)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.setAlarmSwitch(isChecked)
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1SetAlarmSwitch(model, isChecked)
+            }
         }
         binding.setBeep.setOnCheckedChangeListener { buttonView, isChecked ->
-            BleServiceHelper.BleServiceHelper.pf10Aw1SetBeepSwitch(model, isChecked)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.setBeepSwitch(isChecked)
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1SetBeepSwitch(model, isChecked)
+            }
         }
         binding.factoryReset.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pf10Aw1FactoryReset(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pf10Aw1Handler.factoryReset()
+            } else {
+                BleServiceHelper.BleServiceHelper.pf10Aw1FactoryReset(model)
+            }
         }
     }
 
@@ -157,8 +198,12 @@ class Pf10Aw1Activity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun readFile() {
-        if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.pf10Aw1ReadFile(model, fileNames[0])
+        if (fileNames.isEmpty()) return
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.pf10Aw1Handler.readFile(fileNames[0])
+        } else {
+            BleServiceHelper.BleServiceHelper.pf10Aw1ReadFile(model, fileNames[0])
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

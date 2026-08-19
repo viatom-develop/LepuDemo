@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityAp20Binding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -45,20 +46,36 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.ap20Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
+            }
         }
         binding.getBattery.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.ap20GetBattery(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.ap20Handler.getBattery()
+            } else {
+                BleServiceHelper.BleServiceHelper.ap20GetBattery(model)
+            }
         }
         binding.getConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.ap20Handler.getConfig(Constant.Ap20ConfigType.BACK_LIGHT)
+            } else {
+                BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT)
+            }
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.LOW_OXY_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.LOW_HR_THRESHOLD)
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.HIGH_HR_THRESHOLD)
         }
         binding.setConfig.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.ap20Handler.setConfig(Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)
+            } else {
+                BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)
+            }
 //            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 1/*on*/)
 //            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT, 5/*(0-5)*/)
 //            BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)

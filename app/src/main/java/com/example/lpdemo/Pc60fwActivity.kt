@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityPc60fwBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -54,7 +55,11 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc60fwGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pc60FwHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.pc60fwGetInfo(model)
+            }
         }
 
     }

@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityAoj20aBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -34,13 +35,25 @@ class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.aoj20aGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.aoj20aHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.aoj20aGetInfo(model)
+            }
         }
         binding.getList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.aoj20aGetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.aoj20aHandler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.aoj20aGetFileList(model)
+            }
         }
         binding.deleteData.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.aoj20aDeleteData(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.aoj20aHandler.deleteData()
+            } else {
+                BleServiceHelper.BleServiceHelper.aoj20aDeleteData(model)
+            }
         }
         bleState.observe(this) {
             if (it) {

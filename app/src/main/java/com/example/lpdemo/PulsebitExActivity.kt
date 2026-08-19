@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityPulsebitExBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -38,11 +39,19 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pulsebitExGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pulsebitHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.pulsebitExGetInfo(model)
+            }
         }
         binding.getFileList.setOnClickListener {
             // 1. get list first
-            BleServiceHelper.BleServiceHelper.pulsebitExGetFileList(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pulsebitHandler.getFileList()
+            } else {
+                BleServiceHelper.BleServiceHelper.pulsebitExGetFileList(model)
+            }
         }
         binding.readFile.setOnClickListener {
             // 2. then read file
@@ -121,8 +130,12 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun readFile() {
-        if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.pulsebitExReadFile(model, fileNames[0])
+        if (fileNames.isEmpty()) return
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.pulsebitHandler.readFile(fileNames[0])
+        } else {
+            BleServiceHelper.BleServiceHelper.pulsebitExReadFile(model, fileNames[0])
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {

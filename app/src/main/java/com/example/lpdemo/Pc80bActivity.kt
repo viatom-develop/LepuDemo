@@ -6,6 +6,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityPc80bBinding
 import com.example.lpdemo.utils.*
 import com.example.lpdemo.views.EcgBkg
@@ -99,10 +100,18 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pc80Handler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
+            }
         }
         binding.getBattery.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.pc80bGetBattery(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.pc80Handler.getBattery()
+            } else {
+                BleServiceHelper.BleServiceHelper.pc80bGetBattery(model)
+            }
         }
         bleState.observe(this) {
             if (it) {

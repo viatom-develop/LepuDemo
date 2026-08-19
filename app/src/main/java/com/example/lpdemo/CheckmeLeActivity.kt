@@ -3,6 +3,7 @@ package com.example.lpdemo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.lpdemo.comm.SDKMap
 import com.example.lpdemo.databinding.ActivityCheckmeLeBinding
 import com.example.lpdemo.utils._bleState
 import com.example.lpdemo.utils.bleState
@@ -40,16 +41,32 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.checkmeLeGetInfo(model)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmeLeHandler.getInfo()
+            } else {
+                BleServiceHelper.BleServiceHelper.checkmeLeGetInfo(model)
+            }
         }
         binding.getOxyList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.OXY_TYPE)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmeLeHandler.getFileList(Constant.CheckmeLeListType.OXY_TYPE)
+            } else {
+                BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.OXY_TYPE)
+            }
         }
         binding.getEcgList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.ECG_TYPE)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmeLeHandler.getFileList(Constant.CheckmeLeListType.ECG_TYPE)
+            } else {
+                BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.ECG_TYPE)
+            }
         }
         binding.getDlcList.setOnClickListener {
-            BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.DLC_TYPE)
+            if (model == SDKMap.mtpo4.second) {
+                SDKMap.checkmeLeHandler.getFileList(Constant.CheckmeLeListType.DLC_TYPE)
+            } else {
+                BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.DLC_TYPE)
+            }
         }
         binding.readFile.setOnClickListener {
             // 1. get list first 2. then read file
@@ -137,8 +154,12 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
     }
 
     private fun readFile() {
-        if (fileNames.size == 0) return
-        BleServiceHelper.BleServiceHelper.checkmeLeReadFile(model, fileNames[0])
+        if (fileNames.isEmpty()) return
+        if (model == SDKMap.mtpo4.second) {
+            SDKMap.checkmeLeHandler.readFile(fileNames[0])
+        } else {
+            BleServiceHelper.BleServiceHelper.checkmeLeReadFile(model, fileNames[0])
+        }
     }
 
     override fun onBleStateChanged(model: Int, state: Int) {
