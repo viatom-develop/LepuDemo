@@ -36,14 +36,14 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lemHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.lemGetInfo(model)
             }
         }
         binding.getBattery.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lemHandler.getBattery()
             } else {
                 BleServiceHelper.BleServiceHelper.lemGetBattery(model)
@@ -51,7 +51,7 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.heatSwitch.setOnClickListener {
             // true：Heating mode on，false：Heating mode off
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lemHandler.heatMode(true)
             } else {
                 BleServiceHelper.BleServiceHelper.lemHeatMode(model, true)
@@ -59,7 +59,7 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.setTime.setOnClickListener {
             // Constant.LemMassageTime
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lemHandler.massageTime(Constant.LemMassageTime.MIN_10)
             } else {
                 BleServiceHelper.BleServiceHelper.lemMassageTime(model, Constant.LemMassageTime.MIN_10)
@@ -67,7 +67,7 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.setMode.setOnClickListener {
             // Constant.LemMassageMode
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lemHandler.massageMode(Constant.LemMassageMode.SOOTHING)
             } else {
                 BleServiceHelper.BleServiceHelper.lemMassageMode(model, Constant.LemMassageMode.SOOTHING)
@@ -75,7 +75,7 @@ class LemActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.setLevel.setOnClickListener {
             // 0-15
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lemHandler.massageLevel(10)
             } else {
                 BleServiceHelper.BleServiceHelper.lemMassageLevel(model, 10)

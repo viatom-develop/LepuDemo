@@ -106,21 +106,21 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2wGetInfo(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2wFactoryReset(model)
             }
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.getConfig()
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2wGetConfig(model)
@@ -133,7 +133,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             // config.avgMeasureMode: 0(bp x3 off), 1(bp x3 on, interval 30s), 2(bp x3 on, interval 60s),
             //                        3(bp x3 on, interval 90s), 4(bp x3 on, interval 120s)
             // config.volume: 0(off), 1, 2, 3
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.setConfig(config)
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2wSetConfig(model, config)
@@ -142,7 +142,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.startRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
@@ -150,7 +150,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -168,7 +168,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             // Constant.LpBp2wListType.BP_TYPE
             // Constant.LpBp2wListType.ECG_TYPE
 //            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.BP_TYPE)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.getFileList(Constant.LpBp2wListType.ECG_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.ECG_TYPE)
@@ -176,7 +176,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
 //            BleServiceHelper.BleServiceHelper.lpBp2wGetFileList(model, Constant.LpBp2wListType.USER_TYPE)
         }
         binding.getCrc.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.getFileListCrc(Constant.LpBp2wListType.USER_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2wGetFileListCrc(model, Constant.LpBp2wListType.USER_TYPE)
@@ -184,7 +184,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -193,7 +193,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.writeUsers.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -233,7 +233,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
             user3.icon = BitmapConvertor(this).createIcon("测试three")
             userList.add(user3)
             // userList.size max : 10
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpBp2wHandler.writeUserList(userList)
             } else {
                 BleServiceHelper.BleServiceHelper.lpBp2WriteUserList(model, userList)
@@ -245,7 +245,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
                 binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.lpBp2wHandler.stopRtTask()
                 } else {
                     BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -491,7 +491,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.lpBp2wHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.lpBp2wReadFile(model, fileNames[0])
@@ -508,7 +508,7 @@ class LpBp2wActivity : AppCompatActivity(), BleChangeObserver {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         waveHandler.removeCallbacks(ecgWaveTask)
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.lpBp2wHandler.stopRtTask()
         } else {
             BleServiceHelper.BleServiceHelper.stopRtTask(model)

@@ -73,21 +73,21 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
             }
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bbsmP1Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.bbsmp1GetInfo(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bbsmP1Handler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.bbsmp1FactoryReset(model)
             }
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bbsmP1Handler.getConfig()
             } else {
                 BleServiceHelper.BleServiceHelper.bbsmp1GetConfig(model)
@@ -156,7 +156,7 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
                     )
                 }
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bbsmP1Handler.setConfig(config)
             } else {
                 BleServiceHelper.BleServiceHelper.bbsmp1SetConfig(model, config)
@@ -169,7 +169,7 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
             "2.set config ($configClickExample)".let { binding.setConfig.text = it }
         }
         binding.getRtData.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bbsmP1Handler.getRtData()
             } else {
                 BleServiceHelper.BleServiceHelper.bbsmp1GetRtData(model)
@@ -180,7 +180,7 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bbsmP1Handler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.bbsmp1GetFileList(model)
@@ -254,7 +254,7 @@ class BBSMBS1Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.bbsmP1Handler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.bbsmp1ReadFile(model, fileNames[0])

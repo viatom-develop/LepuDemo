@@ -59,7 +59,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         initEventBus()
         // 连接蓝牙后进行交换密钥通讯，进入加密模式，所有指令允许执行
         // 不进行加密模式，部分指令不允许执行
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.ventilatorHandler.encrypt()
         } else {
             BleServiceHelper.BleServiceHelper.ventilatorEncrypt(model, "0001")
@@ -84,7 +84,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 server.addr = "112.125.89.8"
                 server.port = 37256
                 wifiConfig.server = server
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.setWifiConfig(wifiConfig)
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorSetWifiConfig(model, wifiConfig)
@@ -95,7 +95,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.ventilatorVentilationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.ventilationSwitch(isChecked)
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorVentilationSwitch(model, isChecked)
@@ -104,7 +104,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.ventilatorMaskTest.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.maskTest(isChecked)
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorMaskTest(model, isChecked)
@@ -112,14 +112,14 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             }
         }
         binding.getRtState.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getRtState()
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetRtState(model)
             }
         }
         binding.getRtParam.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getRtParam()
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetRtParam(model)
@@ -127,7 +127,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getFileList.setOnClickListener {
             fileNames.clear()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getFileList(1, 0)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetFileList(model)
@@ -138,14 +138,14 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getWifiList.setOnClickListener {
             wifiList.clear()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getWifiList(0)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetWifiList(model)
             }
         }
         binding.getWifiConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getWifiConfig(3)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetWifiConfig(model)
@@ -169,7 +169,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.warningSettingLayout.visibility = View.GONE
             binding.otherLayout.visibility = View.GONE
             spinnerSet = false
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getSystemSetting()
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetSystemSetting(model)
@@ -187,7 +187,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.warningSettingLayout.visibility = View.GONE
             binding.otherLayout.visibility = View.GONE
             spinnerSet = false
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getVentilationSetting()
                 SDKMap.ventilatorHandler.getMeasureSetting()
             } else {
@@ -206,7 +206,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.measureSettingLayout.visibility = View.GONE
             binding.warningSettingLayout.visibility = View.GONE
             binding.otherLayout.visibility = View.GONE
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getRtState()
                 spinnerSet = false
                 SDKMap.ventilatorHandler.getVentilationSetting()
@@ -228,7 +228,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.ventilationSettingLayout.visibility = View.GONE
             binding.otherLayout.visibility = View.GONE
             spinnerSet = false
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getWarningSetting()
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetWarningSetting(model)
@@ -245,7 +245,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.measureSettingLayout.visibility = View.GONE
             binding.ventilationSettingLayout.visibility = View.GONE
             binding.warningSettingLayout.visibility = View.GONE
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.getRtState()
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorGetRtState(model)
@@ -253,7 +253,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         }
         // 绑定/解绑
         binding.bound.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.deviceBound(isChecked)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorDeviceBound(model, isChecked)
@@ -269,13 +269,13 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         pin
                     }
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.doctorModeIn(pin, System.currentTimeMillis().div(1000))
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorDoctorModeIn(model, pin, System.currentTimeMillis().div(1000))
                     }
                 } else {
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.doctorModeOut()
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorDoctorModeOut(model)
@@ -293,7 +293,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     systemSetting.type = Constant.VentilatorSystemSetting.UNIT
                     systemSetting.unitSetting.pressureUnit = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -312,7 +312,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     systemSetting.type = Constant.VentilatorSystemSetting.LANGUAGE
                     systemSetting.languageSetting.language = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -328,7 +328,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     systemSetting.type = Constant.VentilatorSystemSetting.SCREEN
                     systemSetting.screenSetting.brightness = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -347,7 +347,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.brightnessSub.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.SCREEN
             systemSetting.screenSetting.brightness = --binding.brightness.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -356,7 +356,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.brightnessAdd.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.SCREEN
             systemSetting.screenSetting.brightness = ++binding.brightness.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -371,7 +371,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     systemSetting.type = Constant.VentilatorSystemSetting.SCREEN
                     systemSetting.screenSetting.autoOff = position.times(30)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -387,7 +387,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
                     systemSetting.replacements.filter = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -408,7 +408,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.filterSub.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.filter = --binding.filter.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -417,7 +417,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.filterAdd.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.filter = ++binding.filter.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -429,7 +429,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
                     systemSetting.replacements.mask = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -450,7 +450,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.maskSub.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.mask = --binding.mask.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -459,7 +459,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.maskAdd.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.mask = ++binding.mask.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -471,7 +471,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
                     systemSetting.replacements.tube = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -492,7 +492,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.tubeSub.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.tube = --binding.tube.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -501,7 +501,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.tubeAdd.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.tube = ++binding.tube.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -513,7 +513,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
                     systemSetting.replacements.tank = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -534,7 +534,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.tankSub.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.tank = --binding.tank.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -543,7 +543,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         binding.tankAdd.setOnClickListener {
             systemSetting.type = Constant.VentilatorSystemSetting.REPLACEMENT
             systemSetting.replacements.tank = ++binding.tank.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -555,7 +555,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     systemSetting.type = Constant.VentilatorSystemSetting.VOLUME
                     systemSetting.volumeSetting.volume = progress.times(5)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -575,7 +575,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             systemSetting.type = Constant.VentilatorSystemSetting.VOLUME
             binding.volume.progress--
             systemSetting.volumeSetting.volume = binding.volume.progress.times(5)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -585,7 +585,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             systemSetting.type = Constant.VentilatorSystemSetting.VOLUME
             binding.volume.progress++
             systemSetting.volumeSetting.volume = binding.volume.progress.times(5)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setSystemSetting(systemSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetSystemSetting(model, systemSetting)
@@ -605,7 +605,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         measureSetting.humidification.humidification = position
                     }
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -624,7 +624,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     measureSetting.type = Constant.VentilatorMeasureSetting.PRESSURE_REDUCE
                     measureSetting.pressureReduce.epr = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -639,7 +639,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             if (buttonView.isPressed) {
                 measureSetting.type = Constant.VentilatorMeasureSetting.AUTO_SWITCH
                 measureSetting.autoSwitch.isAutoStart = isChecked
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -651,7 +651,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             if (buttonView.isPressed) {
                 measureSetting.type = Constant.VentilatorMeasureSetting.AUTO_SWITCH
                 measureSetting.autoSwitch.isAutoEnd = isChecked
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -663,7 +663,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             if (buttonView.isPressed) {
                 measureSetting.type = Constant.VentilatorMeasureSetting.PRE_HEAT
                 measureSetting.preHeat.isOn = isChecked
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -676,7 +676,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     measureSetting.type = Constant.VentilatorMeasureSetting.RAMP
                     measureSetting.ramp.pressure = progress.times(0.5f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -704,7 +704,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rampPressure.progress--
             measureSetting.type = Constant.VentilatorMeasureSetting.RAMP
             measureSetting.ramp.pressure = binding.rampPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -714,7 +714,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rampPressure.progress++
             measureSetting.type = Constant.VentilatorMeasureSetting.RAMP
             measureSetting.ramp.pressure = binding.rampPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -726,7 +726,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     measureSetting.type = Constant.VentilatorMeasureSetting.RAMP
                     measureSetting.ramp.time = progress.times(5)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -744,7 +744,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rampTime.progress--
             measureSetting.type = Constant.VentilatorMeasureSetting.RAMP
             measureSetting.ramp.time = binding.rampTime.progress.times(5)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -754,7 +754,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rampTime.progress++
             measureSetting.type = Constant.VentilatorMeasureSetting.RAMP
             measureSetting.ramp.time = binding.rampTime.progress.times(5)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -769,7 +769,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     measureSetting.type = Constant.VentilatorMeasureSetting.TUBE_TYPE
                     measureSetting.tubeType.type = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -788,7 +788,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     measureSetting.type = Constant.VentilatorMeasureSetting.MASK
                     measureSetting.mask.type = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -804,7 +804,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     measureSetting.type = Constant.VentilatorMeasureSetting.MASK
                     measureSetting.mask.pressure = progress.toFloat()
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -832,7 +832,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.maskPressure.progress--
             measureSetting.type = Constant.VentilatorMeasureSetting.MASK
             measureSetting.mask.pressure = binding.maskPressure.progress.toFloat()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -842,7 +842,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.maskPressure.progress++
             measureSetting.type = Constant.VentilatorMeasureSetting.MASK
             measureSetting.mask.pressure = binding.maskPressure.progress.toFloat()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setMeasureSetting(measureSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetMeasureSetting(model, measureSetting)
@@ -875,7 +875,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.VENTILATION_MODE
                     ventilationSetting.ventilationMode.mode = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -891,7 +891,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE
                     ventilationSetting.cpapPressure.pressure = progress.times(0.5f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -919,7 +919,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.cpapPressure.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE
             ventilationSetting.cpapPressure.pressure = binding.cpapPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -929,7 +929,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.cpapPressure.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE
             ventilationSetting.cpapPressure.pressure = binding.cpapPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -941,7 +941,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_MAX
                     ventilationSetting.apapPressureMax.max = progress.times(0.5f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -969,7 +969,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.apapPressureMax.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_MAX
             ventilationSetting.apapPressureMax.max = binding.apapPressureMax.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -979,7 +979,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.apapPressureMax.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_MAX
             ventilationSetting.apapPressureMax.max = binding.apapPressureMax.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -991,7 +991,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_MIN
                     ventilationSetting.apapPressureMin.min = progress.times(0.5f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1019,7 +1019,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.apapPressureMin.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_MIN
             ventilationSetting.apapPressureMin.min = binding.apapPressureMin.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1029,7 +1029,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.apapPressureMin.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_MIN
             ventilationSetting.apapPressureMin.min = binding.apapPressureMin.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1041,7 +1041,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_INHALE
                     ventilationSetting.pressureInhale.inhale = progress.times(0.5f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1069,7 +1069,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.ipapPressure.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_INHALE
             ventilationSetting.pressureInhale.inhale = binding.ipapPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1079,7 +1079,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.ipapPressure.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_INHALE
             ventilationSetting.pressureInhale.inhale = binding.ipapPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1091,7 +1091,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_EXHALE
                     ventilationSetting.pressureExhale.exhale = progress.times(0.5f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1119,7 +1119,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.epapPressure.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_EXHALE
             ventilationSetting.pressureExhale.exhale = binding.epapPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1129,7 +1129,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.epapPressure.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.PRESSURE_EXHALE
             ventilationSetting.pressureExhale.exhale = binding.epapPressure.progress.times(0.5f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1141,7 +1141,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.INHALE_DURATION
                     ventilationSetting.inhaleDuration.duration = progress.div(10f)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1161,7 +1161,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.inspiratoryTime.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.INHALE_DURATION
             ventilationSetting.inhaleDuration.duration = binding.inspiratoryTime.progress.div(10f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1171,7 +1171,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.inspiratoryTime.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.INHALE_DURATION
             ventilationSetting.inhaleDuration.duration = binding.inspiratoryTime.progress.div(10f)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1183,7 +1183,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.RESPIRATORY_RATE
                     ventilationSetting.respiratoryRate.rate = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1203,7 +1203,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.respiratoryFrequency.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.RESPIRATORY_RATE
             ventilationSetting.respiratoryRate.rate = binding.respiratoryFrequency.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1213,7 +1213,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.respiratoryFrequency.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.RESPIRATORY_RATE
             ventilationSetting.respiratoryRate.rate = binding.respiratoryFrequency.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1225,7 +1225,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.RAISE_DURATION
                     ventilationSetting.pressureRaiseDuration.duration = progress.times(50)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1245,7 +1245,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.raiseTime.progress--
             ventilationSetting.type = Constant.VentilatorVentilationSetting.RAISE_DURATION
             ventilationSetting.pressureRaiseDuration.duration = binding.raiseTime.progress.times(50)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1255,7 +1255,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.raiseTime.progress++
             ventilationSetting.type = Constant.VentilatorVentilationSetting.RAISE_DURATION
             ventilationSetting.pressureRaiseDuration.duration = binding.raiseTime.progress.times(50)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1270,7 +1270,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.INHALE_SENSITIVE
                     ventilationSetting.inhaleSensitive.sentive = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1289,7 +1289,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     ventilationSetting.type = Constant.VentilatorVentilationSetting.EXHALE_SENSITIVE
                     ventilationSetting.exhaleSensitive.sentive = position
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setVentilationSetting(ventilationSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetVentilationSetting(model, ventilationSetting)
@@ -1314,7 +1314,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                             .setPositiveButton("确定") { _, _ ->
                                 warningSetting.type = Constant.VentilatorWarningSetting.LEAK_HIGH
                                 warningSetting.warningLeak.high = position.times(15)
-                                if (model == SDKMap.mtpo4.second) {
+                                if (model == SDKMap.youBle.second) {
                                     SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                                 } else {
                                     BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1330,7 +1330,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         warningSetting.type = Constant.VentilatorWarningSetting.LEAK_HIGH
                         warningSetting.warningLeak.high = position.times(15)
-                        if (model == SDKMap.mtpo4.second) {
+                        if (model == SDKMap.youBle.second) {
                             SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                         } else {
                             BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1357,7 +1357,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (spinnerSet) {
                     warningSetting.type = Constant.VentilatorWarningSetting.APNEA
                     warningSetting.warningApnea.apnea = position.times(10)
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1377,7 +1377,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         progress.times(10)
                     }
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1403,7 +1403,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             } else {
                 binding.vtLow.progress.times(10)
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1413,7 +1413,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.vtLow.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.VT_LOW
             warningSetting.warningVt.low = binding.vtLow.progress.times(10)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1425,7 +1425,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     warningSetting.type = Constant.VentilatorWarningSetting.LOW_VENTILATION
                     warningSetting.warningVentilation.low = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1447,7 +1447,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.lowVentilation.progress--
             warningSetting.type = Constant.VentilatorWarningSetting.LOW_VENTILATION
             warningSetting.warningVentilation.low = binding.lowVentilation.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1457,7 +1457,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.lowVentilation.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.LOW_VENTILATION
             warningSetting.warningVentilation.low = binding.lowVentilation.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1469,7 +1469,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     warningSetting.type = Constant.VentilatorWarningSetting.RR_HIGH
                     warningSetting.warningRrHigh.high = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1491,7 +1491,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rrHigh.progress--
             warningSetting.type = Constant.VentilatorWarningSetting.RR_HIGH
             warningSetting.warningRrHigh.high = binding.rrHigh.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1501,7 +1501,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rrHigh.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.RR_HIGH
             warningSetting.warningRrHigh.high = binding.rrHigh.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1513,7 +1513,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                 if (fromUser) {
                     warningSetting.type = Constant.VentilatorWarningSetting.RR_LOW
                     warningSetting.warningRrLow.low = progress
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1535,7 +1535,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rrLow.progress--
             warningSetting.type = Constant.VentilatorWarningSetting.RR_LOW
             warningSetting.warningRrLow.low = binding.rrLow.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1545,7 +1545,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.rrLow.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.RR_LOW
             warningSetting.warningRrLow.low = binding.rrLow.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1561,7 +1561,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         progress
                     }
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1587,7 +1587,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             } else {
                 binding.spo2Low.progress
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1597,7 +1597,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.spo2Low.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.SPO2_LOW
             warningSetting.warningSpo2Low.low = binding.spo2Low.progress
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1613,7 +1613,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         progress.times(10)
                     }
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1639,7 +1639,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             } else {
                 binding.hrHigh.progress.times(10)
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1649,7 +1649,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.hrHigh.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.HR_HIGH
             warningSetting.warningHrHigh.high = binding.hrHigh.progress.times(10)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1665,7 +1665,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     } else {
                         progress.times(5)
                     }
-                    if (model == SDKMap.mtpo4.second) {
+                    if (model == SDKMap.youBle.second) {
                         SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
                     } else {
                         BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1691,7 +1691,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             } else {
                 binding.hrLow.progress.times(5)
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1701,7 +1701,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
             binding.hrLow.progress++
             warningSetting.type = Constant.VentilatorWarningSetting.HR_LOW
             warningSetting.warningHrLow.low = binding.hrLow.progress.times(5)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ventilatorHandler.setWarningSetting(warningSetting)
             } else {
                 BleServiceHelper.BleServiceHelper.ventilatorSetWarningSetting(model, warningSetting)
@@ -1725,7 +1725,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                         BleServiceHelper.BleServiceHelper.disconnect(false)
                     }
                 }
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.syncTime()
                 } else {
                     BleServiceHelper.BleServiceHelper.syncTime(model)
@@ -1745,7 +1745,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                         BleServiceHelper.BleServiceHelper.disconnect(false)
                     }
                 }
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getInfo()
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorGetInfo(model)
@@ -1777,7 +1777,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     binding.ventilationMode.adapter = this
                 }
                 // init rtState, systemSetting, measureSetting, ventilationSetting, warningSetting
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getRtState()
                     SDKMap.ventilatorHandler.getSystemSetting()
                     SDKMap.ventilatorHandler.getVentilationSetting()
@@ -1882,7 +1882,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                     Constant.VentilatorResponseType.TYPE_NORMAL_ERROR -> {
                         // The device is currently scanning and cannot be obtained. Please call the query WiFi list command again
                         Handler().postDelayed({
-                            if (model == SDKMap.mtpo4.second) {
+                            if (model == SDKMap.youBle.second) {
                                 SDKMap.ventilatorHandler.getWifiList(0)
                             } else {
                                 BleServiceHelper.BleServiceHelper.ventilatorGetWifiList(it.model)
@@ -1983,7 +1983,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
                         }}"
                     }
                 }
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getRtState()
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorGetRtState(it.model)
@@ -2142,7 +2142,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetSystemSetting)
             .observe(this) {
                 binding.dataLog.text = "系统设置成功"
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getSystemSetting()
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorGetSystemSetting(it.model)
@@ -2192,7 +2192,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetMeasureSetting)
             .observe(this) {
                 binding.dataLog.text = "测量设置成功"
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getMeasureSetting()
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorGetMeasureSetting(it.model)
@@ -2288,7 +2288,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetVentilationSetting)
             .observe(this) {
                 binding.dataLog.text = "通气设置成功"
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getVentilationSetting()
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorGetVentilationSetting(it.model)
@@ -2344,7 +2344,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
         LiveEventBus.get<InterfaceEvent>(InterfaceEvent.Ventilator.EventVentilatorSetWarningSetting)
             .observe(this) {
                 binding.dataLog.text = "警告设置成功"
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.ventilatorHandler.getWarningSetting()
                 } else {
                     BleServiceHelper.BleServiceHelper.ventilatorGetWarningSetting(it.model)
@@ -2364,7 +2364,7 @@ class VentilatorActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.ventilatorHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.ventilatorReadFile(model, fileNames[0])

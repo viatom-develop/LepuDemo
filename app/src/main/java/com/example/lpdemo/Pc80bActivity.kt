@@ -100,14 +100,14 @@ class Pc80bActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc80Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.pc80bGetInfo(model)
             }
         }
         binding.getBattery.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc80Handler.getBattery()
             } else {
                 BleServiceHelper.BleServiceHelper.pc80bGetBattery(model)

@@ -35,7 +35,7 @@ class Lpm311Activity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getData.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lpm311Handler.getData()
             } else {
                 BleServiceHelper.BleServiceHelper.lpm311GetData(model)

@@ -35,14 +35,14 @@ class BiolandBgmActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.biolandBgmHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.biolandBgmGetInfo(model)
             }
         }
         binding.getData.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.biolandBgmHandler.getGluData()
             } else {
                 BleServiceHelper.BleServiceHelper.biolandBgmGetGluData(model)

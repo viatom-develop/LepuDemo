@@ -39,7 +39,7 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pulsebitHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.pulsebitExGetInfo(model)
@@ -47,7 +47,7 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getFileList.setOnClickListener {
             // 1. get list first
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pulsebitHandler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.pulsebitExGetFileList(model)
@@ -131,7 +131,7 @@ class PulsebitExActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.pulsebitHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.pulsebitExReadFile(model, fileNames[0])

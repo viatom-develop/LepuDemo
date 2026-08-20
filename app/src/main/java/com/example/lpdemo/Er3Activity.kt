@@ -121,21 +121,21 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.er3Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.er3GetInfo(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.er3Handler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.er3FactoryReset(model)
             }
         }
         binding.getMode.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.er3Handler.getConfig()
             } else {
                 BleServiceHelper.BleServiceHelper.er3GetConfig(model)
@@ -145,7 +145,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
             // 0: 监护模式0.5-40
             // 1: 手术模式1-20
             // 2: ST模式0.05-40
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.er3Handler.setMode(0)
             } else {
                 BleServiceHelper.BleServiceHelper.er3SetMode(model, 0)
@@ -153,7 +153,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         }
         binding.startRtTask.setOnClickListener {
             isStartRtTask = true
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 if (SDKMap.er3Handler.isRtStop) {
                     waveHandler.post(ecgWaveTask)
                     SDKMap.er3Handler.startRtTask()
@@ -168,7 +168,7 @@ class Er3Activity : AppCompatActivity(), BleChangeObserver {
         binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.er3Handler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)

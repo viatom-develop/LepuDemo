@@ -53,7 +53,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
     inner class RtTask: Runnable {
         override fun run() {
             rtHandler.postDelayed(rtTask, 1000)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.getRtParam()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyGetRtParam(model)
@@ -84,7 +84,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         binding.getInfo.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             fileNames.clear()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyGetInfo(model)
@@ -95,14 +95,14 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
             readFile()
         }
         binding.getRtWave.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.getRtWave()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyGetRtWave(model)
             }
         }
         binding.getRtPpgParam.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.getPpgRT()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyGetPpgRt(model)
@@ -123,7 +123,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
          */
         binding.setTime.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.updateSetting("SetTIME", makeTimeStr())
             } else {
                 BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetTIME", makeTimeStr())
@@ -133,7 +133,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
             rtHandler.removeCallbacks(rtTask)
             // KidsO2、Oxylink（0-5：MIN，5-10：LOW，10-17：MID，17-22：HIGH，22-35：MAX，0 is off）
             // O2Ring（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.updateSetting("SetMotor", 20)
             } else {
                 BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetMotor", 20)
@@ -142,7 +142,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         binding.setBuzzer.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
             // checkO2Plus（0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.updateSetting("SetBuzzer", 20)
             } else {
                 BleServiceHelper.BleServiceHelper.oxyUpdateSetting(model, "SetBuzzer", 20)
@@ -154,7 +154,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.factoryReset.setOnClickListener {
             rtHandler.removeCallbacks(rtTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyCommonHandler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyFactoryReset(model)
@@ -298,7 +298,7 @@ class OxyActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.oxyCommonHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.oxyReadFile(model, fileNames[0])

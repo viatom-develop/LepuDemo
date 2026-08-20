@@ -35,21 +35,21 @@ class BpmActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bpmHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.bpmGetInfo(model)
             }
         }
         binding.getRtState.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bpmHandler.getRtState()
             } else {
                 BleServiceHelper.BleServiceHelper.bpmGetRtState(model)
             }
         }
         binding.getFileList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bpmHandler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.bpmGetFileList(model)

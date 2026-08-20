@@ -46,21 +46,21 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.sp20Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.sp20GetInfo(model)
             }
         }
         binding.getBattery.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.sp20Handler.getBattery()
             } else {
                 BleServiceHelper.BleServiceHelper.sp20GetBattery(model)
             }
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.sp20Handler.getConfig(Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
             } else {
                 BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD)
@@ -69,7 +69,7 @@ class Sp20Activity : AppCompatActivity(), BleChangeObserver {
 //            BleServiceHelper.BleServiceHelper.sp20GetConfig(model, Constant.Sp20ConfigType.HIGH_HR_THRESHOLD)
         }
         binding.setConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.sp20Handler.setConfig(Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)
             } else {
                 BleServiceHelper.BleServiceHelper.sp20SetConfig(model, Constant.Sp20ConfigType.LOW_OXY_THRESHOLD, 99/*(85-99)*/)

@@ -71,7 +71,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.checkmeHandler.syncTime()
         } else {
             BleServiceHelper.BleServiceHelper.syncTime(model)
@@ -81,7 +81,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetInfo(model)
@@ -89,21 +89,21 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getUserList.setOnClickListener {
             userIds.clear()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.USER_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.USER_TYPE)
             }
         }
         binding.getTempList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.TEMP_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.TEMP_TYPE)
             }
         }
         binding.getOxyList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.OXY_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.OXY_TYPE)
@@ -111,7 +111,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getGluList.setOnClickListener {
             // userIds
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.GLU_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.GLU_TYPE, 1)
@@ -119,21 +119,21 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getDlcList.setOnClickListener {
             type = Constant.CheckmeListType.DLC_TYPE
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.DLC_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.DLC_TYPE, 1)
             }
         }
         binding.getPedList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.PED_TYPE, 2)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.PED_TYPE, 2)
             }
         }
         binding.getBpList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.BP_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.BP_TYPE, 1)
@@ -141,7 +141,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getEcgList.setOnClickListener {
             type = Constant.CheckmeListType.ECG_TYPE
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.ECG_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.ECG_TYPE)
@@ -149,7 +149,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.getSlmList.setOnClickListener {
             type = Constant.CheckmeListType.SLM_TYPE
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeHandler.getFileList(Constant.CheckmeListType.SLM_TYPE, 1)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeGetFileList(model, Constant.CheckmeListType.SLM_TYPE)
@@ -356,7 +356,7 @@ class CheckmeActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             if (type == Constant.CheckmeListType.SLM_TYPE) {
                 SDKMap.checkmeHandler.readFile(fileNames[0], Constant.CheckmeFileType.SLM_TYPE)
             } else {

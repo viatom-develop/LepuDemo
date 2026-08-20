@@ -35,21 +35,21 @@ class Aoj20aActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.aoj20aHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.aoj20aGetInfo(model)
             }
         }
         binding.getList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.aoj20aHandler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.aoj20aGetFileList(model)
             }
         }
         binding.deleteData.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.aoj20aHandler.deleteData()
             } else {
                 BleServiceHelper.BleServiceHelper.aoj20aDeleteData(model)

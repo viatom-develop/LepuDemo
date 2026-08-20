@@ -37,7 +37,7 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.oxyIIHandler.getConfig()
         } else {
             BleServiceHelper.BleServiceHelper.oxyIIGetConfig(model)
@@ -55,35 +55,35 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getBattery.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.getBattery()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIIGetBattery(model)
             }
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIIGetInfo(model)
             }
         }
         binding.getFileList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
             }
             fileNames.clear()
 //            BleServiceHelper.BleServiceHelper.oxyIIGetFileList(model, Constant.OxyIIFileType.PPG)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.getFileList(Constant.OxyIIFileType.OXY)
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIIGetFileList(model, Constant.OxyIIFileType.OXY)
             }
         }
         binding.readFile.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -91,7 +91,7 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
             readFile()
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.getConfig()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIIGetConfig(model)
@@ -101,35 +101,35 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
             // （0-20：MIN，20-40：LOW，40-60：MID，60-80：HIGH，80-100：MAX，0 is off）
             config.type = Constant.OxyIIConfigType.MOTOR
             config.motor.motor = 20
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.setConfig(config)
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIISetConfig(model, config)
             }
         }
         binding.reset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.reset()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIIReset(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.oxyIIFactoryReset(model)
             }
         }
         binding.startRtTask.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.startRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
             }
         }
         binding.stopRtTask.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.oxyIIHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -233,7 +233,7 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
     private fun readFile() {
         if (fileNames.isEmpty()) return
 //        BleServiceHelper.BleServiceHelper.oxyIIReadFile(model, fileNames[0], Constant.OxyIIFileType.PPG)
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.oxyIIHandler.readFile(fileNames[0], Constant.OxyIIFileType.OXY)
         } else {
             BleServiceHelper.BleServiceHelper.oxyIIReadFile(model, fileNames[0], Constant.OxyIIFileType.OXY)
@@ -249,7 +249,7 @@ class OxyIIActivity : AppCompatActivity(), BleChangeObserver {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.oxyIIHandler.stopRtTask()
         } else {
             BleServiceHelper.BleServiceHelper.stopRtTask(model)

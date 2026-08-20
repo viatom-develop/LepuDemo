@@ -46,21 +46,21 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ap20Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.ap20GetInfo(model)
             }
         }
         binding.getBattery.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ap20Handler.getBattery()
             } else {
                 BleServiceHelper.BleServiceHelper.ap20GetBattery(model)
             }
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ap20Handler.getConfig(Constant.Ap20ConfigType.BACK_LIGHT)
             } else {
                 BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.BACK_LIGHT)
@@ -71,7 +71,7 @@ class Ap20Activity : AppCompatActivity(), BleChangeObserver {
 //            BleServiceHelper.BleServiceHelper.ap20GetConfig(model, Constant.Ap20ConfigType.HIGH_HR_THRESHOLD)
         }
         binding.setConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ap20Handler.setConfig(Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)
             } else {
                 BleServiceHelper.BleServiceHelper.ap20SetConfig(model, Constant.Ap20ConfigType.ALARM_SWITCH, 0/*off*/)

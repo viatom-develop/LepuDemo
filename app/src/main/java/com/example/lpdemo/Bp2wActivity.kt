@@ -103,21 +103,21 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.bp2wGetInfo(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.bp2wFactoryReset(model)
             }
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.getConfig()
             } else {
                 BleServiceHelper.BleServiceHelper.bp2wGetConfig(model)
@@ -128,7 +128,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
             config.avgMeasureMode = 1
             // config.avgMeasureMode: 0(bp x3 off), 1(bp x3 on, interval 30s), 2(bp x3 on, interval 60s),
             //                        3(bp x3 on, interval 90s), 4(bp x3 on, interval 120s)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.setConfig(config)
             } else {
                 BleServiceHelper.BleServiceHelper.bp2wSetConfig(model, config)
@@ -137,7 +137,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
         binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.startRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
@@ -145,7 +145,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -156,7 +156,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.bp2wGetFileList(model)
@@ -164,7 +164,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp2wHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -177,7 +177,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
                 binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.bp2wHandler.stopRtTask()
                 } else {
                     BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -408,7 +408,7 @@ class Bp2wActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.bp2wHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.bp2wReadFile(model, fileNames[0])

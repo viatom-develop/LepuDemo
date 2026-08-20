@@ -76,7 +76,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
         lifecycle.addObserver(BIOL(this, intArrayOf(model)))
         initView()
         initEventBus()
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.pc300Handler.getGlucometerType()
         } else {
             BleServiceHelper.BleServiceHelper.pc300GetGlucometerType(model)
@@ -89,21 +89,21 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc300Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.pc300GetInfo(model)
             }
         }
         binding.getBpMode.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc300Handler.getBpMode()
             } else {
                 BleServiceHelper.BleServiceHelper.pc300GetBpMode(model)
             }
         }
         binding.getTempMode.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc300Handler.getTempMode()
             } else {
                 BleServiceHelper.BleServiceHelper.pc300GetTempMode(model)
@@ -149,7 +149,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 position: Int,
                 id: Long
             ) {
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     if (position == 0) {
                         SDKMap.pc300Handler.setBpMode(BpMode.ADULT_MODE)
                     } else if (position == 1) {
@@ -195,7 +195,7 @@ class Pc303Activity : AppCompatActivity(), BleChangeObserver {
                 position: Int,
                 id: Long
             ) {
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     if (position == 0) {
                         SDKMap.pc300Handler.setTempMode(TempMode.EAR_C)
                     } else if (position == 1) {

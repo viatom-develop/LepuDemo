@@ -43,7 +43,7 @@ class Pc68bActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc68bHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.pc68bGetInfo(model)

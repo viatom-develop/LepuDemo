@@ -104,21 +104,21 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.bp3GetInfo(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.bp3FactoryReset(model)
             }
         }
         binding.getConfig.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.getConfig()
             } else {
                 BleServiceHelper.BleServiceHelper.bp3GetConfig(model)
@@ -131,7 +131,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
             // config.avgMeasureMode: 0(bp x3 off), 1(bp x3 on, interval 30s), 2(bp x3 on, interval 60s),
             //                        3(bp x3 on, interval 90s), 4(bp x3 on, interval 120s)
             // config.volume: 0(off), 1, 2, 3
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.setConfig(config)
             } else {
                 BleServiceHelper.BleServiceHelper.bp3SetConfig(model, config)
@@ -140,7 +140,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
         binding.startRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
             waveHandler.postDelayed(ecgWaveTask, 1000)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.startRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.startRtTask(model)
@@ -148,7 +148,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
         }
         binding.stopRtTask.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -162,7 +162,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
             // Constant.Bp3FileType.USER_TYPE
             // Constant.Bp3FileType.BP_TYPE
             // Constant.Bp3FileType.ECG_TYPE
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.getFileList(Constant.Bp3FileType.BP_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.bp3GetFileList(model, Constant.Bp3FileType.BP_TYPE)
@@ -171,7 +171,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
 //            BleServiceHelper.BleServiceHelper.bp3GetFileList(model, Constant.Bp3FileType.USER_TYPE)
         }
         binding.getCrc.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.getFileListCrc(Constant.Bp3FileType.USER_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.bp3GetFileListCrc(model, Constant.Bp3FileType.USER_TYPE)
@@ -179,7 +179,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
         }
         binding.readFile.setOnClickListener {
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -190,7 +190,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
             val userList = UserList()
             userList.fileType = 6
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -229,7 +229,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
             user3.icon = BitmapConvertor(this).bp3CreateIcon("测试three")
             userList.userList.add(user3)
             // userList.size max : 10
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.bp3Handler.writeUserList(userList)
             } else {
                 BleServiceHelper.BleServiceHelper.bp3WriteUserList(model, userList)
@@ -241,7 +241,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
                 binding.bpBleState.setImageResource(R.mipmap.bluetooth_ok)
             } else {
                 waveHandler.removeCallbacks(ecgWaveTask)
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.bp3Handler.stopRtTask()
                 } else {
                     BleServiceHelper.BleServiceHelper.stopRtTask(model)
@@ -505,7 +505,7 @@ class Bp3Activity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.bp3Handler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.bp3ReadFile(model, fileNames[0])

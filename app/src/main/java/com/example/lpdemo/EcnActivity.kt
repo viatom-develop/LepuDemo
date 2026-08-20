@@ -63,42 +63,42 @@ class EcnActivity : AppCompatActivity(), BleChangeObserver {
             }
         }
         binding.startRtData.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.startRtData()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnStartRtData(model)
             }
         }
         binding.stopRtData.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.stopRtData()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnStopRtData(model)
             }
         }
         binding.startCollect.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.startCollect()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnStartCollect(model)
             }
         }
         binding.stopCollect.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.stopCollect()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnStopCollect(model)
             }
         }
         binding.getState.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.getRtState()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnGetRtState(model)
             }
         }
         binding.getResult.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.getDiagnosisResult()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnGetDiagnosisResult(model)
@@ -109,7 +109,7 @@ class EcnActivity : AppCompatActivity(), BleChangeObserver {
             ecgList.clear()
             ecgAdapter.setNewInstance(ecgList)
             ecgAdapter.notifyDataSetChanged()
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.ecnHandler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.ecnGetFileList(model)
@@ -189,7 +189,7 @@ class EcnActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.ecnHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.ecnReadFile(model, fileNames[0])

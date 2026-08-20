@@ -21,7 +21,9 @@ Version at least Android 7.0
 > lepu-blepro-1.0.11.aar : add BUZUD-CML  
 > lepu-blepro-1.0.14.aar : add BBSM BS1, Baby S3  
 
-> Note : the aar bundled in this project is `lepu-blepro-1.3.7.aar`. The changelog above is only maintained up to `1.0.14`; versions between `1.0.14` and `1.3.7` add further devices (e.g. ECN, BBSM S3, PF-10BWS, and other new models documented in the device sections below).
+> lepu-blepro-1.4.0.aar : add the object-oriented Handler API (`com.lepu.blepro.ext.api.*`), see the "Handler API (since 1.4.0)" section below  
+
+> Note : the aar bundled in this project is `lepu-blepro-1.4.0.aar`. The changelog above is only maintained up to `1.0.14`; versions between `1.0.14` and `1.4.0` add further devices (e.g. ECN, BBSM S3, PF-10BWS, and other new models documented in the device sections below) as well as the new Handler API introduced in `1.4.0`.
 
 ## import SDK
 
@@ -83,6 +85,99 @@ If it is a custom key and token, this method needs to be called before connectin
 
 + ### cleanEncryptKey()
 After the Bluetooth is disconnected, it should be emptied.
+
++ ### registerCustomModel(name, model)
+Register a custom bluetooth name and model so the SDK can recognize your device during scan/connect. Used together with the Handler API (see below).
+
+## Handler API (since 1.4.0)
+
+Starting from `lepu-blepro-1.4.0.aar`, the SDK provides an object-oriented **Handler API** under the package `com.lepu.blepro.ext.api.*` as an alternative to the global `BleServiceHelper` singleton.
+
+Difference between the two styles :  
++ Old style : `BleServiceHelper.BleServiceHelper.ap20GetInfo(model)` — a global singleton, `model` must be passed on every call.  
++ New style : `ap20Handler.getInfo()` — one Handler instance per device, the `model` is bound once when the Handler is constructed, so commands are shorter and more object-oriented.
+
+`PS` :  
++ The two styles can coexist. The old `BleServiceHelper` API is still available, so migration can be done gradually.  
++ The Handler API only changes how commands are **sent**. Data is still **received** through the same `LiveEventBus` + `InterfaceEvent` events described in each device section below.
+
+Each device has its own Handler class, for example :  
+`Ad5FhrHandler`, `AirBpHandler`, `Aoj20aHandler`, `Ap20Handler`, `BbsmP1Handler`, `BiolandBgmHandler`, `Bp2Handler`, `Bp2wHandler`, `Bp3Handler`, `BpmHandler`, `CheckmeHandler`, `CheckmeLeHandler`, `CheckmePodHandler`, `EcnHandler`, `Er1Handler`, `Er2Handler`, `Er3Handler`, `FhrHandler`, `LemHandler`, `LepodHandler`, `LpBp2wHandler`, `Lpm311Handler`, `OxyCommonHandler`, `OxyIIHandler`, `Pc60FwHandler`, `Pc68bHandler`, `Pc80Handler`, `Pc100Handler`, `Pc300Handler`, `Pf10Aw1Handler`, `PoctorM3102Handler`, `PulsebitHandler`, `Sp20Handler`, `VcominFhrHandler`, `VentilatorHandler`, `VetcorderHandler`, `Vtm20fHandler`.
+
++ #### 1.Create the Handler
+
+Construct the Handler with your device model. A common practice is to keep all Handler instances in one place (see `app/src/main/java/com/example/lpdemo/comm/SDKMap.kt`) :
+
+```kotlin
+// BLUETOOTH_NAME / MODEL : the custom bluetooth name and model of your device
+val youBle = Pair(BLUETOOTH_NAME, MODEL)
+
+val ap20Handler = Ap20Handler(youBle.second)
+val bp2Handler  = Bp2Handler(youBle.second)
+// ... one Handler per device
+```
+
++ #### 2.Register the custom model
+
+Before scanning/connecting, register your custom name and model :
+
+```kotlin
+BleServiceHelper.BleServiceHelper.registerCustomModel(SDKMap.youBle.first, SDKMap.youBle.second)
+```
+
++ #### 3.Add the custom model to the scan filter
+
+`startScan(models)` only reports devices whose model is contained in the `models` filter array. To make your custom device discoverable during scan, append `SDKMap.youBle.second` to that array :
+
+```kotlin
+private val models = intArrayOf(
+    Bluetooth.MODEL_PC60FW,
+    // ... other built-in models ...
+    Bluetooth.MODEL_BBSM_BS1,
+    SDKMap.youBle.second   // custom device model, otherwise it will be filtered out during scan
+)
+
+// ...
+BleServiceHelper.BleServiceHelper.startScan(models)
+```
+
+`PS` : if `SDKMap.youBle.second` is not added to `models`, the custom device will still be broadcasting but will be filtered out by `startScan`, so `EventDeviceFound` will never fire for it.
+
++ #### 4.Connect using the Handler's bleInterface
+
+When a matching device is found, connect with the Handler's `bleInterface` instead of a raw model :
+
+```kotlin
+if (it.name.contains(SDKMap.youBle.first)) {
+    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ap20Handler.bleInterface, it.device, bluetooth = it)
+} else {
+    BleServiceHelper.BleServiceHelper.connect(applicationContext, it.model, it.device, bluetooth = it)
+}
+```
+
++ #### 5.Send commands through the Handler
+
+Call the command methods directly on the Handler (no `model` parameter needed) :
+
+```kotlin
+if (model == SDKMap.youBle.second) {
+    SDKMap.ap20Handler.getInfo()                        // new Handler API
+} else {
+    BleServiceHelper.BleServiceHelper.ap20GetInfo(model) // old BleServiceHelper API
+}
+```
+
+The Handler method names mirror the corresponding `BleServiceHelper` methods with the device prefix removed, for example :  
+> `ap20Handler.getInfo()` ↔ `BleServiceHelper.ap20GetInfo(model)`  
+> `ap20Handler.getBattery()` ↔ `BleServiceHelper.ap20GetBattery(model)`  
+> `ap20Handler.getConfig(type)` ↔ `BleServiceHelper.ap20GetConfig(model, type)`  
+> `ap20Handler.setConfig(type, value)` ↔ `BleServiceHelper.ap20SetConfig(model, type, value)`  
+> `ventilatorHandler.encrypt()` ↔ `BleServiceHelper.ventilatorEncrypt(model, id)`  
+> `bbsmP1Handler.readFile(fileName)` ↔ `BleServiceHelper.bbsmp1ReadFile(model, fileName)`  
+
++ #### 6.Receive data (unchanged)
+
+Data callbacks stay the same as before — subscribe to the `InterfaceEvent` for each device via `LiveEventBus`, exactly as documented in the device sections below.
 
 ### AirBP (Bluetooth.MODEL_AIRBP)
 

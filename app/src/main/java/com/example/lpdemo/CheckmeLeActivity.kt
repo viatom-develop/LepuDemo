@@ -41,28 +41,28 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeLeHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeLeGetInfo(model)
             }
         }
         binding.getOxyList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeLeHandler.getFileList(Constant.CheckmeLeListType.OXY_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.OXY_TYPE)
             }
         }
         binding.getEcgList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeLeHandler.getFileList(Constant.CheckmeLeListType.ECG_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.ECG_TYPE)
             }
         }
         binding.getDlcList.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmeLeHandler.getFileList(Constant.CheckmeLeListType.DLC_TYPE)
             } else {
                 BleServiceHelper.BleServiceHelper.checkmeLeGetFileList(model, Constant.CheckmeLeListType.DLC_TYPE)
@@ -155,7 +155,7 @@ class CheckmeLeActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun readFile() {
         if (fileNames.isEmpty()) return
-        if (model == SDKMap.mtpo4.second) {
+        if (model == SDKMap.youBle.second) {
             SDKMap.checkmeLeHandler.readFile(fileNames[0])
         } else {
             BleServiceHelper.BleServiceHelper.checkmeLeReadFile(model, fileNames[0])

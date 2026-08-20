@@ -55,7 +55,7 @@ class Pc60fwActivity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc60FwHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.pc60fwGetInfo(model)

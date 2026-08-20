@@ -121,21 +121,21 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
             initEcgView()
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.lepodGetInfo(model)
             }
         }
         binding.factoryReset.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.factoryReset()
             } else {
                 BleServiceHelper.BleServiceHelper.lepodFactoryReset(model)
             }
         }
         binding.getMode.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.getMode()
             } else {
                 BleServiceHelper.BleServiceHelper.lepodGetMode(model)
@@ -145,21 +145,21 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
             // 0: 监护模式0.5-40
             // 1: 手术模式1-20
             // 2: ST模式0.05-40
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.setMode(0)
             } else {
                 BleServiceHelper.BleServiceHelper.lepodSetMode(model, 0)
             }
         }
         binding.startEcg.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.startEcg()
             } else {
                 BleServiceHelper.BleServiceHelper.lepodStartEcg(model)
             }
         }
         binding.stopEcg.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.stopEcg()
             } else {
                 BleServiceHelper.BleServiceHelper.lepodStopEcg(model)
@@ -167,7 +167,7 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.startRtTask.setOnClickListener {
             isStartRtTask = true
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 if (SDKMap.lepodHandler.isRtStop) {
                     waveHandler.post(ecgWaveTask)
                     SDKMap.lepodHandler.startRtTask()
@@ -182,7 +182,7 @@ class LepodActivity : AppCompatActivity(), BleChangeObserver {
         binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
             waveHandler.removeCallbacks(ecgWaveTask)
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.lepodHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)

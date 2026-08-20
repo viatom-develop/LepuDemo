@@ -16,7 +16,6 @@ import com.lepu.blepro.ext.airbp.*
 import com.lepu.blepro.objs.Bluetooth
 import com.lepu.blepro.observer.BIOL
 import com.lepu.blepro.observer.BleChangeObserver
-import com.lepu.blepro.utils.makeTimeStr
 
 class AirBpActivity : AppCompatActivity(), BleChangeObserver {
 
@@ -37,14 +36,14 @@ class AirBpActivity : AppCompatActivity(), BleChangeObserver {
     private fun initView() {
         binding.bleName.text = deviceName
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.airBpHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.airBpGetInfo(model)
             }
         }
         binding.getBattery.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.airBpHandler.getBattery()
             } else {
                 BleServiceHelper.BleServiceHelper.airBpGetBattery(model)
@@ -52,7 +51,7 @@ class AirBpActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.beepSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.airBpHandler.setConfig(isChecked)
                 } else {
                     BleServiceHelper.BleServiceHelper.airBpSetConfig(model, isChecked)

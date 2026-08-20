@@ -12,7 +12,6 @@ import com.example.lpdemo.utils.deviceName
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.blepro.ext.BleServiceHelper
 import com.lepu.blepro.constants.Ble
-import com.lepu.blepro.constants.Constant
 import com.lepu.blepro.event.EventMsgConst
 import com.lepu.blepro.event.InterfaceEvent
 import com.lepu.blepro.ext.checkmepod.*
@@ -43,13 +42,13 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         binding.getInfo.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.checkmePodHandler.stopRtTask()
                 } else {
                     BleServiceHelper.BleServiceHelper.stopRtTask(model)
                 }
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmePodHandler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.checkmePodGetInfo(model)
@@ -58,13 +57,13 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         binding.getList.setOnClickListener {
             if (isStartRtTask) {
                 isStartRtTask = false
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.checkmePodHandler.stopRtTask()
                 } else {
                     BleServiceHelper.BleServiceHelper.stopRtTask(model)
                 }
             }
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmePodHandler.getFileList()
             } else {
                 BleServiceHelper.BleServiceHelper.checkmePodGetFileList(model)
@@ -73,7 +72,7 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         binding.startRtTask.setOnClickListener {
             isStartRtTask = true
             if (BleServiceHelper.BleServiceHelper.isRtStop(model)) {
-                if (model == SDKMap.mtpo4.second) {
+                if (model == SDKMap.youBle.second) {
                     SDKMap.checkmePodHandler.startRtTask()
                 } else {
                     BleServiceHelper.BleServiceHelper.startRtTask(model)
@@ -82,7 +81,7 @@ class CheckmePodActivity : AppCompatActivity(), BleChangeObserver {
         }
         binding.stopRtTask.setOnClickListener {
             isStartRtTask = false
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.checkmePodHandler.stopRtTask()
             } else {
                 BleServiceHelper.BleServiceHelper.stopRtTask(model)

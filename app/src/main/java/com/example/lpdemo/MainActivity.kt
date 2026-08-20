@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
         Bluetooth.MODEL_BP3G, Bluetooth.MODEL_BP3H, Bluetooth.MODEL_BP3K,
         Bluetooth.MODEL_BP3L, Bluetooth.MODEL_BP3Z,   // Bp3Activity
         Bluetooth.MODEL_BBSM_BS1,  // BBSMS1Activity
-        SDKMap.mtpo4.second
+        SDKMap.youBle.second
     )
 
     private var list = arrayListOf<Bluetooth>()
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
 
     private fun registerBleNameAndModel() {
         try {
-            BleServiceHelper.BleServiceHelper.registerCustomModel(SDKMap.mtpo4.first, SDKMap.mtpo4.second)
+            BleServiceHelper.BleServiceHelper.registerCustomModel(SDKMap.youBle.first, SDKMap.youBle.second)
         } catch (e: IllegalArgumentException) {
             Log.e("TAG", "register failed: " + e.message)
         }
@@ -343,43 +343,43 @@ class MainActivity : AppCompatActivity(), BleChangeObserver {
                 // stop scan before connect
                 BleServiceHelper.BleServiceHelper.stopScan()
                 // connect
-                if (it.name.contains("MT PO4")) {
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ad5FhrHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.airBpHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.aoj20aHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ap20Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bbsmP1Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.biolandBgmHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bp2Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bp2wHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bp3Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bpmHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.checkmeHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.checkmeLeHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.vetcorderHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.checkmePodHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ecnHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.er1Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.er2Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.er3Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.fhrHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lemHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lepodHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lpBp2wHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lpm311Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.oxyIIHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc60FwHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc68bHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc80Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc100Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc300Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pf10Aw1Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.poctorM3102Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pulsebitHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.sp20Handler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.vcominFhrHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ventilatorHandler.bleInterface, it.device, bluetooth = it)
-                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.vtm20fHandler.bleInterface, it.device, bluetooth = it)
+                if (it.name.contains(SDKMap.youBle.first)) {
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ad5FhrHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.airBpHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.aoj20aHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ap20Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bbsmP1Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.biolandBgmHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bp2Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bp2wHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bp3Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.bpmHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.checkmeHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.checkmeLeHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.vetcorderHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.checkmePodHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ecnHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.er1Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.er2Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.er3Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.fhrHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lemHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lepodHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lpBp2wHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.lpm311Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.oxyIIHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc60FwHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc68bHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc80Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc100Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pc300Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pf10Aw1Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.poctorM3102Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.pulsebitHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.sp20Handler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.vcominFhrHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.ventilatorHandler.bleInterface, it.device, bluetooth = it)
+//                    BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.vtm20fHandler.bleInterface, it.device, bluetooth = it)
 
                     BleServiceHelper.BleServiceHelper.connect(applicationContext, SDKMap.oxyCommonHandler.bleInterface, it.device, bluetooth = it)
                 } else {

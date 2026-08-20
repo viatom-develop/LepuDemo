@@ -45,21 +45,21 @@ class Pc102Activity : AppCompatActivity(), BleChangeObserver {
         }
 
         binding.startBp.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc100Handler.startBp()
             } else {
                 BleServiceHelper.BleServiceHelper.pc100StartBp(model)
             }
         }
         binding.stopBp.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc100Handler.stopBp()
             } else {
                 BleServiceHelper.BleServiceHelper.pc100StopBp(model)
             }
         }
         binding.getInfo.setOnClickListener {
-            if (model == SDKMap.mtpo4.second) {
+            if (model == SDKMap.youBle.second) {
                 SDKMap.pc100Handler.getInfo()
             } else {
                 BleServiceHelper.BleServiceHelper.pc100GetInfo(model)
