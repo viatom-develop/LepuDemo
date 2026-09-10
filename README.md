@@ -1,5 +1,7 @@
 # Android SDK API
 
+The current master branch is no longer being maintained. Please use the new branch master-m instead.
+
 ## SDK support platform
 
 Version at least Android 7.0
