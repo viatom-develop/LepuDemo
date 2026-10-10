@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 13,
-      "versionName": "2.0.1",
-      "outputFile": "LepuDemo-release-2.0.1.apk"
+      "versionCode": 14,
+      "versionName": "2.0.2",
+      "outputFile": "LepuDemo-release-2.0.2.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/LepuDemo-release-2.0.1.dm"
+        "baselineProfiles/1/LepuDemo-release-2.0.2.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/LepuDemo-release-2.0.1.dm"
+        "baselineProfiles/0/LepuDemo-release-2.0.2.dm"
       ]
     }
   ],
